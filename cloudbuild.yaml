@@ -5,12 +5,10 @@ steps:
   # 1. build the container image
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "gcr.io/sleddit-264313/sleddit", "."]
-    dir: "frontend"
 
     # 2. push the container image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/sleddit-264313/sleddit"]
-    dir: "frontend"
 
     # 3. Deploy container image to Cloud Run
   - name: "gcr.io/cloud-builders/gcloud"
@@ -28,7 +26,6 @@ steps:
         "managed",
         "--quiet",
       ]
-    dir: "frontend"
 
 images:
   - gcr.io/sleddit-264313/sleddit
