@@ -2,6 +2,8 @@
   import {onMount} from  'svelte';
   import {stores} from '@sapper/app'
 
+  import he from 'he';
+
   const {page} = stores()
   const {slug} = $page.params;
 
@@ -16,6 +18,7 @@
     if (!loadmoremarker) return;
     let res =  await fetchJsonp(`https://reddit.com/r/${slug}.json?after=${loadmoremarker}`, {jsonpCallback: 'jsonp'})
     data = await res.json()
+    console.log(data)
     loadmoremarker = data.data.after
     console.log(allposts)
     allposts = [...allposts, ...data.data.children]
@@ -24,6 +27,7 @@
   onMount(async () => {
     const res =  await fetchJsonp(`https://reddit.com/r/${slug}.json`, {jsonpCallback: 'jsonp'})
     data = await res.json()
+    console.log(data)
     allposts = data.data.children
     loadmoremarker = data.data.after
   }
@@ -39,12 +43,13 @@
 
     if (posts[index]) {
       currpost = posts[index]
+      console.log(currpost.data.preview.images[0])
 
       nexturls = posts.slice(index, index+3)
 
     }
     else {
-      currpost = {'data': {'title': 'Loading ..'}}
+      currpost = {'data': {'preview': {'images': [{'source': {'url': ''}, 'resolutions': [{'url': ''}]}]}, 'title': 'Loading ..'}}
       nexturls = []
     }
 
@@ -52,7 +57,7 @@
 
   }
 
-  let currpost = {'data': {'title': 'Loading ..'}}
+  let currpost = {'data': {'preview': {'images': [{'source': {'url': ''}, 'resolutions': [{'url': ''}]}]}, 'title': 'Loading ..'}}
   let nexturls = []
 
   let index = 0
@@ -194,10 +199,15 @@
   //h2 nexturls
   //  +each('nexturls as nexturl')
   //  p nexturl - {nexturl.data.url}
+  //div
+  //  a(href='{currpost.data.url}') url
+  //  a(href='{he.decode(currpost.data.preview.images[0].resolutions.slice(-1)[0].url)}') preview
+  //  a(href='{he.decode(currpost.data.preview.images[0].source.url)}') orig
   .hero
     .control.prev(on:click='{prev}')
     .title(class:hide="{uiVisible == false}") {currpost.data.title}
-    .image(style="background-image: url('{currpost.data.url}')")
+    //.image(style="background-image: url('{currpost.data.url}')")
+    .image(style="background-image: url('{he.decode(currpost.data.preview.images[0].resolutions.slice(-1)[0].url)}')")
     .control.next(on:click='{next}')
     .goto(class:hide="{uiVisible == false}")
       +each('posts as post, i')
