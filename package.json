@@ -9,7 +9,8 @@
     "start": "node __sapper__/build",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
-    "test": "run-p --race dev cy:run"
+    "test": "run-p --race dev cy:run",
+    "docker": "docker build --tag=gcr.io/sleddit-264313/sleddit .; docker run -e 'PORT=3000' -p 80:3000 gcr.io/sleddit-264313/sleddit"
   },
   "dependencies": {
     "compression": "^1.7.1",
