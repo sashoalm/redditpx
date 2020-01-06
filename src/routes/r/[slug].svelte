@@ -10,6 +10,7 @@
   let data
   let loadmoremarker
   let allposts = []
+  let uiVisible = true
 
   async function loadMore() {
     if (!loadmoremarker) return;
@@ -74,7 +75,16 @@
     }
   }
 
+  function toggleVisiblity() {
+
+    uiVisible = !uiVisible
+  }
+
   function keydown(event) {
+
+    if (event.keyCode == 38) {
+      toggleVisiblity()
+    }
 
     if (event.keyCode == 37  || event.keyCode == 65 || event.keyCode == 75) {
       prev()
@@ -89,6 +99,9 @@
 </script>
 
 <style lang="sass">
+.hide
+  display: none !important
+
 .wrapper
   height: 100vh
 
@@ -125,7 +138,7 @@
       border-radius: 3px
       color: white
       width: 100%
-      grid-template-columns: repeat(auto-fill, minmax(20px, 1fr))
+      grid-template-columns: repeat(auto-fill, minmax(30px, 1fr))
 
       p
         margin: 0 2px
@@ -183,10 +196,10 @@
   //  p nexturl - {nexturl.data.url}
   .hero
     .control.prev(on:click='{prev}')
-    .title {currpost.data.title}
+    .title(class:hide="{uiVisible == false}") {currpost.data.title}
     .image(style="background-image: url('{currpost.data.url}')")
     .control.next(on:click='{next}')
-    .goto
+    .goto(class:hide="{uiVisible == false}")
       +each('posts as post, i')
         p(class:curr="{index === i}") {i}
   .prefetch
