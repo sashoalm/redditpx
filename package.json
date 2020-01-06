@@ -10,6 +10,7 @@
     "cy:run": "cypress run",
     "cy:open": "cypress open",
     "test": "run-p --race dev cy:run",
+    "py": "cd __sapper__/export; python3 -m http.server",
     "docker": "docker build --tag=gcr.io/sleddit-264313/sleddit .; docker run -e 'PORT=3000' -p 80:3000 gcr.io/sleddit-264313/sleddit"
   },
   "dependencies": {
