@@ -76,8 +76,6 @@
 
   function keydown(event) {
 
-    console.log('key', event.keyCode)
-
     if (event.keyCode == 37  || event.keyCode == 65 || event.keyCode == 75) {
       prev()
     }
@@ -113,8 +111,29 @@
       background-color: rgba(0, 0, 0, 0.4)
       color: white
       font-size: 1.5rem
-      width: 500px
+      max-width: 500px
       padding: 1rem
+      border-radius: 3px
+
+
+    .goto
+      position: absolute
+      background-color: rgba(0, 0, 0, 0.4)
+      bottom: 0
+      display: grid
+      padding: 1rem
+      border-radius: 3px
+      color: white
+      width: 100%
+      grid-template-columns: repeat(auto-fill, minmax(20px, 1fr))
+
+      p
+        margin: 0 2px
+        text-align: center
+
+        &.curr
+          background-color: rgba(255, 255, 255, 0.2)
+          border-bottom: 3px solid red
 
 
     .control
@@ -167,6 +186,9 @@
     .title {currpost.data.title}
     .image(style="background-image: url('{currpost.data.url}')")
     .control.next(on:click='{next}')
+    .goto
+      +each('posts as post, i')
+        p(class:curr="{index === i}") {i}
   .prefetch
     +each('nexturls as nexturl')
       img(alt='prefetch', src='{nexturl.data.url}')
