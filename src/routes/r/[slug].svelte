@@ -265,7 +265,7 @@
         video.video(autoplay loop playsinline muted)
           source(src='{currpost.preview.vid.webm}')
           source(src='{currpost.preview.vid.mp4}')
-          img(alt="foo", src='{currpost.preview.vid.gif}')
+          //img(alt="foo", src='{currpost.preview.vid.gif}')
 
     .control.next(on:click='{next}')
     .goto(class:hide="{uiVisible == false}")
