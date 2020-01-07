@@ -213,16 +213,38 @@ $over18-border-color: #ea4335
       background-color: rgba(0, 0, 0, 0.6)
       bottom: 0
       display: grid
-      padding: 1rem
+      grid-row-gap: 5px
+      padding: 1rem 10rem
       border-radius: 3px
       color: #fafafa
       width: 100%
-      grid-template-columns: repeat(auto-fill, minmax(30px, 1fr))
+      grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
 
 
       span
         position: relative
-        p
+
+        &.selected
+
+          p.small
+            //background-color: $selected-color
+            border-bottom: 3px solid $selected-border-color !important
+            color: $selected-color
+
+          img.small
+            border-color: $selected-border-color !important
+
+        &.over18
+
+          p.small
+            color: $over18-color
+            //background-color: $over18-color
+            border-bottom: 3px dashed $over18-border-color
+
+          img.small
+            border-color: $over18-border-color
+
+        p.small
           margin: 0 2px
           text-align: center
           cursor: pointer
@@ -232,27 +254,19 @@ $over18-border-color: #ea4335
             background-color: rgba(255, 255, 255, 0.2)
             border-bottom: 3px solid $accent-color !important
 
-          &.selected
-            //background-color: $selected-color
-            border-bottom: 3px solid $selected-border-color
-            color: $selected-color
-
-          &.over18
-            color: $over18-color
-            //background-color: $over18-color
-            border-bottom: 3px solid $over18-border-color
 
         img.small
           width: 0px
           height: 0px
           opacity: 0
           position: absolute
-          bottom: 50px
+          bottom: 35px
           border: 2px solid white
           background-color: lighten(black, 30%)
           min-width: 100px
+          pointer-events: none
 
-        &:hover p
+        &:hover p.small
           background-color: rgba(255, 255, 255, 0.1)
           border-bottom: 3px solid $accent-color !important
 
@@ -317,9 +331,9 @@ $over18-border-color: #ea4335
     .control.next(on:click='{next}')
     .goto(class:hide="{uiVisible == false}")
       +each('posts as post, i')
-        span(on:click="{function(){goto(i)}}")
+        span(class:selected='{posts[i].selected}', class:over18='{posts[i].over18}', on:click="{function(){goto(i)}}")
           img.small(alt="foo", src="{posts[i].preview.img.default}")
-          p(class:curr="{index === i}", class:selected="{posts[i].selected}", class:over18="{posts[i].over18}") {i+1}
+          p.small(class:curr="{index === i}") {i+1}
   .prefetch
     +each('nexturls as nexturl')
       img(alt='prefetch', src='{nexturl.preview.img.default}')
