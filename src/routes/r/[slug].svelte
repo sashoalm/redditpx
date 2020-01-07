@@ -56,14 +56,12 @@
 
   }
 
-
   function next() {
     index += 1
 
     if((posts.length - index) === 3)  {
       loadMore()
     }
-
   }
 
   function prev() {
@@ -165,13 +163,34 @@
       width: 100%
       grid-template-columns: repeat(auto-fill, minmax(30px, 1fr))
 
-      p
-        margin: 0 2px
-        text-align: center
 
-        &.curr
-          background-color: rgba(255, 255, 255, 0.2)
-          border-bottom: 3px solid red
+      span
+        z-index: 5
+        position: relative
+        p
+          margin: 0 2px
+          text-align: center
+          cursor: pointer
+
+          &.curr
+            background-color: rgba(255, 255, 255, 0.2)
+            border-bottom: 3px solid red
+
+        img.small
+          width: 00px
+          height: 00px
+          opacity: 0
+          position: absolute
+          bottom: 50px
+
+        &:hover p
+          background-color: rgba(255, 255, 255, 0.1)
+          border-bottom: 3px solid rgba(255, 0, 0, 0.8)
+
+        &:hover img
+          width: 100px
+          height: 100px
+          opacity: 1
 
 
     .control
@@ -227,7 +246,9 @@
     .control.next(on:click='{next}')
     .goto(class:hide="{uiVisible == false}")
       +each('posts as post, i')
-        p(class:curr="{index === i}") {i+1}
+        span(on:click="{function(){index = i}}")
+          img.small(src="{posts[i].preview.img.default}")
+          p(class:curr="{index === i}") {i+1}
   .prefetch
     +each('nexturls as nexturl')
       img(alt='prefetch', src='{nexturl.preview.img.default}')
