@@ -56,6 +56,17 @@
 
   }
 
+  function goto(i) {
+
+    index = i
+
+    if((posts.length - index) === 1)  {
+      loadMore()
+    }
+
+
+  }
+
   function next() {
     index += 1
 
@@ -246,7 +257,7 @@
     .control.next(on:click='{next}')
     .goto(class:hide="{uiVisible == false}")
       +each('posts as post, i')
-        span(on:click="{function(){index = i}}")
+        span(on:click="{function(){goto(i)}}")
           img.small(src="{posts[i].preview.img.default}")
           p(class:curr="{index === i}") {i+1}
   .prefetch
