@@ -12,7 +12,7 @@
   let after
   let uiVisible = true
 
-  let currpost = format({})
+  let currpost = {title: 'Loading ..'}
   let nexturls = []
 
   let index = 0
@@ -32,16 +32,26 @@
   }
   )
 
+  let renderVideo = true
+
+  $: {reMountVideo(currpost.preview)}
+
+  function reMountVideo() {
+    console.log('remounting')
+    renderVideo = false
+    setTimeout(() => renderVideo = true, 0)
+  }
+
   $ : {
 
     if (posts[index]) {
-      currpost = posts[index]
+      currpost = JSON.parse(JSON.stringify(posts[index]))
 
       nexturls = posts.slice(index, index+3)
 
     }
     else {
-      currpost = {}
+      currpost = {title: 'Loading ..'}
       nexturls = []
     }
 
@@ -183,12 +193,11 @@
     .title(class:hide="{uiVisible == false}") {currpost.title}
     +if('currpost.is_image')
       .image(style="background-image: url('{currpost.preview.img.default}')")
-      +elseif('currpost.is_video')
-        .videowrapper
-          video.video(autoplay loop playsinline muted)
-            source(src='{currpost.preview.vid.webm}')
-            source(src='{currpost.preview.vid.mp4}')
-            img(alt="foo", src='{currpost.preview.vid.gif}')
+      +elseif('currpost.is_video && renderVideo')
+        video.video(autoplay loop playsinline muted)
+          source(src='{currpost.preview.vid.webm}')
+          source(src='{currpost.preview.vid.mp4}')
+          img(alt="foo", src='{currpost.preview.vid.gif}')
 
     .control.next(on:click='{next}')
     .goto(class:hide="{uiVisible == false}")
@@ -196,6 +205,6 @@
         p(class:curr="{index === i}") {i}
   .prefetch
     +each('nexturls as nexturl')
-      img(alt='prefetch', src='{nexturl.imgpreview}')
+      img(alt='prefetch', src='{nexturl.preview.img.default}')
 
 </template>
