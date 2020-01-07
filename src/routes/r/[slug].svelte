@@ -229,7 +229,7 @@ $over18-border-color: #ea4335
       bottom: 0
       display: grid
       grid-row-gap: 5px
-      padding: 1rem 10rem
+      padding: 1rem 11rem
       border-radius: 3px
       color: #fafafa
       width: 100%
@@ -237,7 +237,7 @@ $over18-border-color: #ea4335
 
       .btn
         text-align: center
-
+        padding-top: 2px
 
       span
         position: relative
