@@ -42,9 +42,15 @@ async function vidsrc(url) {
   }
 }
 
+let lookup = new Map();
+
 export function format(item) {
   if (Object.entries(item).length == 0) {
     return { title: "Loading ..", vidpreview: {} };
+  }
+
+  if (lookup.has(item.data.url)) {
+    return JSON.parse(lookup.get(item.data.url));
   }
 
   let vidpreview = vidsrc(item.data.url);
@@ -61,5 +67,8 @@ export function format(item) {
     imghdpreview: he.decode(item.data.preview.images[0].source.url)
   };
   console.log("Returning", formatted);
+
+  lookup.set(formatted.url, JSON.stringify(formatted));
+
   return formatted;
 }
