@@ -66,6 +66,7 @@ export async function format(item) {
 
   let formatted = {
     title: item.data.title,
+    permalink: item.data.permalink,
     is_video: is_video(item),
     is_image: is_image(item),
     url: item.data.url,

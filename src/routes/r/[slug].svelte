@@ -76,19 +76,44 @@
   }
 
   function toggleVisiblity() {
-
     uiVisible = !uiVisible
   }
 
-  function keydown(event) {
+  function openMedia() {
+    window.open(currpost.url, '_blank')
+  }
 
+  function openSubReddit() {
+    window.open(`https://reddit.com/${currpost.permalink}`, '_blank')
+  }
+
+  function keydown(event) {
+    console.log(event.keyCode)
+
+    if (event.ctrlKey) {
+      return
+    }
+
+    // r
+    if (event.keyCode == 82) {
+      openSubReddit()
+    }
+
+    // i
+    if (event.keyCode == 73) {
+      openMedia()
+    }
+
+    // Up Arrow
     if (event.keyCode == 38) {
       toggleVisiblity()
     }
 
+    // Left Arrow, a, k
     if (event.keyCode == 37  || event.keyCode == 65 || event.keyCode == 75) {
       prev()
     }
+    // Right Arrow, d, j, Space
     else if (event.keyCode == 39 || event.keyCode == 68 || event.keyCode == 74 || event.keyCode == 32) {
       next()
     }
