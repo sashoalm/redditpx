@@ -121,6 +121,12 @@
   function keydown(event) {
     console.log(event.keyCode)
 
+    // x
+    if (event.keyCode == 88) {
+      console.log(posts[index])
+      posts[index].selected = !posts[index].selected
+    }
+
     if (event.ctrlKey) {
       return
     }
@@ -160,6 +166,13 @@
 </script>
 
 <style lang="sass">
+
+$accent-color: white
+$selected-color: #fbbc04
+$selected-border-color: #e37400
+$over18-color: #ea4335
+$over18-border-color: #ea4335
+
 .hide
   display: none !important
 
@@ -184,22 +197,25 @@
       position: absolute
       top: 0
       background-color: rgba(0, 0, 0, 0.4)
-      color: white
+      color: #fafafa
       font-size: 1.5rem
       max-width: 500px
       padding: 1rem
       border-radius: 3px
 
+      &.selected
+        color: $selected-color
+
 
     .goto
       z-index: 5
       position: absolute
-      background-color: rgba(0, 0, 0, 0.4)
+      background-color: rgba(0, 0, 0, 0.6)
       bottom: 0
       display: grid
       padding: 1rem
       border-radius: 3px
-      color: white
+      color: #fafafa
       width: 100%
       grid-template-columns: repeat(auto-fill, minmax(30px, 1fr))
 
@@ -214,7 +230,17 @@
 
           &.curr
             background-color: rgba(255, 255, 255, 0.2)
-            border-bottom: 3px solid red
+            border-bottom: 3px solid $accent-color !important
+
+          &.selected
+            //background-color: $selected-color
+            border-bottom: 3px solid $selected-border-color
+            color: $selected-color
+
+          &.over18
+            color: $over18-color
+            //background-color: $over18-color
+            border-bottom: 3px solid $over18-border-color
 
         img.small
           width: 0px
@@ -228,7 +254,7 @@
 
         &:hover p
           background-color: rgba(255, 255, 255, 0.1)
-          border-bottom: 3px solid rgba(255, 0, 0, 0.8)
+          border-bottom: 3px solid $accent-color !important
 
         &:hover img
           width: auto
@@ -277,7 +303,7 @@
 .wrapper
   .hero
     .control.prev(on:click='{prev}')
-    .title(class:hide="{uiVisible == false}") {currpost.title}
+    .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}") {currpost.title}
     +if('currpost.is_image')
       .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
@@ -292,8 +318,8 @@
     .goto(class:hide="{uiVisible == false}")
       +each('posts as post, i')
         span(on:click="{function(){goto(i)}}")
-          img.small(src="{posts[i].preview.img.default}")
-          p(class:curr="{index === i}") {i+1}
+          img.small(alt="foo", src="{posts[i].preview.img.default}")
+          p(class:curr="{index === i}", class:selected="{posts[i].selected}", class:over18="{posts[i].over18}") {i+1}
   .prefetch
     +each('nexturls as nexturl')
       img(alt='prefetch', src='{nexturl.preview.img.default}')
