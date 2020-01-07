@@ -40,7 +40,7 @@ async function vidsrc(url, item) {
       mp4: `https://i.imgur.com/${name}.mp4`
     };
   } else if (url.includes("gfycat.com/")) {
-    let name = url.replace("https://gfycat.com/", "");
+    let name = url.match(/gfycat.com\/(.*)/)[1];
     // Sometimes gfycat urls are of the format "gfycat.com/videoid-extra-stuff". Remove anything after the first "-"
     name = name.split("-")[0];
     let res = await fetch(`https://api.gfycat.com/v1/gfycats/${name}`, {
