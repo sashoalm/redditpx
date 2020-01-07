@@ -46,7 +46,7 @@
     if (posts[index]) {
       currpost = JSON.parse(JSON.stringify(posts[index]))
 
-      nexturls = posts.slice(index, index+3)
+      nexturls = posts.slice(index+1, index+4)
 
     }
     else {
@@ -206,5 +206,9 @@
   .prefetch
     +each('nexturls as nexturl')
       img(alt='prefetch', src='{nexturl.preview.img.default}')
+      +if('nexturl.is_video')
+        video
+          source(src="{nexturl.preview.vid.webm}")
+          source(src="{nexturl.preview.vid.mp4}")
 
 </template>
