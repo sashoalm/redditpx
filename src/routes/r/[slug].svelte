@@ -1,66 +1,56 @@
 <script>
-  import {onMount} from  'svelte';
-  import {stores} from '@sapper/app'
+  import { onMount } from  'svelte';
+  import { stores } from '@sapper/app'
 
-  import he from 'he';
+  import { filter, get_posts, is_image, format } from '../_utils'
 
-  const {page} = stores()
-  const {slug} = $page.params;
-
-  import fetchJsonp from 'fetch-jsonp'
+  const { page } = stores()
+  const { slug } = $page.params;
 
   let data
   let loadmoremarker
   let allposts = []
   let uiVisible = true
 
+  let currpost = format({})
+  let nexturls = []
+
+  let index = 0
+
   async function loadMore() {
     if (!loadmoremarker) return;
-    let res =  await fetchJsonp(`https://reddit.com/r/${slug}.json?after=${loadmoremarker}`, {jsonpCallback: 'jsonp'})
-    data = await res.json()
-    console.log(data)
-    loadmoremarker = data.data.after
-    console.log(allposts)
-    allposts = [...allposts, ...data.data.children]
+
+    data = await get_posts(`https://reddit.com/r/${slug}.json?after=${loadmoremarker}`)
+
+    loadmoremarker = data.after
+    allposts = [...allposts, ...data.children]
   }
 
   onMount(async () => {
-    const res =  await fetchJsonp(`https://reddit.com/r/${slug}.json`, {jsonpCallback: 'jsonp'})
-    data = await res.json()
-    console.log(data)
-    allposts = data.data.children
-    loadmoremarker = data.data.after
+    data = await get_posts(`https://reddit.com/r/${slug}.json`)
+
+    loadmoremarker = data.after
+    allposts = data.children
   }
   )
 
-  function is_image(item) {
-    return item.data.url.startsWith('https://imgur') || item.data.url.endsWith('.jpg')
-  }
-
-  $ : posts = allposts.filter(item =>  is_image(item))
+  $ : posts = allposts.filter(item =>  filter(item))
 
   $ : {
 
     if (posts[index]) {
-      currpost = posts[index]
-      console.log(currpost.data.preview.images[0])
+      currpost = format(posts[index])
 
       nexturls = posts.slice(index, index+3)
 
     }
     else {
-      currpost = {'data': {'preview': {'images': [{'source': {'url': ''}, 'resolutions': [{'url': ''}]}]}, 'title': 'Loading ..'}}
+      currpost = format({})
       nexturls = []
     }
 
-
-
   }
 
-  let currpost = {'data': {'preview': {'images': [{'source': {'url': ''}, 'resolutions': [{'url': ''}]}]}, 'title': 'Loading ..'}}
-  let nexturls = []
-
-  let index = 0
 
   function next() {
     index += 1
@@ -179,11 +169,9 @@
       background-repeat: no-repeat
       background-position: center
 
-    img
-      object-fit: cover
-      height: 100vh
-      width: auto
-
+    .video
+      height: 100%
+      width: 100%
 
   .prefetch
     display: none
@@ -194,27 +182,24 @@
 
 <template lang="pug">
 .wrapper
-  //p index - {index}, marker - {loadmoremarker}, posts.length = {posts.length}, allposts.length = {allposts.length}
-  //p {url}
-  //h2 nexturls
-  //  +each('nexturls as nexturl')
-  //  p nexturl - {nexturl.data.url}
-  //div
-  //  a(href='{currpost.data.url}') url
-  //  a(href='{he.decode(currpost.data.preview.images[0].resolutions.slice(-1)[0].url)}') preview
-  //  a(href='{he.decode(currpost.data.preview.images[0].source.url)}') orig
   .hero
     .control.prev(on:click='{prev}')
-    .title(class:hide="{uiVisible == false}") {currpost.data.title}
-    //.image(style="background-image: url('{currpost.data.url}')")
-    .image(style="background-image: url('{he.decode(currpost.data.preview.images[0].resolutions.slice(-1)[0].url)}')")
+    .title(class:hide="{uiVisible == false}") {currpost.title}
+    +if('currpost.is_image')
+      .image(style="background-image: url('{currpost.imgpreview}')")
+      +elseif('currpost.is_video')
+        +await('currpost.vidpreview then vidsrc')
+          video.video(autoplay loop playsinline muted)
+            source(src='{vidsrc.webm}')
+            source(src='{vidsrc.mp4}')
+            img(alt="foo", src='{vidsrc.gif}')
+
     .control.next(on:click='{next}')
     .goto(class:hide="{uiVisible == false}")
       +each('posts as post, i')
         p(class:curr="{index === i}") {i}
   .prefetch
     +each('nexturls as nexturl')
-      img(alt='prefetch', src='{nexturl.data.url}')
-
+      img(alt='prefetch', src='{nexturl.imgpreview}')
 
 </template>
