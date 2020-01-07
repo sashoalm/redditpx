@@ -44,7 +44,7 @@ async function vidsrc(url, item) {
     // Sometimes gfycat urls are of the format "gfycat.com/videoid-extra-stuff". Remove anything after the first "-"
     name = name.split("-")[0];
     let res = await fetch(`https://api.gfycat.com/v1/gfycats/${name}`, {
-      mode: "no-cors"
+      //mode: "no-cors"
     });
     let data = await res.json();
     return {
