@@ -1,6 +1,7 @@
 <script>
   import Icon from 'fa-svelte';
   import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay'
+  import { faPause } from '@fortawesome/free-solid-svg-icons/faPause'
   import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
   import { faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons/faCloudDownloadAlt'
 
