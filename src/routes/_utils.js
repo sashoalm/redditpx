@@ -4,8 +4,12 @@ import he from "he";
 export async function get_posts(url) {
   let res = await fetchJsonp(url, { jsonpCallback: "jsonp" });
   let data = await res.json();
-  console.log("Fetched", data.data);
-  return data.data;
+  console.log("Fetched: ", data.data.children.length, data.data);
+
+  let posts = data.data.children.filter(item => filter(item));
+  console.log("Filtered: ", posts.length, posts);
+
+  return { posts: posts, after: data.data.after };
 }
 
 export function is_image(item) {

@@ -2,14 +2,14 @@
   import { onMount } from  'svelte';
   import { stores } from '@sapper/app'
 
-  import { filter, get_posts, is_image, format } from '../_utils'
+  import { get_posts, is_image, format } from '../_utils'
 
   const { page } = stores()
   const { slug } = $page.params;
 
   let data
-  let loadmoremarker
-  let allposts = []
+  let posts = []
+  let after
   let uiVisible = true
 
   let currpost = format({})
@@ -18,23 +18,19 @@
   let index = 0
 
   async function loadMore() {
-    if (!loadmoremarker) return;
+    if (!after) return;
 
-    data = await get_posts(`https://reddit.com/r/${slug}.json?after=${loadmoremarker}`)
+    let newposts
 
-    loadmoremarker = data.after
-    allposts = [...allposts, ...data.children]
+    ({posts: newposts, after} = await get_posts(`https://reddit.com/r/${slug}.json?after=${after}`));
+
+    posts = [...posts, ...newposts]
   }
 
   onMount(async () => {
-    data = await get_posts(`https://reddit.com/r/${slug}.json`)
-
-    loadmoremarker = data.after
-    allposts = data.children
+    ({ posts, after} = await get_posts(`https://reddit.com/r/${slug}.json`))
   }
   )
-
-  $ : posts = allposts.filter(item =>  filter(item))
 
   $ : {
 
