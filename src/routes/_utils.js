@@ -11,6 +11,7 @@ export async function get_posts(url) {
 
   let posts = await Promise.all(filtered.map(post => format(post)));
 
+  console.log(posts);
   return { posts: posts, after: data.data.after };
 }
 
@@ -47,24 +48,27 @@ async function vidsrc(url) {
   }
 }
 
-export function format(item) {
-  console.log("FORMAT: ", item);
+export async function format(item) {
   if (Object.entries(item).length == 0) {
     return { title: "Loading ..", vidpreview: {} };
   }
 
-  let vidpreview = vidsrc(item.data.url);
+  let vids = await vidsrc(item.data.url);
 
   let formatted = {
     title: item.data.title,
     is_video: is_video(item),
     is_image: is_image(item),
     url: item.data.url,
-    vidpreview: vidpreview,
-    imgpreview: he.decode(
-      item.data.preview.images[0].resolutions.slice(-1)[0].url
-    ),
-    imghdpreview: he.decode(item.data.preview.images[0].source.url)
+    preview: {
+      vid: vids,
+      img: {
+        default: he.decode(
+          item.data.preview.images[0].resolutions.slice(-1)[0].url
+        ),
+        hires: he.decode(item.data.preview.images[0].source.url)
+      }
+    }
   };
   //console.log("Returning", formatted);
 

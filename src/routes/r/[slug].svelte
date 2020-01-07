@@ -182,13 +182,13 @@
     .control.prev(on:click='{prev}')
     .title(class:hide="{uiVisible == false}") {currpost.title}
     +if('currpost.is_image')
-      .image(style="background-image: url('{currpost.imgpreview}')")
+      .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video')
-        +await('currpost.vidpreview then vidsrc')
+        .videowrapper
           video.video(autoplay loop playsinline muted)
-            source(src='{vidsrc.webm}')
-            source(src='{vidsrc.mp4}')
-            img(alt="foo", src='{vidsrc.gif}')
+            source(src='{currpost.preview.vid.webm}')
+            source(src='{currpost.preview.vid.mp4}')
+            img(alt="foo", src='{currpost.preview.vid.gif}')
 
     .control.next(on:click='{next}')
     .goto(class:hide="{uiVisible == false}")
