@@ -25,10 +25,13 @@ export function filter(item) {
 
 export function is_video(item) {
   if (!item.data.hasOwnProperty("preview")) return false;
-  return item.data.preview.hasOwnProperty("reddit_video_preview");
+  return (
+    item.data.is_video ||
+    item.data.preview.hasOwnProperty("reddit_video_preview")
+  );
 }
 
-async function vidsrc(url) {
+async function vidsrc(url, item) {
   if (url.includes("imgur.com/")) {
     let name = url.match(/imgur.com\/(.*)\..*/)[1];
     return {
@@ -38,12 +41,18 @@ async function vidsrc(url) {
     };
   } else if (url.includes("gfycat.com/")) {
     let name = url.replace("https://gfycat.com/", "");
+    // Sometimes gfycat urls are of the format "gfycat.com/videoid-extra-stuff". Remove anything after the first "-"
+    name = name.split("-")[0];
     let res = await fetch(`https://api.gfycat.com/v1/gfycats/${name}`);
     let data = await res.json();
     return {
       webm: data.gfyItem.webmUrl,
       mp4: data.gfyItem.mp4Url,
       gif: data.gfyItem.gifUrl
+    };
+  } else if (url.includes("v.redd.it")) {
+    return {
+      mp4: item.data.media.reddit_video.fallback_url
     };
   }
 }
@@ -53,7 +62,7 @@ export async function format(item) {
     return { title: "Loading ..", vidpreview: {} };
   }
 
-  let vids = await vidsrc(item.data.url);
+  let vids = await vidsrc(item.data.url, item);
 
   let formatted = {
     title: item.data.title,

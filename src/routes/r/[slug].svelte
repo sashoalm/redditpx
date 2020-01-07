@@ -37,7 +37,6 @@
   $: {reMountVideo(currpost.preview)}
 
   function reMountVideo() {
-    console.log('remounting')
     renderVideo = false
     setTimeout(() => renderVideo = true, 0)
   }
@@ -153,6 +152,7 @@
     .control
       position: absolute
       height: 100%
+      z-index: 5
 
       &.prev
         left: 0
@@ -202,7 +202,7 @@
     .control.next(on:click='{next}')
     .goto(class:hide="{uiVisible == false}")
       +each('posts as post, i')
-        p(class:curr="{index === i}") {i}
+        p(class:curr="{index === i}") {i+1}
   .prefetch
     +each('nexturls as nexturl')
       img(alt='prefetch', src='{nexturl.preview.img.default}')
