@@ -40,7 +40,7 @@ self.addEventListener("fetch", event => {
   // don't try to handle e.g. data: URIs
   if (!url.protocol.startsWith("http")) return;
 
-  if (url.protocol.startsWith("https://reddit.com")) return;
+  if (url.protocol.contains("reddit.com")) return;
 
   // ignore dev server requests
   if (
