@@ -9,6 +9,7 @@
 
   let data
   let posts = []
+  let res
   let after
   let uiVisible = true
 
@@ -22,13 +23,16 @@
 
     let newposts
 
-    ({posts: newposts, after} = await get_posts(`https://reddit.com/r/${slug}.json?after=${after}`));
+    ({posts: newposts, after, ...res} = await get_posts(`https://reddit.com/r/${slug}.json?after=${after}`));
+    console.log("loadMore", res.res.ok)
 
     posts = [...posts, ...newposts]
   }
 
   onMount(async () => {
-    ({ posts, after} = await get_posts(`https://reddit.com/r/${slug}.json`))
+    ({ posts, after, ...res} = await get_posts(`https://reddit.com/r/${slug}.json`))
+
+    console.log("onMount", res.res.ok)
   }
   )
 
@@ -50,7 +54,21 @@
 
     }
     else {
-      currpost = {title: 'Loading ..'}
+
+      if (res && res.res.ok) {
+
+        // No media found
+        currpost = {title: 'Nothing to show'}
+      }else if (res && !res.res.ok){
+
+        // Invalid subreddit
+        currpost = {title: 'Error'}
+      }else {
+
+        // Default
+        currpost = {title: 'Loading ..'}
+      }
+
       nexturls = []
     }
 
@@ -162,6 +180,7 @@
     align-items: center
 
     .title
+      z-index: 5
       position: absolute
       top: 0
       background-color: rgba(0, 0, 0, 0.4)
@@ -173,6 +192,7 @@
 
 
     .goto
+      z-index: 5
       position: absolute
       background-color: rgba(0, 0, 0, 0.4)
       bottom: 0
@@ -185,7 +205,6 @@
 
 
       span
-        z-index: 5
         position: relative
         p
           margin: 0 2px
@@ -263,8 +282,10 @@
       .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
         video.video(autoplay loop playsinline muted)
-          source(src='{currpost.preview.vid.webm}')
-          source(src='{currpost.preview.vid.mp4}')
+          +if('currpost.preview.vid.webm')
+            source(src='{currpost.preview.vid.webm}')
+          +if('currpost.preview.vid.mp4')
+            source(src='{currpost.preview.vid.mp4}')
           //img(alt="foo", src='{currpost.preview.vid.gif}')
 
     .control.next(on:click='{next}')
@@ -278,7 +299,9 @@
       img(alt='prefetch', src='{nexturl.preview.img.default}')
       +if('nexturl.is_video')
         video
-          source(src="{nexturl.preview.vid.webm}")
-          source(src="{nexturl.preview.vid.mp4}")
+          +if('nexturl.preview.vid.webm')
+            source(src='{nexturl.preview.vid.webm}')
+          +if('nexturl.preview.vid.mp4')
+            source(src='{nexturl.preview.vid.mp4}')
 
 </template>

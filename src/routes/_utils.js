@@ -2,17 +2,22 @@ import fetchJsonp from "fetch-jsonp";
 import he from "he";
 
 export async function get_posts(url) {
-  let res = await fetchJsonp(url, { jsonpCallback: "jsonp" });
-  let data = await res.json();
-  console.log("Fetched: ", data.data.children.length, data.data);
+  try {
+    let res = await fetchJsonp(url, { jsonpCallback: "jsonp" });
+    let data = await res.json();
+    console.log("Fetched: ", data.data.children.length, data.data);
 
-  let filtered = data.data.children.filter(item => filter(item));
-  console.log("Filtered: ", filtered.length, filtered);
+    let filtered = data.data.children.filter(item => filter(item));
+    console.log("Filtered: ", filtered.length, filtered);
 
-  let posts = await Promise.all(filtered.map(post => format(post)));
+    let posts = await Promise.all(filtered.map(post => format(post)));
 
-  console.log(posts);
-  return { posts: posts, after: data.data.after };
+    console.log(posts);
+    return { posts: posts, after: data.data.after, res: res };
+  } catch (error) {
+    console.log("oh no");
+    return { posts: [], after: "", res: { ok: false, res: error } };
+  }
 }
 
 export function is_image(item) {
@@ -36,7 +41,7 @@ async function vidsrc(url, item) {
     let name = url.match(/imgur.com\/(.*)\..*/)[1];
     return {
       gif: `https://i.imgur.com/${name}.gif`,
-      webm: `https://i.imgur.com/${name}.webm`,
+      //webm: `https://i.imgur.com/${name}.webm`,
       mp4: `https://i.imgur.com/${name}.mp4`
     };
   } else if (url.includes("gfycat.com/")) {
