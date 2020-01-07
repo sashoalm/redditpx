@@ -2,7 +2,7 @@
   import { onMount } from  'svelte';
   import { stores } from '@sapper/app'
 
-  import { get_posts, is_image, format } from '../_utils'
+  import { get_posts, format } from '../_utils'
 
   const { page } = stores()
   const { slug } = $page.params;
@@ -35,13 +35,13 @@
   $ : {
 
     if (posts[index]) {
-      currpost = format(posts[index])
+      currpost = posts[index]
 
       nexturls = posts.slice(index, index+3)
 
     }
     else {
-      currpost = format({})
+      currpost = {}
       nexturls = []
     }
 

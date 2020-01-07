@@ -6,8 +6,10 @@ export async function get_posts(url) {
   let data = await res.json();
   console.log("Fetched: ", data.data.children.length, data.data);
 
-  let posts = data.data.children.filter(item => filter(item));
-  console.log("Filtered: ", posts.length, posts);
+  let filtered = data.data.children.filter(item => filter(item));
+  console.log("Filtered: ", filtered.length, filtered);
+
+  let posts = await Promise.all(filtered.map(post => format(post)));
 
   return { posts: posts, after: data.data.after };
 }
@@ -26,7 +28,6 @@ export function is_video(item) {
 }
 
 async function vidsrc(url) {
-  console.log(url);
   if (url.includes("imgur.com/")) {
     let name = url.match(/imgur.com\/(.*)\..*/)[1];
     return {
@@ -46,15 +47,10 @@ async function vidsrc(url) {
   }
 }
 
-let lookup = new Map();
-
 export function format(item) {
+  console.log("FORMAT: ", item);
   if (Object.entries(item).length == 0) {
     return { title: "Loading ..", vidpreview: {} };
-  }
-
-  if (lookup.has(item.data.url)) {
-    return JSON.parse(lookup.get(item.data.url));
   }
 
   let vidpreview = vidsrc(item.data.url);
@@ -70,9 +66,7 @@ export function format(item) {
     ),
     imghdpreview: he.decode(item.data.preview.images[0].source.url)
   };
-  console.log("Returning", formatted);
-
-  lookup.set(formatted.url, JSON.stringify(formatted));
+  //console.log("Returning", formatted);
 
   return formatted;
 }
