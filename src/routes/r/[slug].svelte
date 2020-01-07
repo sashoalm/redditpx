@@ -1,4 +1,9 @@
 <script>
+  import Icon from 'fa-svelte';
+  import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay'
+  import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
+  import { faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons/faCloudDownloadAlt'
+
   import { onMount } from  'svelte';
   import { stores } from '@sapper/app'
 
@@ -192,6 +197,15 @@ $over18-border-color: #ea4335
     justify-items: center
     align-items: center
 
+    .settings
+      z-index: 10
+      position: absolute
+      top: 0
+      right: 0
+      color: #fafafa
+      font-size: 1rem
+      padding: 2rem
+
     .title
       z-index: 5
       position: absolute
@@ -219,6 +233,9 @@ $over18-border-color: #ea4335
       color: #fafafa
       width: 100%
       grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
+
+      .btn
+        text-align: center
 
 
       span
@@ -318,6 +335,8 @@ $over18-border-color: #ea4335
   .hero
     .control.prev(on:click='{prev}')
     .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}") {currpost.title}
+    .settings(class:hide="{uiVisible == false}")
+      Icon(icon='{faCog}')
     +if('currpost.is_image')
       .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
@@ -330,6 +349,10 @@ $over18-border-color: #ea4335
 
     .control.next(on:click='{next}')
     .goto(class:hide="{uiVisible == false}")
+      span.btn
+        Icon(icon='{faPlay}')
+      span.btn
+        Icon(icon='{faCloudDownloadAlt}')
       +each('posts as post, i')
         span(class:selected='{posts[i].selected}', class:over18='{posts[i].over18}', on:click="{function(){goto(i)}}")
           img.small(alt="foo", src="{posts[i].preview.img.default}")
