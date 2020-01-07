@@ -96,6 +96,10 @@
     window.open(`https://reddit.com/${currpost.permalink}`, '_blank')
   }
 
+  function openSubRedditOld() {
+    window.open(`https://old.reddit.com/${currpost.permalink}`, '_blank')
+  }
+
   function keydown(event) {
     console.log(event.keyCode)
 
@@ -106,6 +110,11 @@
     // r
     if (event.keyCode == 82) {
       openSubReddit()
+    }
+
+    // o
+    if (event.keyCode == 79) {
+      openSubRedditOld()
     }
 
     // i
