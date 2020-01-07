@@ -182,24 +182,28 @@
           margin: 0 2px
           text-align: center
           cursor: pointer
+          border-bottom: 3px solid rgba(0, 0, 0, 0)
 
           &.curr
             background-color: rgba(255, 255, 255, 0.2)
             border-bottom: 3px solid red
 
         img.small
-          width: 00px
-          height: 00px
+          width: 0px
+          height: 0px
           opacity: 0
           position: absolute
           bottom: 50px
+          border: 2px solid white
+          background-color: lighten(black, 30%)
+          min-width: 100px
 
         &:hover p
           background-color: rgba(255, 255, 255, 0.1)
           border-bottom: 3px solid rgba(255, 0, 0, 0.8)
 
         &:hover img
-          width: 100px
+          width: auto
           height: 100px
           opacity: 1
 
