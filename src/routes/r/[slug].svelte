@@ -246,6 +246,18 @@ $over18-border-color: #ea4335
   justify-items: center
   align-items: center
 
+  @media (max-width: 800px)
+    .hero
+      .goto
+        padding: 1rem !important
+
+  @media (max-width: 1000px)
+
+    .hero
+      .goto
+        padding: 1rem 11rem 1rem 1rem !important
+
+
   .hero
     height: 100vh
     width: 100%
