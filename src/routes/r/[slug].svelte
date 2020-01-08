@@ -18,8 +18,10 @@
   let res
   let after
   let uiVisible = true
-  let autoplay = true
   let selected = 0
+
+  let autoplay = true
+  let saferesults = false
 
   let currpost = {title: 'Loading ..'}
   let nexturls = []
@@ -179,6 +181,7 @@
 
 $yellow: #f9ab00
 
+$text-color: #fafafa
 $accent-color: white
 $selected-color: #fbbc04
 $selected-border-color: #e37400
@@ -209,7 +212,7 @@ $over18-border-color: #ea4335
       position: absolute
       top: 0
       right: 0
-      color: #fafafa
+      color: $text-color
       font-size: 1rem
       padding: 2rem
 
@@ -218,7 +221,7 @@ $over18-border-color: #ea4335
       position: absolute
       top: 0
       background-color: rgba(0, 0, 0, 0.4)
-      color: #fafafa
+      color: $text-color
       font-size: 1.5rem
       max-width: 500px
       padding: 1rem
@@ -237,14 +240,39 @@ $over18-border-color: #ea4335
       grid-row-gap: 5px
       padding: 1rem 11rem
       border-radius: 3px
-      color: #fafafa
+      color: $text-color
       width: 100%
       grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
 
       .btn
         text-align: center
         padding-top: 2px
-        color: rgba(white, 50%)
+        color: rgba(white, 30%)
+
+        &.over18
+
+          cursor: pointer
+          grid-column: span 2
+          justify-self: center
+
+          &.saferesults
+            p
+              border: 1px solid rgba(white, 30%)
+              color: rgba(white, 30%)
+
+              &:hover
+                border: 1px solid $over18-color
+                color: $over18-color
+
+          p
+            font-size: 0.9rem
+            border: 1px solid $over18-color
+            border-radius: 3px
+            color: $over18-color
+            margin: 0
+            margin-right: 13px
+            width: 35px
+            font-family: "Roboto Condensed", sans-serif
 
         &.download
           cursor: default
@@ -384,6 +412,8 @@ $over18-border-color: #ea4335
           Icon(icon='{autoplay ? faPause : faPlay}')
         span.btn.download(class:dlready="{selected}")
           Icon(icon='{faCloudDownloadAlt}')
+        span.btn.over18(class:saferesults='{saferesults}', on:click='{function(){saferesults = !saferesults}}')
+          p nsfw
         +each('posts as post, i')
           span(class:selected='{posts[i].selected}', class:over18='{posts[i].over18}', on:click="{function(){goto(i)}}")
             img.small(alt="foo", src="{posts[i].preview.img.default}")
