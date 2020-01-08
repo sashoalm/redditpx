@@ -384,6 +384,59 @@ $over18-border-color: #ea4335
   .prefetch
     display: none
 
+
+.tooltip
+  position: relative
+  z-index: 2
+  cursor: pointer
+
+.tooltip
+  &:before, &:after
+    visibility: hidden
+    opacity: 0
+    pointer-events: none
+
+  &:before
+    position: absolute
+    bottom: 120%
+    left: 50%
+    margin-bottom: 5px
+    margin-left: -30px
+    padding: 5px 4px
+    width: 50px
+    -webkit-border-radius: 3px
+    -moz-border-radius: 3px
+    border-radius: 3px
+    background-color: #000
+    background-color: hsla(0, 0%, 20%, 0.9)
+    color: #fff
+    content: attr(data-tooltip)
+    text-align: center
+    font-size: 0.8rem
+    line-height: 1.2
+
+  &:after
+    position: absolute
+    bottom: 120%
+    left: 50%
+    margin-left: -5px
+    width: 0
+    border-top: 5px solid #000
+    border-top: 5px solid hsla(0, 0%, 20%, 0.9)
+    border-right: 5px solid transparent
+    border-left: 5px solid transparent
+    content: " "
+    font-size: 0
+    line-height: 0
+
+  &:hover
+    &:before, &:after
+      visibility: visible
+      opacity: 1
+
+
+
+
 </style>
 
 <svelte:window on:keydown={keydown}/>
@@ -408,11 +461,11 @@ $over18-border-color: #ea4335
     .control.next(on:click='{next}')
     +if('posts.length')
       .goto(class:hide="{uiVisible == false}")
-        span.btn.playpause(class:play='{autoplay}', on:click='{function(){autoplay = !autoplay}}')
+        span.btn.playpause.tooltip(data-tooltip="autoplay on", class:play='{autoplay}', on:click='{function(){autoplay = !autoplay}}')
           Icon(icon='{autoplay ? faPause : faPlay}')
-        span.btn.download(class:dlready="{selected}")
+        span.btn.download.tooltip(data-tooltip="download", class:dlready="{selected}")
           Icon(icon='{faCloudDownloadAlt}')
-        span.btn.over18(class:saferesults='{saferesults}', on:click='{function(){saferesults = !saferesults}}')
+        span.btn.over18.tooltip(data-tooltip="nsfw", class:saferesults='{saferesults}', on:click='{function(){saferesults = !saferesults}}')
           p nsfw
         +each('posts as post, i')
           span(class:selected='{posts[i].selected}', class:over18='{posts[i].over18}', on:click="{function(){goto(i)}}")
