@@ -18,6 +18,8 @@
   let res
   let after
   let uiVisible = true
+  let autoplay = true
+  let selected = 0
 
   let currpost = {title: 'Loading ..'}
   let nexturls = []
@@ -50,6 +52,8 @@
     renderVideo = false
     setTimeout(() => renderVideo = true, 0)
   }
+
+  $ : selected = posts.filter((item) => item.selected == true).length
 
   $ : {
 
@@ -173,6 +177,8 @@
 
 <style lang="sass">
 
+$yellow: #f9ab00
+
 $accent-color: white
 $selected-color: #fbbc04
 $selected-border-color: #e37400
@@ -238,6 +244,29 @@ $over18-border-color: #ea4335
       .btn
         text-align: center
         padding-top: 2px
+        color: rgba(white, 50%)
+
+        &.download
+          cursor: default
+          font-size: 1.4rem
+          bottom: 3px
+
+          &.dlready
+            color: rgba($selected-color, 90%)
+            cursor: pointer
+
+            &:hover
+              color: $yellow
+
+        &.playpause
+          cursor: pointer
+
+          // When it is play icon, make it white
+          &.play
+            color: white
+
+          &:hover
+            color: white
 
       span
         position: relative
@@ -335,7 +364,7 @@ $over18-border-color: #ea4335
 .wrapper
   .hero
     .control.prev(on:click='{prev}')
-    .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}") {currpost.title}
+    .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}") {currpost.title} x - {selected.length}
     .settings(class:hide="{uiVisible == false}")
       Icon(icon='{faCog}')
     +if('currpost.is_image')
@@ -349,15 +378,16 @@ $over18-border-color: #ea4335
           //img(alt="foo", src='{currpost.preview.vid.gif}')
 
     .control.next(on:click='{next}')
-    .goto(class:hide="{uiVisible == false}")
-      span.btn
-        Icon(icon='{faPlay}')
-      span.btn
-        Icon(icon='{faCloudDownloadAlt}')
-      +each('posts as post, i')
-        span(class:selected='{posts[i].selected}', class:over18='{posts[i].over18}', on:click="{function(){goto(i)}}")
-          img.small(alt="foo", src="{posts[i].preview.img.default}")
-          p.small(class:curr="{index === i}") {i+1}
+    +if('posts.length')
+      .goto(class:hide="{uiVisible == false}")
+        span.btn.playpause(class:play='{autoplay}', on:click='{function(){autoplay = !autoplay}}')
+          Icon(icon='{autoplay ? faPause : faPlay}')
+        span.btn.download(class:dlready="{selected}")
+          Icon(icon='{faCloudDownloadAlt}')
+        +each('posts as post, i')
+          span(class:selected='{posts[i].selected}', class:over18='{posts[i].over18}', on:click="{function(){goto(i)}}")
+            img.small(alt="foo", src="{posts[i].preview.img.default}")
+            p.small(class:curr="{index === i}") {i+1}
   .prefetch
     +each('nexturls as nexturl')
       img(alt='prefetch', src='{nexturl.preview.img.default}')
