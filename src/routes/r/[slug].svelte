@@ -15,6 +15,7 @@
 
   let data
   let posts = []
+  let displayposts = []
   let res
   let after
   let uiVisible = true
@@ -60,7 +61,7 @@
   }
 
   $ : {
-    selected = posts.filter((item) => item.selected == true).length
+    selected = displayposts.filter((item) => item.selected == true).length
 
     if (!selected) {
       downloadstr = `nothing to download`
@@ -76,10 +77,10 @@
 
   $ : {
 
-    if (posts[index]) {
-      currpost = JSON.parse(JSON.stringify(posts[index]))
+    if (displayposts[index]) {
+      currpost = JSON.parse(JSON.stringify(displayposts[index]))
 
-      nexturls = posts.slice(index+1, index+4)
+      nexturls = displayposts.slice(index+1, index+4)
 
     }
     else {
@@ -103,11 +104,19 @@
 
   }
 
+  $ : {
+    if (saferesults) {
+       displayposts = posts.filter((item) => item.over18 == false)
+    }else {
+       displayposts = posts
+    }
+  }
+
   function goto(i) {
 
     index = i
 
-    if((posts.length - index) === 1)  {
+    if((displayposts.length - index) === 1)  {
       loadMore()
     }
 
@@ -117,7 +126,7 @@
   function next() {
     index += 1
 
-    if((posts.length - index) === 3)  {
+    if((displayposts.length - index) === 3)  {
       loadMore()
     }
   }
@@ -126,13 +135,35 @@
     if (index === 0) return;
     index -= 1
 
-    if((posts.length - index) === 3)  {
+    if((displayposts.length - index) === 3)  {
       loadMore()
     }
   }
 
   function toggleVisiblity() {
     uiVisible = !uiVisible
+  }
+
+  async function downloadFiles() {
+
+
+    //let res = await fetch('/download')
+    //let pagehtml = await res.text()
+
+    let win = window.open("", 'title');
+
+    for(const [i, post] of displayposts.entries()) {
+
+      if (post.selected) {
+        //pagehtml += `<img src="${post.url}" />`
+
+        // We need displayposts[i].selected here to make this change reactive
+        displayposts[i].selected = false
+      }
+    }
+
+    //console.log(win.document.body, pagehtml)
+    win.document.body.innerHTML = '<img src="https://i.redd.it/hjt5at4l2f941.jpg" />'
   }
 
   function openMedia() {
@@ -152,8 +183,8 @@
 
     // x
     if (event.keyCode == 88) {
-      console.log(posts[index])
-      posts[index].selected = !posts[index].selected
+      console.log(displayposts[index])
+      displayposts[index].selected = !displayposts[index].selected
     }
 
     if (event.ctrlKey) {
@@ -474,17 +505,17 @@ $over18-border-color: #ea4335
           //img(alt="foo", src='{currpost.preview.vid.gif}')
 
     .control.next(on:click='{next}')
-    +if('posts.length')
+    +if('displayposts.length')
       .goto(class:hide="{uiVisible == false}")
         span.btn.playpause.tooltip(data-tooltip="{autoplaystr}", class:play='{autoplay}', on:click='{function(){autoplay = !autoplay}}')
           Icon(icon='{autoplay ? faPause : faPlay}')
-        span.btn.download.tooltip(data-tooltip="{downloadstr}", class:dlready="{selected}")
+        span.btn.download.tooltip(on:click='{function(){downloadFiles()}}', data-tooltip="{downloadstr}", class:dlready="{selected}")
           Icon(icon='{faCloudDownloadAlt}')
         span.btn.over18.tooltip(data-tooltip="{over18str}", class:saferesults='{saferesults}', on:click='{function(){saferesults = !saferesults}}')
           p nsfw
-        +each('posts as post, i')
-          span(class:selected='{posts[i].selected}', class:over18='{posts[i].over18}', on:click="{function(){goto(i)}}")
-            img.small(alt="foo", src="{posts[i].preview.img.default}")
+        +each('displayposts as post, i')
+          span(class:selected='{displayposts[i].selected}', class:over18='{displayposts[i].over18}', on:click="{function(){goto(i)}}")
+            img.small(alt="foo", src="{displayposts[i].preview.img.default}")
             p.small(class:curr="{index === i}") {i+1}
   .prefetch
     +each('nexturls as nexturl')
