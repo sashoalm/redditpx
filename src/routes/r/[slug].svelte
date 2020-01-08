@@ -364,7 +364,7 @@ $over18-border-color: #ea4335
 .wrapper
   .hero
     .control.prev(on:click='{prev}')
-    .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}") {currpost.title} x - {selected.length}
+    .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}") {currpost.title}
     .settings(class:hide="{uiVisible == false}")
       Icon(icon='{faCog}')
     +if('currpost.is_image')
