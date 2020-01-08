@@ -64,6 +64,8 @@
 
     if (!selected) {
       downloadstr = `nothing to download`
+    }else if (selected == 1){
+      downloadstr = `download ${selected} file`
     }else {
       downloadstr = `download ${selected} files`
     }
@@ -232,7 +234,7 @@ $over18-border-color: #ea4335
       padding: 2rem
 
     .title
-      z-index: 5
+      z-index: 10
       position: absolute
       top: 0
       background-color: rgba(0, 0, 0, 0.4)
