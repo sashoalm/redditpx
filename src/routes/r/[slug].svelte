@@ -8,6 +8,8 @@ import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 
+import debounce from "lodash/debounce"
+
 import { onMount } from "svelte";
 import { stores } from "@sapper/app";
 
@@ -64,6 +66,7 @@ onMount(async () => {
 });
 
 function startAutoPlay() {
+  console.log('START')
   autoplaytimer = setInterval(() => {
 
     // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
@@ -79,13 +82,17 @@ function startAutoPlay() {
 }
 
 function stopAutoPlay() {
+  console.log('STOP')
   clearInterval(autoplaytimer);
   autoplay = false;
 }
 
 function stopAndStartAutoPlay() {
+  console.log('STOP+START')
   stopAutoPlay();
-  startAutoPlay();
+
+  //debounce(startAutoPlay, 1000, {leading: true});
+  startAutoPlay()
 }
 
 function toggleAutoPlay() {
