@@ -95,8 +95,13 @@ function toggleAutoPlay() {
 
 let renderVideo = true;
 
+// Some operations like fav/unfav causes video to re-render
+// since we're changing post.selected. This should help skip it
+let skipRenderVideo = false
+
 $: {
-  reMountVideo(currpost.preview);
+  if (!skipRenderVideo) reMountVideo(currpost.preview);
+  skipRenderVideo = false
 }
 
 function reMountVideo() {
@@ -176,7 +181,7 @@ function prev() {
   }
 }
 
-function toggleVisiblity() {
+function toggleUIVisiblity() {
   uiVisible = !uiVisible;
 }
 
@@ -212,13 +217,22 @@ function openSubRedditOld() {
   window.open(`https://old.reddit.com/${currpost.permalink}`, "_blank");
 }
 
+function toggleSafeResults() {
+  skipRenderVideo = true
+  saferesults = !saferesults
+}
+
+function toggleSelected() {
+    skipRenderVideo = true
+    displayposts[index].selected = !displayposts[index].selected;
+}
+
 function keydown(event) {
   console.log(event.keyCode);
 
   // x
   if (event.keyCode == 88) {
-    console.log(displayposts[index]);
-    displayposts[index].selected = !displayposts[index].selected;
+    toggleSelected()
   }
 
   if (event.ctrlKey) {
@@ -242,7 +256,7 @@ function keydown(event) {
 
   // Up Arrow
   if (event.keyCode == 38) {
-    toggleVisiblity();
+    toggleUIVisiblity();
   }
 
   // Left Arrow, a, k
@@ -310,6 +324,15 @@ $over18-border-color: #ea4335
       max-width: 500px
       padding: 1rem
       border-radius: 3px
+
+      .fav
+        cursor: pointer
+        top: 2px
+        position: relative
+        margin-right: 12px
+
+        &:hover
+          color: $selected-color
 
       &.selected
         color: $selected-color
@@ -531,7 +554,11 @@ $over18-border-color: #ea4335
 .wrapper
   .hero
     .control.prev(on:click="{prev}")
-    .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}") {currpost.title}
+    .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}")
+      +if('displayposts.length')
+        span.fav(on:click|stopPropagation|preventDefault="{function(){toggleSelected()}}")
+          Icon(icon="{currpost.selected ? faFav : faUnFav}")
+      | {currpost.title}
     .settings(class:hide="{uiVisible == false}")
       Icon(icon="{faSettings}")
     +if('currpost.is_image')
@@ -562,7 +589,7 @@ $over18-border-color: #ea4335
         span.btn.over18.tooltip(
           data-tooltip="{over18str}",
           class:saferesults="{saferesults}",
-          on:click="{function(){saferesults = !saferesults}}"
+          on:click="{function(){toggleSafeResults()}}"
         )
           p nsfw
         +each('displayposts as post, i')
