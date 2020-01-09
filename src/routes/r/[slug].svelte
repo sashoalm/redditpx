@@ -25,7 +25,10 @@
   let autoplaystr = ''
   let over18str = ''
 
-  let autoplay = true
+  let autoplay
+  let autoplayinterval = 3
+  let autoplaytimer
+
   let saferesults = false
 
   let currpost = {title: 'Loading ..'}
@@ -48,8 +51,46 @@
     ({ posts, after, ...res} = await get_posts(`https://reddit.com/r/${slug}.json`))
 
     console.log("onMount", res.res.ok)
+
+    // Start autoplay by default
+    startAutoPlay()
+
   }
   )
+
+  function startAutoPlay() {
+
+      autoplaytimer = setInterval(() => {
+
+        index += 1
+
+      }, autoplayinterval * 1000)
+
+    autoplay = true
+
+    index += 1
+
+
+  }
+
+
+  function stopAutoPlay() {
+    clearInterval(autoplaytimer)
+    autoplay = false
+  }
+
+  function stopAndStartAutoPlay() {
+    stopAutoPlay()
+    startAutoPlay()
+  }
+
+  function toggleAutoPlay() {
+    if(autoplay) {
+      stopAutoPlay()
+    }else {
+      startAutoPlay()
+    }
+  }
 
   let renderVideo = true
 
@@ -522,7 +563,7 @@ $over18-border-color: #ea4335
     .control.next(on:click='{next}')
     +if('displayposts.length')
       .goto(class:hide="{uiVisible == false}")
-        span.btn.playpause.tooltip(data-tooltip="{autoplaystr}", class:play='{autoplay}', on:click='{function(){autoplay = !autoplay}}')
+        span.btn.playpause.tooltip(data-tooltip="{autoplaystr}", class:play='{autoplay}', on:click='{function(){toggleAutoPlay()}}')
           Icon(icon='{autoplay ? faPause : faPlay}')
         span.btn.download.tooltip(on:click='{function(){downloadFiles()}}', data-tooltip="{downloadstr}", class:dlready="{selected}")
           Icon(icon='{faCloudDownloadAlt}')
