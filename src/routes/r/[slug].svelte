@@ -208,6 +208,10 @@ function next() {
     console.log('loading more ..')
     loadMore();
   }
+
+  // TODO: Optimize this call by debouncing
+  // When I go Fwd, Fwd, Fwd quickly, I do not have to stopAndStartAutoPlay always
+  stopAndStartAutoPlay()
 }
 
 function prev() {
@@ -217,6 +221,9 @@ function prev() {
   if (displayposts.length - index === 3) {
     loadMore();
   }
+  // TODO: Optimize this call by debouncing
+  // When I go Back, Back, Back quickly, I do not have to stopAndStartAutoPlay always
+  stopAndStartAutoPlay()
 }
 
 function toggleUIVisiblity() {
