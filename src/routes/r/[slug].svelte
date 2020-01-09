@@ -61,7 +61,12 @@ onMount(async () => {
 });
 
 function startAutoPlay() {
-  autoplaytimer = setInterval(() => next(), autoplayinterval * 1000);
+  autoplaytimer = setInterval(() => {
+
+    // If `autoplay` is off, the video will progress by itself via on:ended
+    if (!autoplay) next()
+
+  }, autoplayinterval * 1000);
 
   autoplay = true;
 }
@@ -144,6 +149,10 @@ function goto(i) {
   if (displayposts.length - index === 1) {
     loadMore();
   }
+}
+
+function videoended() {
+  next()
 }
 
 function next() {
@@ -524,7 +533,7 @@ $over18-border-color: #ea4335
     +if('currpost.is_image')
       .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
-        video.video(autoplay, loop, playsinline, muted)
+        video.video(autoplay, loop='{!autoplay}', playsinline, muted, on:ended="{videoended}")
           +if('currpost.preview.vid.webm')
             source(src="{currpost.preview.vid.webm}")
           +if('currpost.preview.vid.mp4')
