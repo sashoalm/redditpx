@@ -63,8 +63,12 @@ onMount(async () => {
 function startAutoPlay() {
   autoplaytimer = setInterval(() => {
 
-    // If `autoplay` is off, the video will progress by itself via on:ended
-    if (!autoplay) next()
+    // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
+    if (autoplay && currpost.is_image) {
+      next()
+    }else if (!autoplay && currpost.is_video){
+      next()
+    }
 
   }, autoplayinterval * 1000);
 
