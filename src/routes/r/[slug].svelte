@@ -67,6 +67,7 @@ onMount(async () => {
 
 function startAutoPlay() {
   console.log('START')
+  return
   autoplaytimer = setInterval(() => {
 
     // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
@@ -204,8 +205,8 @@ function goto(i) {
   // TODO: Optimize this call by debouncing
   // When I go Click, Click, Click, I do not have to stopAndStartAutoPlay always
   if (autoplay)
-    throttle(stopAndStartAutoPlay, 1000, {leading: true});
-  //stopAndStartAutoPlay()
+    //throttle(stopAndStartAutoPlay, 1000, {leading: true});
+    stopAndStartAutoPlay()
 }
 
 function videoended() {
@@ -224,8 +225,8 @@ function next() {
   // TODO: Optimize this call by debouncing
   // When I go Fwd, Fwd, Fwd quickly, I do not have to stopAndStartAutoPlay always
   if (autoplay)
-    throttle(stopAndStartAutoPlay, 1000, {leading: true});
-    //stopAndStartAutoPlay()
+    //throttle(stopAndStartAutoPlay, 1000, {leading: true});
+    stopAndStartAutoPlay()
 }
 
 function prev() {
@@ -238,8 +239,8 @@ function prev() {
   // TODO: Optimize this call by debouncing
   // When I go Back, Back, Back quickly, I do not have to stopAndStartAutoPlay always
   if (autoplay)
-    throttle(stopAndStartAutoPlay, 1000, {leading: true});
-    //stopAndStartAutoPlay()
+    //throttle(stopAndStartAutoPlay, 1000, {leading: true});
+    stopAndStartAutoPlay()
 }
 
 function toggleUIVisiblity() {
