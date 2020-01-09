@@ -52,8 +52,6 @@
   onMount(async () => {
     ({ posts, after, ...res} = await get_posts(`https://reddit.com/r/${slug}.json`))
 
-    console.log("onMount", res.res.ok)
-
     // Start autoplay by default
     startAutoPlay()
 
@@ -69,9 +67,6 @@
       }, autoplayinterval * 1000)
 
     autoplay = true
-
-    index += 1
-
 
   }
 
