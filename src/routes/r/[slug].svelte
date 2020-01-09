@@ -2,8 +2,10 @@
   import Icon from 'fa-svelte';
   import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay'
   import { faPause } from '@fortawesome/free-solid-svg-icons/faPause'
-  import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
-  import { faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons/faCloudDownloadAlt'
+  import { faCog as faSettings } from '@fortawesome/free-solid-svg-icons/faCog'
+  import { faCloudDownloadAlt as faDownload } from '@fortawesome/free-solid-svg-icons/faCloudDownloadAlt'
+  import { faStar as faFav } from '@fortawesome/free-solid-svg-icons/faStar'
+  import { faStar as faUnFav} from '@fortawesome/free-regular-svg-icons/faStar'
 
   import { onMount } from  'svelte';
   import { stores } from '@sapper/app'
@@ -549,7 +551,7 @@ $over18-border-color: #ea4335
     .control.prev(on:click='{prev}')
     .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}") {currpost.title}
     .settings(class:hide="{uiVisible == false}")
-      Icon(icon='{faCog}')
+      Icon(icon='{faSettings}')
     +if('currpost.is_image')
       .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
@@ -566,7 +568,7 @@ $over18-border-color: #ea4335
         span.btn.playpause.tooltip(data-tooltip="{autoplaystr}", class:play='{autoplay}', on:click='{function(){toggleAutoPlay()}}')
           Icon(icon='{autoplay ? faPause : faPlay}')
         span.btn.download.tooltip(on:click='{function(){downloadFiles()}}', data-tooltip="{downloadstr}", class:dlready="{selected}")
-          Icon(icon='{faCloudDownloadAlt}')
+          Icon(icon='{faDownload}')
         span.btn.over18.tooltip(data-tooltip="{over18str}", class:saferesults='{saferesults}', on:click='{function(){saferesults = !saferesults}}')
           p nsfw
         +each('displayposts as post, i')
