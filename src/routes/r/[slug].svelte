@@ -149,6 +149,7 @@ $: {
 
 $: {
   let tmp = []
+
   if (saferesults) {
     tmp = posts.filter(item => item.over18 == false);
   } else {
@@ -156,11 +157,33 @@ $: {
   }
 
   if (filterValue) {
-    tmp = tmp.filter(item => item.title.toLowerCase().includes(filterValue))
+    skipRenderVideo = true
 
-    // After a filter, go to the first result
-    index = 0
+    tmp = tmp.filter(item => item.title.toLowerCase().includes(filterValue))
   }
+
+  //// Is the current item in the newly filtered list?
+  //let found = -1
+  //for (const [i, item] of tmp) {
+  //  // Item is in the list, set the index to i
+  //  if(item.title === currpost.title) {
+  //    found = i
+  //  }
+  //}
+
+
+  //// If it isnt there
+  //if (found === -1) {
+  //  // check if the new list is smaller than the index
+  //  if (tmp.length <= index) {
+  //    // Set to the last item
+  //    index = tmp.length
+  //  }
+  //}
+  //else {
+  //  // If it is there
+  //  index = found
+  //}
 
   displayposts = tmp
 }
@@ -178,9 +201,11 @@ function videoended() {
 }
 
 function next() {
+
   index += 1;
 
   if (displayposts.length - index === 3) {
+    console.log('loading more ..')
     loadMore();
   }
 }
