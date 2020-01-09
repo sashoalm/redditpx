@@ -381,6 +381,7 @@ $over18-border-color: #ea4335
 
 
         img.small
+          z-index: 10
           width: 0px
           height: 0px
           opacity: 0
