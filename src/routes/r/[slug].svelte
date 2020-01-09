@@ -67,7 +67,6 @@ onMount(async () => {
 
 function startAutoPlay() {
   console.log('START')
-  return
   autoplaytimer = setInterval(() => {
 
     // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
