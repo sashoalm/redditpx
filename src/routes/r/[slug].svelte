@@ -8,7 +8,7 @@ import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 
-import debounce from "lodash/debounce"
+import throttle from "lodash/throttle"
 
 import { onMount } from "svelte";
 import { stores } from "@sapper/app";
@@ -91,7 +91,6 @@ function stopAndStartAutoPlay() {
   console.log('STOP+START')
   stopAutoPlay();
 
-  //debounce(startAutoPlay, 1000, {leading: true});
   startAutoPlay()
 }
 
@@ -204,7 +203,9 @@ function goto(i) {
 
   // TODO: Optimize this call by debouncing
   // When I go Click, Click, Click, I do not have to stopAndStartAutoPlay always
-  if (autoplay) stopAndStartAutoPlay()
+  if (autoplay)
+    throttle(stopAndStartAutoPlay, 1000, {leading: true});
+  //stopAndStartAutoPlay()
 }
 
 function videoended() {
@@ -222,7 +223,9 @@ function next() {
 
   // TODO: Optimize this call by debouncing
   // When I go Fwd, Fwd, Fwd quickly, I do not have to stopAndStartAutoPlay always
-  if (autoplay) stopAndStartAutoPlay()
+  if (autoplay)
+    throttle(stopAndStartAutoPlay, 1000, {leading: true});
+    //stopAndStartAutoPlay()
 }
 
 function prev() {
@@ -234,7 +237,9 @@ function prev() {
   }
   // TODO: Optimize this call by debouncing
   // When I go Back, Back, Back quickly, I do not have to stopAndStartAutoPlay always
-  if (autoplay) stopAndStartAutoPlay()
+  if (autoplay)
+    throttle(stopAndStartAutoPlay, 1000, {leading: true});
+    //stopAndStartAutoPlay()
 }
 
 function toggleUIVisiblity() {
