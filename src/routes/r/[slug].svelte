@@ -6,6 +6,7 @@ import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
 import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
 import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
+import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 
 import { onMount } from "svelte";
 import { stores } from "@sapper/app";
@@ -32,6 +33,8 @@ let autoplayinterval = 3;
 let autoplaytimer;
 
 let saferesults = false;
+let filterExpanded = false;
+let filterValue = '';
 
 let currpost = { title: "Loading .." };
 let nexturls = [];
@@ -145,11 +148,21 @@ $: {
 }
 
 $: {
+  let tmp = []
   if (saferesults) {
-    displayposts = posts.filter(item => item.over18 == false);
+    tmp = posts.filter(item => item.over18 == false);
   } else {
-    displayposts = posts;
+    tmp = posts;
   }
+
+  if (filterValue) {
+    tmp = tmp.filter(item => item.title.toLowerCase().includes(filterValue))
+
+    // After a filter, go to the first result
+    index = 0
+  }
+
+  displayposts = tmp
 }
 
 function goto(i) {
@@ -183,6 +196,10 @@ function prev() {
 
 function toggleUIVisiblity() {
   uiVisible = !uiVisible;
+}
+
+function expandFilter() {
+  filterExpanded = !filterExpanded
 }
 
 async function downloadFiles() {
@@ -326,6 +343,7 @@ $over18-border-color: #ea4335
       border-radius: 3px
 
       .fav
+        user-select: none
         cursor: pointer
         top: 2px
         position: relative
@@ -338,6 +356,7 @@ $over18-border-color: #ea4335
         color: $selected-color
 
     .goto
+      user-select: none
       z-index: 5
       position: absolute
       background-color: rgba(0, 0, 0, 0.6)
@@ -376,14 +395,16 @@ $over18-border-color: #ea4335
             border-radius: 3px
             color: $over18-color
             margin: 0
-            margin-right: 13px
+            //margin-right: 13px
             width: 35px
             font-family: "Roboto Condensed", sans-serif
+            position: relative
+            top: -1px
 
         &.download
           cursor: default
           font-size: 1.4rem
-          bottom: 3px
+          bottom: 2px
 
           &.dlready
             color: rgba($selected-color, 90%)
@@ -394,6 +415,7 @@ $over18-border-color: #ea4335
 
         &.playpause
           cursor: pointer
+          top: 1px
 
           // When it is play icon, make it white
           &.play
@@ -401,6 +423,26 @@ $over18-border-color: #ea4335
 
           &:hover
             color: white
+
+        &.filter
+          cursor: pointer
+          top: 1px
+
+          &:hover
+            color: white
+
+          &.filter.filterExpanded
+            grid-column: span 3
+            top: -2px
+
+            input
+              width: 90%
+              margin-left: 9px
+              padding-left: 5px
+              padding-right: 5px
+              border: 1px solid rgba(white, 60%)
+              background-color: rgba(0, 0, 0, 0)
+              color: white
 
       span
         position: relative
@@ -586,6 +628,16 @@ $over18-border-color: #ea4335
           class:dlready="{selected}"
         )
           Icon(icon="{faDownload}")
+        span.btn.filter.tooltip(
+          class:filterExpanded="{filterExpanded}",
+          on:click="{function(){expandFilter()}}",
+          data-tooltip="Filter",
+          class:dlready="{selected}"
+        )
+          +if('filterExpanded')
+            input(bind:value='{filterValue}', on:click|stopPropagation, on:keydown|stopPropagation, type="text")
+            +else
+              Icon(icon="{faSearch}")
         span.btn.over18.tooltip(
           data-tooltip="{over18str}",
           class:saferesults="{saferesults}",
