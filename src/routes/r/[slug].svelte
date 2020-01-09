@@ -194,6 +194,10 @@ function goto(i) {
   if (displayposts.length - index === 1) {
     loadMore();
   }
+
+  // TODO: Optimize this call by debouncing
+  // When I go Click, Click, Click, I do not have to stopAndStartAutoPlay always
+  if (autoplay) stopAndStartAutoPlay()
 }
 
 function videoended() {
