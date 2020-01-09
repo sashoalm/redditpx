@@ -8,8 +8,6 @@ import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 
-import throttle from "lodash/throttle"
-
 import { onMount } from "svelte";
 import { stores } from "@sapper/app";
 
@@ -31,7 +29,7 @@ let autoplaystr = "";
 let over18str = "";
 
 let autoplay;
-let autoplayinterval = 3;
+let autoplayinterval = 2;
 let autoplaytimer;
 
 let saferesults = false;
@@ -71,8 +69,10 @@ function startAutoPlay() {
 
     // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
     if (autoplay && currpost.is_image) {
+      console.log('---- iNEXT')
       next()
     }else if (!autoplay && currpost.is_video){
+      console.log('---- vNEXT')
       next()
     }
 
@@ -88,8 +88,7 @@ function stopAutoPlay() {
 }
 
 function stopAndStartAutoPlay() {
-  console.log('STOP+START')
-  stopAutoPlay();
+  stopAutoPlay()
 
   startAutoPlay()
 }
@@ -201,10 +200,7 @@ function goto(i) {
     loadMore();
   }
 
-  // TODO: Optimize this call by debouncing
-  // When I go Click, Click, Click, I do not have to stopAndStartAutoPlay always
   if (autoplay)
-    //throttle(stopAndStartAutoPlay, 1000, {leading: true});
     stopAndStartAutoPlay()
 }
 
@@ -221,10 +217,7 @@ function next() {
     loadMore();
   }
 
-  // TODO: Optimize this call by debouncing
-  // When I go Fwd, Fwd, Fwd quickly, I do not have to stopAndStartAutoPlay always
   if (autoplay)
-    //throttle(stopAndStartAutoPlay, 1000, {leading: true});
     stopAndStartAutoPlay()
 }
 
@@ -235,10 +228,7 @@ function prev() {
   if (displayposts.length - index === 3) {
     loadMore();
   }
-  // TODO: Optimize this call by debouncing
-  // When I go Back, Back, Back quickly, I do not have to stopAndStartAutoPlay always
   if (autoplay)
-    //throttle(stopAndStartAutoPlay, 1000, {leading: true});
     stopAndStartAutoPlay()
 }
 
