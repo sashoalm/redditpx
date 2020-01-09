@@ -211,7 +211,7 @@ function next() {
 
   // TODO: Optimize this call by debouncing
   // When I go Fwd, Fwd, Fwd quickly, I do not have to stopAndStartAutoPlay always
-  stopAndStartAutoPlay()
+  if (autoplay) stopAndStartAutoPlay()
 }
 
 function prev() {
@@ -223,7 +223,7 @@ function prev() {
   }
   // TODO: Optimize this call by debouncing
   // When I go Back, Back, Back quickly, I do not have to stopAndStartAutoPlay always
-  stopAndStartAutoPlay()
+  if (autoplay) stopAndStartAutoPlay()
 }
 
 function toggleUIVisiblity() {
