@@ -579,16 +579,16 @@ $over18-border-color: #ea4335
   .prefetch
     display: none
 
-  @media (max-width: 1000px)
-
-    .hero
-      .goto
-        padding: 1rem 11rem 1rem 1rem
-
-  @media (max-width: 800px)
-    .hero
-      .goto
-        padding: 1rem
+//@media (max-width: 1000px)
+//
+//  .hero
+//    .goto
+//      padding: 1rem 11rem 1rem 1rem
+//
+//@media (max-width: 800px)
+//  .hero
+//    .goto
+//      padding: 1rem
 
 .tooltip
   position: relative
