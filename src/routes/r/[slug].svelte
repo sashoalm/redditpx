@@ -311,8 +311,8 @@ $over18-border-color: #ea4335
               color: rgba(white, 30%)
 
               &:hover
-                border: 1px solid $over18-color
-                color: $over18-color
+                border: 1px solid rgba(white, 60%)
+                color: rgba(white, 60%)
 
           p
             font-size: 0.9rem
