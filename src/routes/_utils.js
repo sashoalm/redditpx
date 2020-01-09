@@ -47,7 +47,7 @@ async function vidsrc(url, item) {
   } else if (url.includes("gfycat.com/")) {
     let name = url.match(/gfycat.com\/(.*)/)[1];
     // Sometimes gfycat urls are of the format "gfycat.com/videoid-extra-stuff". Remove anything after the first "-"
-    name = name.split("-")[0];
+    name = name.split("-")[0].replace(".gif", "");
     let res = await fetch(`https://api.gfycat.com/v1/gfycats/${name}`, {
       //mode: "no-cors"
     });
