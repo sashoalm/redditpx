@@ -8,7 +8,7 @@ import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 
-import { onMount } from "svelte";
+import { onMount, tick} from "svelte";
 import { stores } from "@sapper/app";
 
 import { get_posts, format } from "../_utils";
@@ -33,6 +33,7 @@ let autoplayinterval = 3;
 let autoplaytimer;
 
 let saferesults = false;
+let filterRef
 let filterExpanded = false;
 let filterValue = '';
 
@@ -49,7 +50,6 @@ async function loadMore() {
   ({ posts: newposts, after, ...res } = await get_posts(
     `https://reddit.com/r/${slug}.json?after=${after}`
   ));
-  console.log("loadMore", res.res.ok);
 
   posts = [...posts, ...newposts];
 }
@@ -61,7 +61,9 @@ onMount(async () => {
 
   // Start autoplay by default
   startAutoPlay();
+
 });
+
 
 function startAutoPlay() {
   //console.log('START')
@@ -136,7 +138,20 @@ $: {
     currpost = JSON.parse(JSON.stringify(displayposts[index]));
 
     nexturls = displayposts.slice(index + 1, index + 4);
-  } else {
+  } else if (filterValue) {
+    // We're here because user filtered the list
+
+    // Unfortunately the filtered list is smaller than the current index
+    // set index to last item
+    if (displayposts.length > 0) {
+      index = displayposts.length
+    }else {
+      // nothing was filtered
+      index = 0
+      currpost = { title: "Nothing to show" };
+    }
+  }
+  else {
     if (res && res.res.ok) {
       // No media found
       currpost = { title: "Nothing to show" };
@@ -163,11 +178,11 @@ $: {
 
   if (filterValue) {
     skipRenderVideo = true
-
     tmp = tmp.filter(item => item.title.toLowerCase().includes(filterValue))
   }
 
-  //// Is the current item in the newly filtered list?
+  // Is the current item in the newly filtered list?
+  //tmp.filter(item => item.title === currpost.title)
   //let found = -1
   //for (const [i, item] of tmp) {
   //  // Item is in the list, set the index to i
@@ -210,10 +225,32 @@ function videoended() {
 
 function next() {
 
+  // Last item, dont go past the last item
+  if (displayposts.length - index == 1) {
+    index = displayposts.length - 1
+
+    console.log('[lastitem, autoplay+filter?]: loading more ..')
+    // Reached last item, possibly by autoplay + filter
+    loadMore();
+    return
+  }
+
   index += 1;
 
+
+  // Auto trigger on the last 3rd item
   if (displayposts.length - index === 3) {
-    console.log('loading more ..')
+    console.log('[3rd last item, normal]: loading more ..')
+    loadMore();
+  }
+
+  // If we're at 2nd last item with a filter, the user
+  // possibly just filtered the list and ended up here.
+  // trigger a load more. We dont want to do it always since
+  // we normally trigger loadmore @3rd last item. Always doing it
+  // Would end up with 2 requests to reddit.com
+  if ((displayposts.length - index === 2) && filterValue) {
+    console.log('[2nd last item, filtering?]: loading more ..')
     loadMore();
   }
 
@@ -236,8 +273,13 @@ function toggleUIVisiblity() {
   uiVisible = !uiVisible;
 }
 
-function expandFilter() {
+async function expandFilter() {
   filterExpanded = !filterExpanded
+
+  await tick()
+  // Focus the input if we just opened it
+  if (filterExpanded) filterRef.querySelector('input').focus()
+
 }
 
 async function downloadFiles() {
@@ -654,7 +696,7 @@ $over18-border-color: #ea4335
           //img(alt="foo", src='{currpost.preview.vid.gif}')
 
     .control.next(on:click="{next}")
-    +if('displayposts.length')
+    +if('displayposts.length || filterValue')
       .goto(class:hide="{uiVisible == false}")
         span.btn.playpause.tooltip(
           data-tooltip="{autoplaystr}",
@@ -672,6 +714,7 @@ $over18-border-color: #ea4335
           class:filterExpanded="{filterExpanded}",
           on:click="{function(){expandFilter()}}",
           data-tooltip="Filter",
+          bind:this='{filterRef}'
           class:dlready="{selected}"
         )
           +if('filterExpanded')
