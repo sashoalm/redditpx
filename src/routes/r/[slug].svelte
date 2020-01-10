@@ -8,7 +8,7 @@ import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 
-import { onMount, tick} from "svelte";
+import { onMount, tick } from "svelte";
 import { stores } from "@sapper/app";
 
 import { get_posts, format } from "../_utils";
@@ -33,16 +33,16 @@ let autoplayinterval = 3;
 let autoplaytimer;
 
 let saferesults = false;
-let filterRef
+let filterRef;
 let filterExpanded = false;
-let filterValue = '';
+let filterValue = "";
 
 let currpost = { title: "Loading .." };
 let nexturls = [];
 
 let index = 0;
 
-let errorinputValue = slug
+let errorinputValue = slug;
 
 async function loadMore() {
   if (!after) return;
@@ -63,23 +63,19 @@ onMount(async () => {
 
   // Start autoplay by default
   startAutoPlay();
-
 });
-
 
 function startAutoPlay() {
   //console.log('START')
   autoplaytimer = setInterval(() => {
-
     // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
     if (autoplay && currpost.is_image) {
       //console.log('---- iNEXT')
-      next()
-    }else if (!autoplay && currpost.is_video){
+      next();
+    } else if (!autoplay && currpost.is_video) {
       //console.log('---- vNEXT')
-      next()
+      next();
     }
-
   }, autoplayinterval * 1000);
 
   autoplay = true;
@@ -92,9 +88,9 @@ function stopAutoPlay() {
 }
 
 function stopAndStartAutoPlay() {
-  stopAutoPlay()
+  stopAutoPlay();
 
-  startAutoPlay()
+  startAutoPlay();
 }
 
 function toggleAutoPlay() {
@@ -109,11 +105,11 @@ let renderVideo = true;
 
 // Some operations like fav/unfav causes video to re-render
 // since we're changing post.selected. This should help skip it
-let skipRenderVideo = false
+let skipRenderVideo = false;
 
 $: {
   if (!skipRenderVideo) reMountVideo(currpost.preview);
-  skipRenderVideo = false
+  skipRenderVideo = false;
 }
 
 function reMountVideo() {
@@ -146,17 +142,16 @@ $: {
     // Unfortunately the filtered list is smaller than the current index
     // set index to last item
     if (displayposts.length > 0) {
-      console.log('setting index from ', index, ' to ', displayposts.length)
-      index = displayposts.length - 1
-      console.log('loading more ..')
+      console.log("setting index from ", index, " to ", displayposts.length);
+      index = displayposts.length - 1;
+      console.log("loading more ..");
       loadMore();
-    }else {
+    } else {
       // nothing was filtered
-      index = 0
+      index = 0;
       currpost = { title: "Nothing to show" };
     }
-  }
-  else {
+  } else {
     if (res && res.res.ok) {
       // No media found
       currpost = { title: "Nothing to show" };
@@ -173,7 +168,7 @@ $: {
 }
 
 $: {
-  let tmp = []
+  let tmp = [];
 
   if (saferesults) {
     tmp = posts.filter(item => item.over18 == false);
@@ -182,8 +177,8 @@ $: {
   }
 
   if (filterValue) {
-    skipRenderVideo = true
-    tmp = tmp.filter(item => item.title.toLowerCase().includes(filterValue))
+    skipRenderVideo = true;
+    tmp = tmp.filter(item => item.title.toLowerCase().includes(filterValue));
   }
 
   // Is the current item in the newly filtered list?
@@ -195,7 +190,6 @@ $: {
   //    found = i
   //  }
   //}
-
 
   //// If it isnt there
   //if (found === -1) {
@@ -210,7 +204,7 @@ $: {
   //  index = found
   //}
 
-  displayposts = tmp
+  displayposts = tmp;
 }
 
 function goto(i) {
@@ -220,32 +214,29 @@ function goto(i) {
     loadMore();
   }
 
-  if (autoplay)
-    stopAndStartAutoPlay()
+  if (autoplay) stopAndStartAutoPlay();
 }
 
 function videoended() {
-  next()
+  next();
 }
 
 function next() {
-
   // Last item, dont go past the last item
   if (displayposts.length - index == 1) {
-    index = displayposts.length - 1
+    index = displayposts.length - 1;
 
-    console.log('[lastitem, autoplay+filter?]: loading more ..')
+    console.log("[lastitem, autoplay+filter?]: loading more ..");
     // Reached last item, possibly by autoplay + filter
     loadMore();
-    return
+    return;
   }
 
   index += 1;
 
-
   // Auto trigger on the last 3rd item
   if (displayposts.length - index === 3) {
-    console.log('[3rd last item, normal]: loading more ..')
+    console.log("[3rd last item, normal]: loading more ..");
     loadMore();
   }
 
@@ -254,13 +245,12 @@ function next() {
   // trigger a load more. We dont want to do it always since
   // we normally trigger loadmore @3rd last item. Always doing it
   // Would end up with 2 requests to reddit.com
-  if ((displayposts.length - index === 2) && filterValue) {
-    console.log('[2nd last item, filtering?]: loading more ..')
+  if (displayposts.length - index === 2 && filterValue) {
+    console.log("[2nd last item, filtering?]: loading more ..");
     loadMore();
   }
 
-  if (autoplay)
-    stopAndStartAutoPlay()
+  if (autoplay) stopAndStartAutoPlay();
 }
 
 function prev() {
@@ -270,8 +260,7 @@ function prev() {
   if (displayposts.length - index === 3) {
     loadMore();
   }
-  if (autoplay)
-    stopAndStartAutoPlay()
+  if (autoplay) stopAndStartAutoPlay();
 }
 
 function toggleUIVisiblity() {
@@ -279,19 +268,19 @@ function toggleUIVisiblity() {
 }
 
 async function expandFilter() {
-  filterExpanded = true
+  filterExpanded = true;
 
-  await tick()
+  await tick();
   // Focus the input if we just opened it
-  if (filterExpanded) filterRef.querySelector('input').focus()
+  if (filterExpanded) filterRef.querySelector("input").focus();
 }
 
 async function toggleFilter() {
-  filterExpanded = !filterExpanded
+  filterExpanded = !filterExpanded;
 
-  await tick()
+  await tick();
   // Focus the input if we just opened it
-  if (filterExpanded) filterRef.querySelector('input').focus()
+  if (filterExpanded) filterRef.querySelector("input").focus();
 }
 
 async function downloadFiles() {
@@ -327,13 +316,13 @@ function openSubRedditOld() {
 }
 
 function toggleSafeResults() {
-  skipRenderVideo = true
-  saferesults = !saferesults
+  skipRenderVideo = true;
+  saferesults = !saferesults;
 }
 
 function toggleSelected() {
-    skipRenderVideo = true
-    displayposts[index].selected = !displayposts[index].selected;
+  skipRenderVideo = true;
+  displayposts[index].selected = !displayposts[index].selected;
 }
 
 function keydown(event) {
@@ -341,15 +330,15 @@ function keydown(event) {
 
   // slash
   if (event.keyCode == 191) {
-    expandFilter()
+    expandFilter();
     // We need this, otherwise filter box will have '/' because of autofocus
-    console.log('preventDefault')
-    event.preventDefault()
+    console.log("preventDefault");
+    event.preventDefault();
   }
 
   // x
   if (event.keyCode == 88) {
-    toggleSelected()
+    toggleSelected();
   }
 
   if (event.ctrlKey) {
@@ -390,7 +379,6 @@ function keydown(event) {
     next();
   }
 }
-
 </script>
 
 <style lang="sass">
@@ -692,7 +680,6 @@ $over18-border-color: #ea4335
     &:before, &:after
       visibility: visible
       opacity: 1
-
 </style>
 
 <svelte:window on:keydown={keydown}/>
