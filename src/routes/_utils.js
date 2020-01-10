@@ -61,6 +61,10 @@ async function vidsrc(url, item) {
     return {
       mp4: item.data.media.reddit_video.fallback_url
     };
+  } else if (url.includes("reddit.com/r/")) {
+    return {
+      mp4: item.data.preview.reddit_video_preview.fallback_url
+    };
   }
 }
 
@@ -89,7 +93,6 @@ export async function format(item) {
       }
     }
   };
-  //console.log("Returning", formatted);
 
   return formatted;
 }
