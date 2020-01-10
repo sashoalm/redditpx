@@ -144,7 +144,8 @@ $: {
     // Unfortunately the filtered list is smaller than the current index
     // set index to last item
     if (displayposts.length > 0) {
-      index = displayposts.length
+      console.log('setting index from ', index, ' to ', displayposts.length)
+      index = displayposts.length - 1
     }else {
       // nothing was filtered
       index = 0
@@ -326,6 +327,14 @@ function toggleSelected() {
 
 function keydown(event) {
   console.log(event.keyCode);
+
+  // slash
+  if (event.keyCode == 191) {
+    expandFilter()
+    // We need this, otherwise filter box will have '/' because of autofocus
+    console.log('preventDefault')
+    event.preventDefault()
+  }
 
   // x
   if (event.keyCode == 88) {
