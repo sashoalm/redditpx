@@ -148,6 +148,8 @@ $: {
     if (displayposts.length > 0) {
       console.log('setting index from ', index, ' to ', displayposts.length)
       index = displayposts.length - 1
+      console.log('loading more ..')
+      loadMore();
     }else {
       // nothing was filtered
       index = 0
