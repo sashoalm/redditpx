@@ -367,7 +367,7 @@ $over18-border-color: #ea4335
       right: 0
       color: $text-color
       font-size: 1rem
-      padding: 2rem
+      padding: 1.5rem
 
     .title
       z-index: 10
