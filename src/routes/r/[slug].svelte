@@ -42,6 +42,8 @@ let nexturls = [];
 
 let index = 0;
 
+let errorinputValue = slug
+
 async function loadMore() {
   if (!after) return;
 
@@ -418,6 +420,9 @@ $over18-border-color: #ea4335
     justify-items: center
     align-items: center
 
+    .error
+      z-index: 10
+
     .settings
       z-index: 10
       position: absolute
@@ -693,6 +698,11 @@ $over18-border-color: #ea4335
 <template lang="pug">
 .wrapper
   .hero
+    +if('res && !res.res.ok')
+      .error
+        input(bind:value='{errorinputValue}', on:keydown|stopPropagation)
+        a(href="{'/r/' + errorinputValue}") click
+        a(href="/r/gifs") gifs
     .control.prev(on:click="{prev}")
     .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}")
       +if('displayposts.length')
