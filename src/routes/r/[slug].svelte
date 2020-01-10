@@ -578,6 +578,9 @@ $over18-border-color: #ea4335
       .goto
         padding: 1rem
 
+        img.small
+          display: none
+
 .tooltip
   position: relative
   z-index: 2
