@@ -275,12 +275,19 @@ function toggleUIVisiblity() {
 }
 
 async function expandFilter() {
+  filterExpanded = true
+
+  await tick()
+  // Focus the input if we just opened it
+  if (filterExpanded) filterRef.querySelector('input').focus()
+}
+
+async function toggleFilter() {
   filterExpanded = !filterExpanded
 
   await tick()
   // Focus the input if we just opened it
   if (filterExpanded) filterRef.querySelector('input').focus()
-
 }
 
 async function downloadFiles() {
@@ -721,8 +728,8 @@ $over18-border-color: #ea4335
           Icon(icon="{faDownload}")
         span.btn.filter.tooltip(
           class:filterExpanded="{filterExpanded}",
-          on:click="{function(){expandFilter()}}",
-          data-tooltip="Filter",
+          on:click="{function(){toggleFilter()}}",
+          data-tooltip="Filter ( / )",
           bind:this='{filterRef}'
           class:dlready="{selected}"
         )
