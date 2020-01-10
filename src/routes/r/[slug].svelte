@@ -60,19 +60,19 @@ onMount(async () => {
   ));
 
   // Start autoplay by default
-  //startAutoPlay();
+  startAutoPlay();
 });
 
 function startAutoPlay() {
-  console.log('START')
+  //console.log('START')
   autoplaytimer = setInterval(() => {
 
     // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
     if (autoplay && currpost.is_image) {
-      console.log('---- iNEXT')
+      //console.log('---- iNEXT')
       next()
     }else if (!autoplay && currpost.is_video){
-      console.log('---- vNEXT')
+      //console.log('---- vNEXT')
       next()
     }
 
@@ -82,7 +82,7 @@ function startAutoPlay() {
 }
 
 function stopAutoPlay() {
-  console.log('STOP')
+  //console.log('STOP')
   clearInterval(autoplaytimer);
   autoplay = false;
 }
