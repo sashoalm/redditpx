@@ -9,6 +9,10 @@
   color: white
 </style>
 
+<svelte:head>
+  <title>redditpx download</title>
+</svelte:head>
+
 
 <template lang="pug">
 .wrapper
