@@ -11,10 +11,16 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 import { onMount, tick } from "svelte";
 import { stores } from "@sapper/app";
 
-import { get_posts, format } from "../_utils";
+import { get_posts} from "../_utils";
+
+import { autoplay, selected, over18 } from "../_prefs";
+autoplay.useLocalStorage(true)
+selected.useLocalStorage({})
+over18.useLocalStorage(true)
 
 const { page } = stores();
 const { slug } = $page.params;
+
 
 let data;
 let posts = [];
@@ -22,17 +28,15 @@ let displayposts = [];
 let res;
 let after;
 let uiVisible = true;
-let selected = 0;
+let numSelected = 0;
 
 let downloadstr = "";
 let autoplaystr = "";
 let over18str = "";
 
-let autoplay;
 let autoplayinterval = 3;
 let autoplaytimer;
 
-let saferesults = false;
 let filterRef;
 let filterExpanded = false;
 let filterValue = "";
@@ -53,6 +57,11 @@ async function loadMore() {
     `https://reddit.com/r/${slug}.json?after=${after}`
   ));
 
+  for(const p of posts) {
+    p.selected = $selected[p.url]
+  }
+
+
   posts = [...posts, ...newposts];
 }
 
@@ -61,30 +70,38 @@ onMount(async () => {
     `https://reddit.com/r/${slug}.json`
   ));
 
+  for(const p of posts) {
+    p.selected = $selected[p.url]
+  }
+
+  console.log("start of the app", $autoplay)
   // Start autoplay by default
-  startAutoPlay();
+  if ($autoplay) {
+    console.log('autoplay by default', $autoplay)
+    startAutoPlay();
+  }
 });
 
 function startAutoPlay() {
   //console.log('START')
   autoplaytimer = setInterval(() => {
     // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
-    if (autoplay && currpost.is_image) {
+    if ($autoplay && currpost.is_image) {
       //console.log('---- iNEXT')
       next();
-    } else if (!autoplay && currpost.is_video) {
+    } else if (!$autoplay && currpost.is_video) {
       //console.log('---- vNEXT')
       next();
     }
   }, autoplayinterval * 1000);
 
-  autoplay = true;
+  autoplay.set(true)
 }
 
 function stopAutoPlay() {
   //console.log('STOP')
   clearInterval(autoplaytimer);
-  autoplay = false;
+  autoplay.set(false)
 }
 
 function stopAndStartAutoPlay() {
@@ -94,7 +111,7 @@ function stopAndStartAutoPlay() {
 }
 
 function toggleAutoPlay() {
-  if (autoplay) {
+  if ($autoplay) {
     stopAutoPlay();
   } else {
     startAutoPlay();
@@ -118,17 +135,17 @@ function reMountVideo() {
 }
 
 $: {
-  selected = displayposts.filter(item => item.selected == true).length;
+  numSelected = displayposts.filter(item => item.selected == true).length;
 
-  if (!selected) {
+  if (!numSelected) {
     downloadstr = `nothing to download`;
-  } else if (selected == 1) {
-    downloadstr = `download ${selected} file`;
+  } else if (numSelected == 1) {
+    downloadstr = `download ${numSelected} file`;
   } else {
-    downloadstr = `download ${selected} files`;
+    downloadstr = `download ${numSelected} files`;
   }
-  autoplaystr = `autoplay is ${autoplay ? "on" : "off"}`;
-  over18str = `nsfw is ${saferesults ? "off" : "on"}`;
+  autoplaystr = `autoplay is ${$autoplay ? "on" : "off"}`;
+  over18str = `nsfw is ${$over18 ? "on" : "off"}`;
 }
 
 $: {
@@ -170,7 +187,7 @@ $: {
 $: {
   let tmp = [];
 
-  if (saferesults) {
+  if (!$over18) {
     tmp = posts.filter(item => item.over18 == false);
   } else {
     tmp = posts;
@@ -180,29 +197,6 @@ $: {
     skipRenderVideo = true;
     tmp = tmp.filter(item => item.title.toLowerCase().includes(filterValue));
   }
-
-  // Is the current item in the newly filtered list?
-  //tmp.filter(item => item.title === currpost.title)
-  //let found = -1
-  //for (const [i, item] of tmp) {
-  //  // Item is in the list, set the index to i
-  //  if(item.title === currpost.title) {
-  //    found = i
-  //  }
-  //}
-
-  //// If it isnt there
-  //if (found === -1) {
-  //  // check if the new list is smaller than the index
-  //  if (tmp.length <= index) {
-  //    // Set to the last item
-  //    index = tmp.length
-  //  }
-  //}
-  //else {
-  //  // If it is there
-  //  index = found
-  //}
 
   displayposts = tmp;
 }
@@ -214,7 +208,7 @@ function goto(i) {
     loadMore();
   }
 
-  if (autoplay) stopAndStartAutoPlay();
+  if ($autoplay) stopAndStartAutoPlay();
 }
 
 function videoended() {
@@ -222,6 +216,8 @@ function videoended() {
 }
 
 function next() {
+
+
   // Last item, dont go past the last item
   if (displayposts.length - index == 1) {
     index = displayposts.length - 1;
@@ -250,7 +246,7 @@ function next() {
     loadMore();
   }
 
-  if (autoplay) stopAndStartAutoPlay();
+  if ($autoplay) stopAndStartAutoPlay();
 }
 
 function prev() {
@@ -260,7 +256,7 @@ function prev() {
   if (displayposts.length - index === 3) {
     loadMore();
   }
-  if (autoplay) stopAndStartAutoPlay();
+  if ($autoplay) stopAndStartAutoPlay();
 }
 
 function toggleUIVisiblity() {
@@ -315,14 +311,30 @@ function openSubRedditOld() {
   window.open(`https://old.reddit.com/${currpost.permalink}`, "_blank");
 }
 
-function toggleSafeResults() {
+function toggleOver18() {
   skipRenderVideo = true;
-  saferesults = !saferesults;
+  over18.set(!$over18)
 }
 
 function toggleSelected() {
   skipRenderVideo = true;
   displayposts[index].selected = !displayposts[index].selected;
+
+  let url = displayposts[index].url
+  if (displayposts[index].selected) {
+    // Set into localStorage
+    $selected[url] = true
+    selected.set($selected)
+  }else {
+    // setting a value in javascript which after JSON.parse(JSON.stringify(d)) removes it
+
+    $selected[url] = undefined
+
+    selected.set($selected)
+    //selected.set({1:1})
+  }
+
+
 }
 
 function keydown(event) {
@@ -465,13 +477,14 @@ $over18-border-color: #ea4335
         padding-top: 2px
         color: rgba(white, 30%)
 
-        &.over18
+        &.over18wrapper
 
           cursor: pointer
           grid-column: span 2
           justify-self: center
 
-          &.saferesults
+          &.over18
+
             p
               border: 1px solid rgba(white, 30%)
               color: rgba(white, 30%)
@@ -703,7 +716,7 @@ $over18-border-color: #ea4335
     +if('currpost.is_image')
       .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
-        video.video(autoplay, loop='{!autoplay}', playsinline, muted, on:ended="{videoended}")
+        video.video(autoplay, loop='{!$autoplay}', playsinline, muted, on:ended="{videoended}")
           +if('currpost.preview.vid.webm')
             source(src="{currpost.preview.vid.webm}")
           +if('currpost.preview.vid.mp4')
@@ -715,14 +728,14 @@ $over18-border-color: #ea4335
       .goto(class:hide="{uiVisible == false}")
         span.btn.playpause.tooltip(
           data-tooltip="{autoplaystr}",
-          class:play="{autoplay}",
+          class:play="{$autoplay}",
           on:click="{function(){toggleAutoPlay()}}"
         )
-          Icon(icon="{autoplay ? faPause : faPlay}")
+          Icon(icon="{$autoplay ? faPause : faPlay}")
         span.btn.download.tooltip(
           on:click="{function(){downloadFiles()}}",
           data-tooltip="{downloadstr}",
-          class:dlready="{selected}"
+          class:dlready="{numSelected}"
         )
           Icon(icon="{faDownload}")
         span.btn.filter.tooltip(
@@ -730,16 +743,16 @@ $over18-border-color: #ea4335
           on:click="{function(){toggleFilter()}}",
           data-tooltip="Filter ( / )",
           bind:this='{filterRef}'
-          class:dlready="{selected}"
+          class:dlready="{numSelected}"
         )
           +if('filterExpanded')
             input(bind:value='{filterValue}', on:click|stopPropagation, on:keydown|stopPropagation, type="text")
             +else
               Icon(icon="{faSearch}")
-        span.btn.over18.tooltip(
+        span.btn.over18wrapper.tooltip(
           data-tooltip="{over18str}",
-          class:saferesults="{saferesults}",
-          on:click="{function(){toggleSafeResults()}}"
+          class:over18="{!$over18}",
+          on:click="{function(){toggleOver18()}}"
         )
           p nsfw
         +each('displayposts as post, i')
