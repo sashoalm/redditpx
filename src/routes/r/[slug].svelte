@@ -340,6 +340,11 @@ function toggleSelected() {
 function keydown(event) {
   console.log(event.keyCode);
 
+  // q
+  if (event.keyCode == 81) {
+    toggleAutoPlay()
+  }
+
   // slash
   if (event.keyCode == 191) {
     expandFilter();
