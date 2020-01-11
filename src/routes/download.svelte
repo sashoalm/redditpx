@@ -3,37 +3,31 @@ import Icon from "fa-svelte";
 import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
 
 import { selected } from "./_prefs";
-selected.useLocalStorage({})
+selected.useLocalStorage({});
 
-let filterValue
-let displayposts
+let filterValue;
+let displayposts;
 
-$ : {
-  let tmp
+$: {
+  let tmp;
   if (filterValue) {
-    tmp = Object.entries($selected).filter((item) => {
-
-      let details = item[1]
+    tmp = Object.entries($selected).filter(item => {
+      let details = item[1];
 
       // poor mans search
       // Find all the `values`, make a giant string and substring match
-      return Object.values(details).join(' ').includes(filterValue)
-
-    })
-    displayposts = tmp
-  }else {
-    displayposts = $selected ? Object.entries($selected) : []
+      return Object.values(details)
+        .join(" ")
+        .includes(filterValue);
+    });
+    displayposts = tmp;
+  } else {
+    displayposts = $selected ? Object.entries($selected) : [];
   }
-
-
-
-
-  }
-
+}
 </script>
 
 <style lang="sass">
-
 $text-color: #fafafa
 
 .wrapper

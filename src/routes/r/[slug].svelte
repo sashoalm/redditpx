@@ -11,17 +11,19 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 import { onMount, tick } from "svelte";
 import { stores } from "@sapper/app";
 
-import { get_posts} from "../_utils";
+import { get_posts } from "../_utils";
 
 import { autoplay, selected, over18 } from "../_prefs";
-autoplay.useLocalStorage(true)
-selected.useLocalStorage({})
-over18.useLocalStorage(true)
+autoplay.useLocalStorage(true);
+selected.useLocalStorage({});
+over18.useLocalStorage(true);
 
 const { page } = stores();
 const { slug } = $page.params;
 
-let urlParams = Object.entries($page.query).map(([key, val]) => `${key}=${val}`).join('&')
+let urlParams = Object.entries($page.query)
+  .map(([key, val]) => `${key}=${val}`)
+  .join("&");
 
 let data;
 let posts = [];
@@ -59,8 +61,8 @@ async function loadMore() {
   ));
 
   // load `selected` from localstorage
-  for(let p of posts) {
-    p['selected'] = !!$selected[p.url]
+  for (let p of posts) {
+    p["selected"] = !!$selected[p.url];
   }
 
   posts = [...posts, ...newposts];
@@ -72,8 +74,8 @@ onMount(async () => {
   ));
 
   // Load `selected` from localstorage
-  for(let p of posts) {
-    p['selected'] = !!$selected[p.url]
+  for (let p of posts) {
+    p["selected"] = !!$selected[p.url];
   }
 
   // Start autoplay by default
@@ -95,13 +97,13 @@ function startAutoPlay() {
     }
   }, autoplayinterval * 1000);
 
-  autoplay.set(true)
+  autoplay.set(true);
 }
 
 function stopAutoPlay() {
   //console.log('STOP')
   clearInterval(autoplaytimer);
-  autoplay.set(false)
+  autoplay.set(false);
 }
 
 function stopAndStartAutoPlay() {
@@ -198,12 +200,11 @@ $: {
     tmp = tmp.filter(item => item.title.toLowerCase().includes(filterValue));
   }
 
-
   displayposts = tmp;
 }
 
 function goto(i) {
-  console.log('goto')
+  console.log("goto");
   index = i;
 
   if (displayposts.length - index === 1) {
@@ -218,8 +219,6 @@ function videoended() {
 }
 
 function next() {
-
-
   // Last item, dont go past the last item
   if (displayposts.length - index == 1) {
     index = displayposts.length - 1;
@@ -282,7 +281,6 @@ async function toggleFilter() {
 }
 
 async function downloadFiles() {
-
   window.open("/download", "_blank");
 }
 
@@ -300,58 +298,48 @@ function openSubRedditOld() {
 
 function toggleOver18() {
   skipRenderVideo = true;
-  over18.set(!$over18)
+  over18.set(!$over18);
 }
 
 function removeAllSelected(removeAllFromLocalStorage) {
-
   skipRenderVideo = true;
 
-  for(const [i, post] of displayposts.entries()) {
-
+  for (const [i, post] of displayposts.entries()) {
     // For reactivity
-    displayposts[i].selected = false
+    displayposts[i].selected = false;
 
     // If removeAllFromLocalStorage is true, then we'll remove everythign in one shot
     // no need to do it one by one
     if (removeAllFromLocalStorage == false) {
-
-
       // Localstorage
-      $selected[post.url] = undefined
-      $selected = JSON.parse(JSON.stringify($selected))
+      $selected[post.url] = undefined;
+      $selected = JSON.parse(JSON.stringify($selected));
 
-      selected.set($selected)
-
+      selected.set($selected);
     }
-
   }
 
-  if(removeAllFromLocalStorage) {
-    selected.set({})
+  if (removeAllFromLocalStorage) {
+    selected.set({});
   }
-
 }
 function toggleSelected() {
   skipRenderVideo = true;
   displayposts[index].selected = !displayposts[index].selected;
 
-  let url = displayposts[index].url
+  let url = displayposts[index].url;
   if (displayposts[index].selected) {
-
     // Set into localStorage
-    $selected[url] = displayposts[index]
-    selected.set($selected)
-  }else {
+    $selected[url] = displayposts[index];
+    selected.set($selected);
+  } else {
     // setting a value in javascript which after JSON.parse(JSON.stringify(d)) removes it
 
-    $selected[url] = undefined
-    $selected = JSON.parse(JSON.stringify($selected))
+    $selected[url] = undefined;
+    $selected = JSON.parse(JSON.stringify($selected));
 
-    selected.set($selected)
+    selected.set($selected);
   }
-
-
 }
 
 function keydown(event) {
@@ -359,7 +347,7 @@ function keydown(event) {
 
   // q
   if (event.keyCode == 81) {
-    toggleAutoPlay()
+    toggleAutoPlay();
   }
 
   // slash
@@ -372,12 +360,10 @@ function keydown(event) {
 
   // x
   if (event.keyCode == 88) {
-
-    if(event.shiftKey) {
-      removeAllSelected(event.ctrlKey) // if ctrl+shift+x is remove everything from localstorage
-    }
-    else {
-    toggleSelected();
+    if (event.shiftKey) {
+      removeAllSelected(event.ctrlKey); // if ctrl+shift+x is remove everything from localstorage
+    } else {
+      toggleSelected();
     }
   }
 
