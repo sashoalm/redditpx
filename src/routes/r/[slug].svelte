@@ -28,7 +28,7 @@ let displayposts = [];
 let res;
 let after;
 let uiVisible = true;
-let numSelected = 0;
+let numSelected;
 
 let downloadstr = "";
 let autoplaystr = "";
@@ -57,10 +57,10 @@ async function loadMore() {
     `https://reddit.com/r/${slug}.json?after=${after}`
   ));
 
-  for(const p of posts) {
-    p.selected = $selected[p.url]
+  // load `selected` from localstorage
+  for(let p of posts) {
+    p['selected'] = !!$selected[p.url]
   }
-
 
   posts = [...posts, ...newposts];
 }
@@ -70,14 +70,13 @@ onMount(async () => {
     `https://reddit.com/r/${slug}.json`
   ));
 
-  for(const p of posts) {
-    p.selected = $selected[p.url]
+  // Load `selected` from localstorage
+  for(let p of posts) {
+    p['selected'] = !!$selected[p.url]
   }
 
-  console.log("start of the app", $autoplay)
   // Start autoplay by default
   if ($autoplay) {
-    console.log('autoplay by default', $autoplay)
     startAutoPlay();
   }
 });
@@ -198,6 +197,7 @@ $: {
     tmp = tmp.filter(item => item.title.toLowerCase().includes(filterValue));
   }
 
+
   displayposts = tmp;
 }
 
@@ -281,23 +281,8 @@ async function toggleFilter() {
 }
 
 async function downloadFiles() {
-  //let res = await fetch('/download')
-  //let pagehtml = await res.text()
 
-  let win = window.open("", "title");
-
-  for (const [i, post] of displayposts.entries()) {
-    if (post.selected) {
-      //pagehtml += `<img src="${post.url}" />`
-
-      // We need displayposts[i].selected here to make this change reactive
-      displayposts[i].selected = false;
-    }
-  }
-
-  //console.log(win.document.body, pagehtml)
-  win.document.body.innerHTML =
-    '<img src="https://i.redd.it/hjt5at4l2f941.jpg" />';
+  window.open("/download", "_blank");
 }
 
 function openMedia() {
@@ -322,8 +307,6 @@ function removeAllSelected(removeAllFromLocalStorage) {
   skipRenderVideo = true;
 
   for(const [i, post] of displayposts.entries()) {
-
-    console.log(i, post)
 
     // For reactivity
     displayposts[i].selected = false
