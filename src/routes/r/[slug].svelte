@@ -21,6 +21,7 @@ over18.useLocalStorage(true)
 const { page } = stores();
 const { slug } = $page.params;
 
+let urlParams = Object.entries($page.query).map(([key, val]) => `${key}=${val}`).join('&')
 
 let data;
 let posts = [];
@@ -54,7 +55,7 @@ async function loadMore() {
   let newposts;
 
   ({ posts: newposts, after, ...res } = await get_posts(
-    `https://reddit.com/r/${slug}.json?after=${after}`
+    `https://reddit.com/r/${slug}.json?after=${after}&${urlParams}`
   ));
 
   // load `selected` from localstorage
@@ -67,7 +68,7 @@ async function loadMore() {
 
 onMount(async () => {
   ({ posts, after, ...res } = await get_posts(
-    `https://reddit.com/r/${slug}.json`
+    `https://reddit.com/r/${slug}.json?${urlParams}`
   ));
 
   // Load `selected` from localstorage
