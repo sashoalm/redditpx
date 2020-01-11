@@ -2,7 +2,7 @@
 import Icon from "fa-svelte";
 import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
 
-import { selected } from "./_prefs";
+import { selected } from "../_prefs";
 selected.useLocalStorage({});
 
 let filterValue;
