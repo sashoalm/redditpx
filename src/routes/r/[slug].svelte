@@ -202,6 +202,7 @@ $: {
 }
 
 function goto(i) {
+  console.log('goto')
   index = i;
 
   if (displayposts.length - index === 1) {
@@ -316,22 +317,54 @@ function toggleOver18() {
   over18.set(!$over18)
 }
 
+function removeAllSelected(removeAllFromLocalStorage) {
+
+  skipRenderVideo = true;
+
+  for(const [i, post] of displayposts.entries()) {
+
+    console.log(i, post)
+
+    // For reactivity
+    displayposts[i].selected = false
+
+    // If removeAllFromLocalStorage is true, then we'll remove everythign in one shot
+    // no need to do it one by one
+    if (removeAllFromLocalStorage == false) {
+
+
+      // Localstorage
+      $selected[post.url] = undefined
+      $selected = JSON.parse(JSON.stringify($selected))
+
+      selected.set($selected)
+
+    }
+
+  }
+
+  if(removeAllFromLocalStorage) {
+    selected.set({})
+  }
+
+}
 function toggleSelected() {
   skipRenderVideo = true;
   displayposts[index].selected = !displayposts[index].selected;
 
   let url = displayposts[index].url
   if (displayposts[index].selected) {
+
     // Set into localStorage
-    $selected[url] = true
+    $selected[url] = displayposts[index]
     selected.set($selected)
   }else {
     // setting a value in javascript which after JSON.parse(JSON.stringify(d)) removes it
 
     $selected[url] = undefined
+    $selected = JSON.parse(JSON.stringify($selected))
 
     selected.set($selected)
-    //selected.set({1:1})
   }
 
 
@@ -355,7 +388,13 @@ function keydown(event) {
 
   // x
   if (event.keyCode == 88) {
+
+    if(event.shiftKey) {
+      removeAllSelected(event.ctrlKey) // if ctrl+shift+x is remove everything from localstorage
+    }
+    else {
     toggleSelected();
+    }
   }
 
   if (event.ctrlKey) {
