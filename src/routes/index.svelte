@@ -2,7 +2,7 @@
 </style>
 
 <svelte:head>
-	<title>Reddit Slideshow</title>
+	<title>redditpx - reddit.com</title>
 </svelte:head>
 
 <a href="/r/earthporn">earthporn</a>

@@ -725,7 +725,7 @@ $over18-border-color: #ea4335
 
 <svelte:window on:keydown={keydown}/>
 <svelte:head>
-  <title>redditpx /r/{slug}</title>
+  <title>redditpx - /r/{slug}</title>
 </svelte:head>
 
 <template lang="pug">
