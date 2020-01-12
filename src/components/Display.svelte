@@ -282,6 +282,11 @@ function toggleSettings() {
   showSettings = !showSettings;
 }
 
+function gotoDeepSearch() {
+
+  goto('/r/gifs')
+}
+
 function hideSettings() {
   showSettings = false
 }
@@ -620,6 +625,18 @@ $over18-border-color: #ea4335
         padding-top: 2px
         color: rgba(white, 30%)
 
+        &.deepsearch
+          grid-column: span 3
+          bottom: 2px
+          cursor: pointer
+
+          p
+            margin: 0
+            font-size: 0.9rem
+            color: $accent-color
+            border: 1px solid $accent-color
+            border-radius: 3px
+
         &.over18wrapper
 
           cursor: pointer
@@ -921,6 +938,10 @@ $over18-border-color: #ea4335
           )
             img.small(alt="foo", src="{displayposts[i].preview.img.default}")
             p.small(class:curr="{index === i}") {i+1}
+        +if('filterValue')
+          span.btn.deepsearch(on:click='{function() {gotoDeepSearch()}}')
+            p deep search 🡒
+
   .prefetch
     +each('nexturls as nexturl')
       img(alt="prefetch", src="{nexturl.preview.img.default}")
