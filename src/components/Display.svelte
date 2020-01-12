@@ -199,7 +199,7 @@ $: {
 
   if (filterValue) {
     skipRenderVideo = true;
-    tmp = tmp.filter(item => item.title.toLowerCase().includes(filterValue));
+    tmp = tmp.filter(item => item.title.toLowerCase().includes(filterValue.toLowerCase()));
   }
 
   displayposts = tmp;
