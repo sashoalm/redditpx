@@ -372,13 +372,13 @@ function toggleSelected() {
 function keydown(event) {
   console.log(event.keyCode);
 
-  // q
-  if (event.keyCode == 81) {
+  // q, p
+  if (event.keyCode == 81 || event.keyCode == 80) {
     toggleAutoPlay();
   }
 
-  // slash
-  if (event.keyCode == 191) {
+  // slash, f
+  if (event.keyCode == 191 || event.keyCode == 70) {
     expandFilter();
     // We need this, otherwise filter box will have '/' because of autofocus
     console.log("preventDefault");
@@ -413,8 +413,8 @@ function keydown(event) {
     openMedia();
   }
 
-  // Up Arrow
-  if (event.keyCode == 38) {
+  // h
+  if (event.keyCode == 72) {
     toggleUIVisiblity();
   }
 
