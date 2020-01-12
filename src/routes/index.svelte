@@ -1,13 +1,16 @@
+<script>
+import Display from '../components/Display.svelte'
+
+import { stores } from "@sapper/app";
+
+const { page } = stores();
+const { slug } = $page.params;
+
+let slugstr = ``
+</script>
 <style>
 </style>
 
-<svelte:head>
-	<title>redditpx - reddit.com</title>
-</svelte:head>
-
-<a href="/r/earthporn">earthporn</a>
-<a href="/r/pics">pics</a>
-<a href="/r/aww">aww</a>
-<a href="/r/earthporn+pics">earthporn + pics</a>
-<a href="/r/ultrahdwallpapers">ultrahdwallpapers</a>
-<a href="/r/WQHD_Wallpaper">WQHD_Wallpaper</a>
+<template lang="pug">
+  Display({slugstr}, params ='{$page.query}')
+</template>

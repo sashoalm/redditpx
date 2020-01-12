@@ -9,7 +9,6 @@ import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 
 import { onMount, tick } from "svelte";
-import { stores } from "@sapper/app";
 
 import { get_posts } from "../_utils";
 
@@ -18,12 +17,7 @@ autoplay.useLocalStorage(true);
 selected.useLocalStorage({});
 over18.useLocalStorage(true);
 
-const { page } = stores();
-const { slug } = $page.params;
-
-let urlParams = Object.entries($page.query)
-  .map(([key, val]) => `${key}=${val}`)
-  .join("&");
+export let params, slugstr
 
 let data;
 let posts = [];
@@ -32,6 +26,11 @@ let res;
 let after;
 let uiVisible = true;
 let numSelected;
+
+let urlParams = Object.entries(params)
+  .map(([key, val]) => `${key}=${val}`)
+  .join("&");
+
 
 let downloadstr = "";
 let autoplaystr = "";
@@ -49,7 +48,7 @@ let nexturls = [];
 
 let index = 0;
 
-let errorinputValue = slug;
+let errorinputValue = slugstr
 
 async function loadMore() {
   if (!after) return;
@@ -57,7 +56,7 @@ async function loadMore() {
   let newposts;
 
   ({ posts: newposts, after, ...res } = await get_posts(
-    `https://reddit.com/r/${slug}.json?after=${after}&${urlParams}`
+    `https://reddit.com/${slugstr}.json?after=${after}&${urlParams}`
   ));
 
   // load `selected` from localstorage
@@ -70,7 +69,7 @@ async function loadMore() {
 
 onMount(async () => {
   ({ posts, after, ...res } = await get_posts(
-    `https://reddit.com/r/${slug}.json?${urlParams}`
+    `https://reddit.com/${slugstr}.json?${urlParams}`
   ));
 
   // Load `selected` from localstorage
@@ -711,7 +710,7 @@ $over18-border-color: #ea4335
 
 <svelte:window on:keydown={keydown}/>
 <svelte:head>
-  <title>redditpx - /r/{slug}</title>
+  <title>redditpx - {slugstr? slugstr : "reddit.com"}</title>
 </svelte:head>
 
 <template lang="pug">
