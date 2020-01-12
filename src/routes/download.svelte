@@ -82,13 +82,14 @@ $text-color: #fafafa
     justify-content: center
     align-content: center
 
-    img
-      max-width: 100%
+    .media
       justify-self: center
 
-    video
-      max-width: 100%
-      justify-self: center
+      img
+        max-width: 100%
+
+      video
+        max-width: 100%
 
 </style>
 
