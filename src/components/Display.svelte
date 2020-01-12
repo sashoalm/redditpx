@@ -510,6 +510,7 @@ $over18-border-color: #ea4335
 
             display: grid
             grid-auto-rows: max-content
+            grid-gap: 5px
 
             align-items: center
             justify-items: center
@@ -522,8 +523,9 @@ $over18-border-color: #ea4335
               border-bottom: 3px solid rgba(0, 0, 0, 0)
               width: 100%
               height: 100%
+              cursor: pointer
 
-              &.curr
+              &:hover, &.curr
                 background-color: rgba(255, 255, 255, 0.2)
                 border-bottom: 3px solid $accent-color
 
@@ -866,7 +868,7 @@ $over18-border-color: #ea4335
           Icon(icon="{faClose}")
         .contents
           .nav
-            div.curr General
+            div General
             div Keybindings
           .options
     +if('currpost.is_image')
