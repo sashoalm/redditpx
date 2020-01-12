@@ -493,19 +493,43 @@ $over18-border-color: #ea4335
         padding: 1rem
         display: none
 
-        grid-template-rows: 1fr 2fr
-
-        @media (max-width: 1600px)
-          width: 80%
-          left: 10%
-
-        @media (max-width: 1000px)
-          width: 90%
-          left: 5%
+        grid-template-rows: [head-start] 2.5rem [head-end contents-start] 2fr [contents-end]
 
         &.showSettings
-          display: block
+          display: grid
+          grid-gap: 1rem
 
+
+        .contents
+          grid-row: contents
+          display: grid
+          grid-template-columns: 1fr 2fr
+
+          .nav
+            font-size: 1.1rem
+
+            display: grid
+            grid-auto-rows: max-content
+
+            align-items: center
+            justify-items: center
+
+            // flow items one below other
+            grid-auto-flow: row
+
+            div
+              padding: 0.5rem 1rem
+              border-bottom: 3px solid rgba(0, 0, 0, 0)
+              width: 100%
+              height: 100%
+
+              &.curr
+                background-color: rgba(255, 255, 255, 0.2)
+                border-bottom: 3px solid $accent-color
+
+          .options
+            background-color: rgba(black, 0%)
+            border-left: 1px solid white
 
         .close
           position: absolute
@@ -519,11 +543,37 @@ $over18-border-color: #ea4335
 
         .head
           font-size: 1.5rem
+          align-self: center
 
           :global(svg)
             position: relative
             top: 3px
             margin-right: 10px
+
+        @media (max-width: 1600px)
+          width: 80%
+          left: 10%
+
+        @media (max-width: 1000px)
+          width: 90%
+          left: 5%
+
+        @media (max-width: 800px)
+
+          .contents
+            grid-template-rows: 3rem auto
+            grid-template-columns: unset
+
+            .nav
+              // flow items to the right
+              grid-auto-flow: column
+              grid-auto-rows: unset
+              grid-auto-columns: max-content
+
+            .options
+              border-left-width: 0px
+              border-top: 1px solid white
+
 
     .title
       z-index: 10
@@ -809,11 +859,16 @@ $over18-border-color: #ea4335
       span.btn(on:click='{function() { toggleSettings()}}', class:showSettings='{showSettings}')
         Icon(icon="{faSettings}")
       .settingspanel(class:showSettings='{showSettings}')
-        span.head
+        .head
           Icon(icon="{faSettings}")
           | Settings
-        span.close(on:click='{function(){ hideSettings()}}')
+        .close(on:click='{function(){ hideSettings()}}')
           Icon(icon="{faClose}")
+        .contents
+          .nav
+            div.curr General
+            div Keybindings
+          .options
     +if('currpost.is_image')
       .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
