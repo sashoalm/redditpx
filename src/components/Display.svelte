@@ -7,6 +7,7 @@ import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-ic
 import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
+import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
 
 import { onMount, tick } from "svelte";
 
@@ -42,6 +43,8 @@ let autoplaytimer;
 let filterRef;
 let filterExpanded = false;
 let filterValue = "";
+
+let showSettings = false
 
 let currpost = { title: "Loading .." };
 let nexturls = [];
@@ -206,7 +209,17 @@ function goto(i) {
   console.log("goto");
   index = i;
 
-  if (displayposts.length - index === 1) {
+  let itemNum = displayposts.length - index
+
+  // If autoplay is on and we're jumping to 2 or 3, we must load
+  if ((itemNum == 2 || itemNum == 3) && $autoplay) {
+    console.log('[goto-to-2/3]: loading ..')
+    loadMore();
+  }
+
+  // Last item
+  if (itemNum === 1) {
+    console.log('[goto-to-lastitem]: loading ..')
     loadMore();
   }
 
@@ -218,6 +231,7 @@ function videoended() {
 }
 
 function next() {
+
   // Last item, dont go past the last item
   if (displayposts.length - index == 1) {
     index = displayposts.length - 1;
@@ -250,6 +264,7 @@ function next() {
 }
 
 function prev() {
+
   if (index === 0) return;
   index -= 1;
 
@@ -261,6 +276,14 @@ function prev() {
 
 function toggleUIVisiblity() {
   uiVisible = !uiVisible;
+}
+
+function toggleSettings() {
+  showSettings = !showSettings;
+}
+
+function hideSettings() {
+  showSettings = false
 }
 
 async function expandFilter() {
@@ -447,6 +470,61 @@ $over18-border-color: #ea4335
       font-size: 1rem
       padding: 1.5rem
 
+      .btn
+        user-select: none
+        cursor: pointer
+        color: rgba(white, 80%)
+
+        &.showSettings
+          color: white
+
+        &:hover
+          color: white
+
+      .settingspanel
+        position: fixed
+        background-color: black
+        left: 25%
+        top: 25%
+        width: 50%
+        height: 50%
+        border-radius: 5px
+        border: 1px solid white
+        padding: 1rem
+        display: none
+
+        grid-template-rows: 1fr 2fr
+
+        @media (max-width: 1600px)
+          width: 80%
+          left: 10%
+
+        @media (max-width: 1000px)
+          width: 90%
+          left: 5%
+
+        &.showSettings
+          display: block
+
+
+        .close
+          position: absolute
+          top: 1rem
+          color: rgba(white, 60%)
+          cursor: pointer
+          right: 1rem
+
+          &:hover
+            color: white
+
+        .head
+          font-size: 1.5rem
+
+          :global(svg)
+            position: relative
+            top: 3px
+            margin-right: 10px
+
     .title
       z-index: 10
       position: absolute
@@ -622,15 +700,15 @@ $over18-border-color: #ea4335
 
       &.prev
         left: 0
-        width: 10%
+        width: 15%
         //background-color: rgba(255, 138, 138, 0.38)
 
         &:hover
-          background-color: rgba(255, 255, 255, 0.1)
+          background: linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(255,255,255,0) 100%)
 
       &.next
         right: 0
-        width: 90%
+        width: 85%
         //background-color: rgba(138, 255, 233, 0.38)
 
     .image
@@ -728,7 +806,14 @@ $over18-border-color: #ea4335
           Icon(icon="{currpost.selected ? faFav : faUnFav}")
       | {currpost.title}
     .settings(class:hide="{uiVisible == false}")
-      Icon(icon="{faSettings}")
+      span.btn(on:click='{function() { toggleSettings()}}', class:showSettings='{showSettings}')
+        Icon(icon="{faSettings}")
+      .settingspanel(class:showSettings='{showSettings}')
+        span.head
+          Icon(icon="{faSettings}")
+          | Settings
+        span.close(on:click='{function(){ hideSettings()}}')
+          Icon(icon="{faClose}")
     +if('currpost.is_image')
       .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
