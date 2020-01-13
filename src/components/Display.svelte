@@ -27,6 +27,7 @@ let res;
 let after;
 let uiVisible = true;
 let numSelected;
+$: numPostsOver50 = displayposts.length > 50
 
 let urlParams = Object.entries(params)
   .map(([key, val]) => `${key}=${val}`)
@@ -731,6 +732,10 @@ $over18-border-color: #ea4335
           img.small
             border-color: $over18-border-color
 
+        p.extrasmall
+          border-bottom: 3px solid rgba(0, 0, 0, 0)
+          display: none
+
         p.small
           margin: 0 2px
           text-align: center
@@ -803,6 +808,8 @@ $over18-border-color: #ea4335
     .hero
       .goto
         padding: 1rem
+        //grid-template-columns: 32px 32px 32px 32px 32px repeat(auto-fit, minmax(32px, 1fr))
+        //grid-template-rows: 1fr 1fr
 
         img.small
           display: none
@@ -900,7 +907,7 @@ $over18-border-color: #ea4335
 
     .control.next(on:click="{next}")
     +if('displayposts.length || filterValue')
-      .goto(class:hide="{uiVisible == false}")
+      .goto(class:fifty='{numPostsOver50}', class:hide="{uiVisible == false}")
         span.btn.playpause.tooltip(
           data-tooltip="{autoplaystr}",
           class:play="{$autoplay}",
@@ -937,7 +944,10 @@ $over18-border-color: #ea4335
             on:click="{function(){goto(i)}}"
           )
             img.small(alt="foo", src="{displayposts[i].preview.img.default}")
-            p.small(class:curr="{index === i}") {i+1}
+            +if('!numPostsOver50')
+              p.small(class:curr="{index === i}") {i+1}
+              +else()
+                p.small(class:curr="{index === i}")
         +if('filterValue')
           span.btn.deepsearch(on:click='{function() {gotoDeepSearch()}}')
             p deep search 🡒
