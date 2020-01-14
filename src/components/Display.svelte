@@ -637,7 +637,11 @@ $over18-border-color: #ea4335
 
           .nums
             border-bottom: 3px solid rgba(white, 30%)
-            border-radius: 3px
+            height: 1rem
+            cursor: pointer
+
+            &:hover
+              border-bottom: 3px solid $accent-color !important
 
             &.currnum
               border-bottom: 3px solid $accent-color !important
@@ -648,7 +652,7 @@ $over18-border-color: #ea4335
             &.over18
               border-bottom: 3px solid $over18-color
 
-          p, img
+          p
             display: none
 
       .btnwrapper, .numswrapper
@@ -844,6 +848,10 @@ $over18-border-color: #ea4335
         //grid-template-columns: 32px 32px 32px 32px 32px repeat(auto-fit, minmax(32px, 1fr))
         //grid-template-rows: 1fr 1fr
 
+        &.fifty
+
+          .nums
+            height: 0.1rem !important
         img.small
           display: none
 
