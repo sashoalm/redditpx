@@ -637,6 +637,7 @@ $over18-border-color: #ea4335
 
           .nums
             border-bottom: 3px solid rgba(white, 30%)
+            border-radius: 3px
 
             &.currnum
               border-bottom: 3px solid $accent-color !important
