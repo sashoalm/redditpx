@@ -621,6 +621,9 @@ $over18-border-color: #ea4335
       width: 100%
       grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
 
+      &.fifty
+        grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
+
       .btn
         text-align: center
         padding-top: 2px
