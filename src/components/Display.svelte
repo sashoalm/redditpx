@@ -436,6 +436,12 @@ function keydown(event) {
 </script>
 
 <style lang="sass">
+
+@mixin hover()
+  @media not all and (pointer:coarse)
+    &:hover
+      @content
+
 $yellow: #f9ab00
 
 $text-color: #fafafa
@@ -484,7 +490,7 @@ $over18-border-color: #ea4335
         &.showSettings
           color: white
 
-        &:hover
+        @include hover()
           color: white
 
       .settingspanel
@@ -531,7 +537,11 @@ $over18-border-color: #ea4335
               height: 100%
               cursor: pointer
 
-              &:hover, &.curr
+              @include hover()
+                background-color: rgba(255, 255, 255, 0.2)
+                border-bottom: 3px solid $accent-color
+
+              &.curr
                 background-color: rgba(255, 255, 255, 0.2)
                 border-bottom: 3px solid $accent-color
 
@@ -546,7 +556,7 @@ $over18-border-color: #ea4335
           cursor: pointer
           right: 1rem
 
-          &:hover
+          @include hover()
             color: white
 
         .head
@@ -601,7 +611,7 @@ $over18-border-color: #ea4335
         position: relative
         margin-right: 12px
 
-        &:hover
+        @include hover()
           color: $selected-color
 
       &.selected
@@ -640,7 +650,7 @@ $over18-border-color: #ea4335
             height: 1rem
             cursor: pointer
 
-            &:hover
+            @include hover()
               border-bottom: 3px solid $accent-color !important
 
             &.currnum
@@ -687,7 +697,7 @@ $over18-border-color: #ea4335
               border: 1px solid rgba(white, 30%)
               color: rgba(white, 30%)
 
-              &:hover
+              @include hover()
                 border: 1px solid rgba(white, 60%)
                 color: rgba(white, 60%)
 
@@ -712,7 +722,7 @@ $over18-border-color: #ea4335
             color: rgba($selected-color, 90%)
             cursor: pointer
 
-            &:hover
+            @include hover()
               color: $yellow
 
         &.playpause
@@ -723,14 +733,14 @@ $over18-border-color: #ea4335
           &.play
             color: white
 
-          &:hover
+          @include hover()
             color: white
 
         &.filter
           cursor: pointer
           top: 1px
 
-          &:hover
+          @include hover()
             color: white
 
           &.filter.filterExpanded
@@ -814,7 +824,7 @@ $over18-border-color: #ea4335
         width: 15%
         //background-color: rgba(255, 138, 138, 0.38)
 
-        &:hover
+        @include hover()
           background: linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(255,255,255,0) 100%)
 
       &.next
