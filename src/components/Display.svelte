@@ -623,17 +623,17 @@ $over18-border-color: #ea4335
 
 
       &.fifty
-        grid-template-rows: 3fr 1fr
+        grid-template-rows: auto 1fr
         grid-template-columns: 1fr
         .btnwrapper
           grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
           display: grid
 
         .numswrapper
-          grid-template-columns: repeat(auto-fit, minmax(2px, auto))
+          grid-template-columns: repeat(auto-fit, minmax(1rem, auto))
           grid-auto-columns: max-content
           display: grid
-          grid-column-gap: 0.2rem
+          grid-gap: 0.2rem
 
           .nums
             border-bottom: 3px solid rgba(white, 30%)
