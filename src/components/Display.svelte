@@ -621,8 +621,37 @@ $over18-border-color: #ea4335
       width: 100%
       grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
 
+
       &.fifty
-        grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
+        grid-template-rows: 3fr 1fr
+        grid-template-columns: 1fr
+        .btnwrapper
+          grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
+          display: grid
+
+        .numswrapper
+          grid-template-columns: repeat(auto-fit, minmax(2px, auto))
+          grid-auto-columns: max-content
+          display: grid
+          grid-column-gap: 0.2rem
+
+          .nums
+            border-bottom: 3px solid rgba(white, 30%)
+
+            &.currnum
+              border-bottom: 3px solid $accent-color !important
+
+            &.selected
+              border-bottom: 3px solid $selected-color
+
+            &.over18
+              border-bottom: 3px solid $over18-color
+
+          p, img
+            display: none
+
+      .btnwrapper, .numswrapper
+        display: contents
 
       .btn
         text-align: center
@@ -730,7 +759,7 @@ $over18-border-color: #ea4335
           p.small
             color: $over18-color
             //background-color: $over18-color
-            border-bottom: 3px dashed $over18-border-color
+            border-bottom: 3px solid $over18-border-color
 
           img.small
             border-color: $over18-border-color
@@ -911,49 +940,49 @@ $over18-border-color: #ea4335
     .control.next(on:click="{next}")
     +if('displayposts.length || filterValue')
       .goto(class:fifty='{numPostsOver50}', class:hide="{uiVisible == false}")
-        span.btn.playpause.tooltip(
-          data-tooltip="{autoplaystr}",
-          class:play="{$autoplay}",
-          on:click="{function(){toggleAutoPlay()}}"
-        )
-          Icon(icon="{$autoplay ? faPause : faPlay}")
-        span.btn.download.tooltip(
-          on:click="{function(){downloadFiles()}}",
-          data-tooltip="{downloadstr}",
-          class:dlready="{numSelected}"
-        )
-          Icon(icon="{faDownload}")
-        span.btn.filter.tooltip(
-          class:filterExpanded="{filterExpanded}",
-          on:click="{function(){toggleFilter()}}",
-          data-tooltip="Filter ( / )",
-          bind:this='{filterRef}'
-          class:dlready="{numSelected}"
-        )
-          +if('filterExpanded')
-            input(bind:value='{filterValue}', on:click|stopPropagation, on:keydown|stopPropagation, type="text")
-            +else
-              Icon(icon="{faSearch}")
-        span.btn.over18wrapper.tooltip(
-          data-tooltip="{over18str}",
-          class:over18="{!$over18}",
-          on:click="{function(){toggleOver18()}}"
-        )
-          p nsfw
-        +each('displayposts as post, i')
-          span(
-            class:selected="{displayposts[i].selected}",
-            class:over18="{displayposts[i].over18}",
-            on:click="{function(){goto(i)}}"
+        .btnwrapper
+          span.btn.playpause.tooltip(
+            data-tooltip="{autoplaystr}",
+            class:play="{$autoplay}",
+            on:click="{function(){toggleAutoPlay()}}"
           )
-            img.small(alt="foo", src="{displayposts[i].preview.img.default}")
-            +if('!numPostsOver50')
+            Icon(icon="{$autoplay ? faPause : faPlay}")
+          span.btn.download.tooltip(
+            on:click="{function(){downloadFiles()}}",
+            data-tooltip="{downloadstr}",
+            class:dlready="{numSelected}"
+          )
+            Icon(icon="{faDownload}")
+          span.btn.filter.tooltip(
+            class:filterExpanded="{filterExpanded}",
+            on:click="{function(){toggleFilter()}}",
+            data-tooltip="Filter ( / )",
+            bind:this='{filterRef}'
+            class:dlready="{numSelected}"
+          )
+            +if('filterExpanded')
+              input(bind:value='{filterValue}', on:click|stopPropagation, on:keydown|stopPropagation, type="text")
+              +else
+                Icon(icon="{faSearch}")
+          span.btn.over18wrapper.tooltip(
+            data-tooltip="{over18str}",
+            class:over18="{!$over18}",
+            on:click="{function(){toggleOver18()}}"
+          )
+            p nsfw
+        .numswrapper
+          +each('displayposts as post, i')
+            span.nums(
+              class:currnum="{index === i}",
+              class:selected="{displayposts[i].selected}",
+              class:over18="{displayposts[i].over18}",
+              on:click="{function(){goto(i)}}"
+            )
+              img.small(alt="foo", src="{displayposts[i].preview.img.default}")
               p.small(class:curr="{index === i}") {i+1}
-              +else()
-                p.small(class:curr="{index === i}")
-        +if('filterValue')
-          span.btn.deepsearch(on:click='{function() {gotoDeepSearch()}}')
-            p deep search 🡒
+          +if('filterValue')
+            span.btn.deepsearch(on:click='{function() {gotoDeepSearch()}}')
+              p deep search 🡒
 
   .prefetch
     +each('nexturls as nexturl')
