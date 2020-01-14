@@ -68,7 +68,8 @@ async function loadMore() {
     p["selected"] = !!$selected[p.url];
   }
 
-  posts = [...posts, ...newposts];
+  // Combine `posts` and `newposts` and remove duplicates from multiple network requests
+  posts = [...posts, ...newposts].reduce((r, i) => !r.some(j => i.id === j.id) ? [...r, i]: r, []);
 }
 
 onMount(async () => {
@@ -543,7 +544,7 @@ $over18-border-color: #ea4335
 
               &.curr
                 background-color: rgba(255, 255, 255, 0.2)
-                border-bottom: 3px solid $accent-color
+                border-bottom: 3px solid green
 
           .options
             background-color: rgba(black, 0%)

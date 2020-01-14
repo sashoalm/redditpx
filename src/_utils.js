@@ -12,7 +12,7 @@ export async function get_posts(url) {
 
     let posts = await Promise.all(filtered.map(post => format(post)));
 
-    console.log(posts);
+    console.log("Formatted: ", posts.length, posts);
     return { posts: posts, after: data.data.after, res: res };
   } catch (error) {
     console.log("oh no");
@@ -91,6 +91,7 @@ export async function format(item) {
   }
 
   let formatted = {
+    id: item.data.id,
     title: item.data.title,
     permalink: item.data.permalink,
     over18: item.data.over_18,
