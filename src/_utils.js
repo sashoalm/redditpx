@@ -16,6 +16,7 @@ export async function get_posts(url) {
     return { posts: posts, after: data.data.after, res: res };
   } catch (error) {
     console.log("oh no");
+    console.log(error);
     return { posts: [], after: "", res: { ok: false, res: error } };
   }
 }
@@ -73,7 +74,21 @@ export async function format(item) {
     return { title: "Loading ..", vidpreview: {} };
   }
 
+  let imgs = {};
   let vids = await vidsrc(item.data.url, item);
+  try {
+    imgs = {
+      default: he.decode(
+        item.data.preview.images[0].resolutions.slice(-1)[0].url
+      ),
+      hires: he.decode(item.data.preview.images[0].source.url)
+    };
+  } catch {
+    imgs = {
+      default: item.data.url,
+      hires: item.data.url
+    };
+  }
 
   let formatted = {
     title: item.data.title,
@@ -85,12 +100,7 @@ export async function format(item) {
     url: item.data.url,
     preview: {
       vid: vids,
-      img: {
-        default: he.decode(
-          item.data.preview.images[0].resolutions.slice(-1)[0].url
-        ),
-        hires: he.decode(item.data.preview.images[0].source.url)
-      }
+      img: imgs
     }
   };
 
