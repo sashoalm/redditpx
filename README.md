@@ -1,3 +1,9 @@
+<p>
+  <a href="https://redditpx.com">
+    <img alt="redditpx.com - A fast, modern alternative to redditp.com" src="https://gitcdn.xyz/repo/jeffjose/redditpx/master/banner.png">
+  </a>
+</p>
+
 # redditpx - A fast, modern alternative to redditp.com
 
 redditpx.com is
