@@ -779,10 +779,6 @@ $over18-border-color: #ea4335
           img.small
             border-color: $over18-border-color
 
-        p.extrasmall
-          border-bottom: 3px solid rgba(0, 0, 0, 0)
-          display: none
-
         p.small
           margin: 0 2px
           text-align: center
