@@ -10,6 +10,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
 
 import { onMount, tick } from "svelte";
+  import {goto as ahref} from "@sapper/app"
 
 import { get_posts } from "../_utils";
 
@@ -319,7 +320,7 @@ function toggleSettings() {
 }
 
 function gotoDeepSearch() {
-  goto("/r/gifs");
+  ahref("/r/gifs")
 }
 
 function hideSettings() {
@@ -969,6 +970,28 @@ $over18-border-color: #ea4335
             div General
             div Keybindings
           .options
+            div
+              p autoplay on/off
+              p download files
+              p nsfw on/off
+              p autoplay time
+              p make all fav
+              p remove all fav
+              p prefetch?
+              p always show hd?
+            div
+              p play/pause q,p
+              p next space, right, d,  j
+              p prev left, a, k
+              p hide h
+              p fav x
+              p undofav shift-x
+              p undoallfav ctrl-shift-x
+              p undoallfav ctrl-shift-x
+              p filter /, f
+              p subreddit-old,  o
+              p subreddit-default,  r
+              p highres,  i
     +if('currpost.is_image')
       .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
@@ -1025,6 +1048,8 @@ $over18-border-color: #ea4335
           +if('filterValue')
             span.btn.deepsearch(on:click='{function() {gotoDeepSearch()}}')
               p deep search 🡒
+              a(href="https://google.com") goog
+              a(href="/r/foox") /r/foox
 
   .prefetch
     +each('nexturls as nexturl')
