@@ -980,7 +980,7 @@ $over18-border-color: #ea4335
           //img(alt="foo", src='{currpost.preview.vid.gif}')
 
     .control.next(on:click="{next}")
-    +if('displayposts.length || filterValue')
+    +if('displayposts.length || posts.length')
       .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{gotoElWidth}')
         .btnwrapper
           span.btn.playpause.tooltip(
