@@ -27,11 +27,43 @@ let res;
 let after;
 let uiVisible = true;
 let numSelected;
-$: numPostsOver50 = displayposts.length > 50;
+let tinygoto;
+
+$: {
+  if (gotoElWidth > 1000) {
+    // padding on both sides
+    let numGotoControlsInOneRow = (gotoElWidth - 154 * 2) / 32;
+    let numGotoControlsRows =
+      (displayposts.length + 5) / numGotoControlsInOneRow;
+    tinygoto = numGotoControlsRows > 3;
+  } else if (gotoElWidth > 800) {
+    // padding on right side
+    let numGotoControlsInOneRow = (gotoElWidth - (154 + 14)) / 32;
+    let numGotoControlsRows =
+      (displayposts.length + 5) / numGotoControlsInOneRow;
+    tinygoto = numGotoControlsRows > 3;
+  } else {
+    // no padding
+    let numGotoControlsInOneRow = (gotoElWidth - (14 + 14)) / 32;
+    let numGotoControlsRows =
+      (displayposts.length + 5) / numGotoControlsInOneRow;
+    tinygoto = numGotoControlsRows > 3;
+  }
+}
 
 let urlParams = Object.entries(params)
   .map(([key, val]) => `${key}=${val}`)
   .join("&");
+
+//let gotoEl
+//$: {
+//    let gotoElWidth = gotoEl.clientWidth - (getComputedStyle(gotoEl).paddingLeft + getComputedStyle(gotoEl).paddingRight)
+//    let gotoControls = gotoElWidth / 32
+//    numPostsOver50 = (gotoControls / displayposts.length ) > 2
+//    console.log('width: ', gotoElWidth, 'controls: ', gotoControls, 'posts ', displayposts.length, 'rows: ', gotoControls / displayposts.length)
+//  }
+
+let gotoElWidth;
 
 let downloadstr = "";
 let autoplaystr = "";
@@ -626,7 +658,7 @@ $over18-border-color: #ea4335
       width: 100%
       grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
 
-      &.fifty
+      &.tinygoto
         grid-template-rows: auto 1fr
         grid-template-columns: 1fr
         .btnwrapper
@@ -848,7 +880,7 @@ $over18-border-color: #ea4335
         //grid-template-columns: 32px 32px 32px 32px 32px repeat(auto-fit, minmax(32px, 1fr))
         //grid-template-rows: 1fr 1fr
 
-        &.fifty
+        &.tinygoto
 
           .nums
             height: 0.1rem !important
@@ -949,7 +981,7 @@ $over18-border-color: #ea4335
 
     .control.next(on:click="{next}")
     +if('displayposts.length || filterValue')
-      .goto(class:fifty='{numPostsOver50}', class:hide="{uiVisible == false}")
+      .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{gotoElWidth}')
         .btnwrapper
           span.btn.playpause.tooltip(
             data-tooltip="{autoplaystr}",
