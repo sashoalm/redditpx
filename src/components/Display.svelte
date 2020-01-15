@@ -979,6 +979,7 @@ $over18-border-color: #ea4335
               p remove all fav
               p prefetch?
               p always show hd?
+              p remove duplicates
             div
               p play/pause q,p
               p next space, right, d,  j
