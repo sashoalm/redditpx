@@ -18,7 +18,7 @@ autoplay.useLocalStorage(true);
 selected.useLocalStorage({});
 over18.useLocalStorage(true);
 
-export let params, slugstr
+export let params, slugstr;
 
 let data;
 let posts = [];
@@ -27,12 +27,11 @@ let res;
 let after;
 let uiVisible = true;
 let numSelected;
-$: numPostsOver50 = displayposts.length > 50
+$: numPostsOver50 = displayposts.length > 50;
 
 let urlParams = Object.entries(params)
   .map(([key, val]) => `${key}=${val}`)
   .join("&");
-
 
 let downloadstr = "";
 let autoplaystr = "";
@@ -45,14 +44,14 @@ let filterRef;
 let filterExpanded = false;
 let filterValue = "";
 
-let showSettings = false
+let showSettings = false;
 
 let currpost = { title: "Loading .." };
 let nexturls = [];
 
 let index = 0;
 
-let errorinputValue = slugstr
+let errorinputValue = slugstr;
 
 async function loadMore() {
   if (!after) return;
@@ -69,7 +68,10 @@ async function loadMore() {
   }
 
   // Combine `posts` and `newposts` and remove duplicates from multiple network requests
-  posts = [...posts, ...newposts].reduce((r, i) => !r.some(j => i.id === j.id) ? [...r, i]: r, []);
+  posts = [...posts, ...newposts].reduce(
+    (r, i) => (!r.some(j => i.id === j.id) ? [...r, i] : r),
+    []
+  );
 }
 
 onMount(async () => {
@@ -201,7 +203,9 @@ $: {
 
   if (filterValue) {
     skipRenderVideo = true;
-    tmp = tmp.filter(item => item.title.toLowerCase().includes(filterValue.toLowerCase()));
+    tmp = tmp.filter(item =>
+      item.title.toLowerCase().includes(filterValue.toLowerCase())
+    );
   }
 
   displayposts = tmp;
@@ -211,17 +215,17 @@ function goto(i) {
   console.log("goto");
   index = i;
 
-  let itemNum = displayposts.length - index
+  let itemNum = displayposts.length - index;
 
   // If autoplay is on and we're jumping to 2 or 3, we must load
   if ((itemNum == 2 || itemNum == 3) && $autoplay) {
-    console.log('[goto-to-2/3]: loading ..')
+    console.log("[goto-to-2/3]: loading ..");
     loadMore();
   }
 
   // Last item
   if (itemNum === 1) {
-    console.log('[goto-to-lastitem]: loading ..')
+    console.log("[goto-to-lastitem]: loading ..");
     loadMore();
   }
 
@@ -233,7 +237,6 @@ function videoended() {
 }
 
 function next() {
-
   // Last item, dont go past the last item
   if (displayposts.length - index == 1) {
     index = displayposts.length - 1;
@@ -266,7 +269,6 @@ function next() {
 }
 
 function prev() {
-
   if (index === 0) return;
   index -= 1;
 
@@ -285,12 +287,11 @@ function toggleSettings() {
 }
 
 function gotoDeepSearch() {
-
-  goto('/r/gifs')
+  goto("/r/gifs");
 }
 
 function hideSettings() {
-  showSettings = false
+  showSettings = false;
 }
 
 async function expandFilter() {
@@ -437,7 +438,6 @@ function keydown(event) {
 </script>
 
 <style lang="sass">
-
 @mixin hover()
   @media not all and (pointer:coarse)
     &:hover
@@ -511,7 +511,6 @@ $over18-border-color: #ea4335
         &.showSettings
           display: grid
           grid-gap: 1rem
-
 
         .contents
           grid-row: contents
@@ -589,7 +588,6 @@ $over18-border-color: #ea4335
               border-left-width: 0px
               border-top: 1px solid white
 
-
     .title
       z-index: 10
       position: absolute
@@ -627,7 +625,6 @@ $over18-border-color: #ea4335
       color: $text-color
       width: 100%
       grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
-
 
       &.fifty
         grid-template-rows: auto 1fr
@@ -904,11 +901,12 @@ $over18-border-color: #ea4335
     &:before, &:after
       visibility: visible
       opacity: 1
+
 </style>
 
-<svelte:window on:keydown={keydown}/>
+<svelte:window on:keydown={keydown} />
 <svelte:head>
-  <title>redditpx - {slugstr? slugstr : "reddit.com"}</title>
+  <title>redditpx - {slugstr ? slugstr : 'reddit.com'}</title>
 </svelte:head>
 
 <template lang="pug">
