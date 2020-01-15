@@ -542,10 +542,6 @@ $over18-border-color: #ea4335
                 background-color: rgba(255, 255, 255, 0.2)
                 border-bottom: 3px solid $accent-color
 
-              &.curr
-                background-color: rgba(255, 255, 255, 0.2)
-                border-bottom: 3px solid green
-
           .options
             background-color: rgba(black, 0%)
             border-left: 1px solid white
