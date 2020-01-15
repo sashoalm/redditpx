@@ -18,6 +18,9 @@
     "polka": "^1.0.0-next.10",
     "sirv": "^0.4.0"
   },
+  "resolutions": {
+    "serialize-javascript": "^2.1.1"
+  },
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
