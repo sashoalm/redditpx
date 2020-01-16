@@ -308,7 +308,14 @@ function toggleSettings() {
 }
 
 function gotoDeepSearch() {
-  ahref("/r/gifs")
+  let prefix = ''
+  if(slugstr) {
+    prefix = `/${slugstr}`
+  }else {
+    prefix = ``
+  }
+
+  ahref(`${prefix}/search?q=${filterValue}&restrict_sr=on&include_over_18=on&sort=relevant&t=all`)
 }
 
 function hideSettings() {
@@ -1038,9 +1045,6 @@ $over18-border-color: #ea4335
           +if('filterValue')
             span.btn.deepsearch(on:click='{function() {gotoDeepSearch()}}')
               p deep search 🡒
-              a(href="https://google.com") goog
-              a(href="/r/pics") /r/pics
-              a(href="/r/comics") /r/comics
 
   .prefetch
     +each('nexturls as nexturl')
