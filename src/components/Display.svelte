@@ -827,6 +827,7 @@ $over18-border-color: #ea4335
           background-color: lighten(black, 30%)
           min-width: 100px
           pointer-events: none
+          object-fit: cover
 
         &:hover p.small
           background-color: rgba(255, 255, 255, 0.1)
