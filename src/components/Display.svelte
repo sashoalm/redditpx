@@ -258,8 +258,11 @@ function videoended() {
 }
 
 function next() {
+
+  let itemNum = displayposts.length - index
+
   // Last item, dont go past the last item
-  if (displayposts.length - index == 1) {
+  if (itemNum === 1) {
     index = displayposts.length - 1;
 
     console.log("[lastitem, autoplay+filter?]: loading more ..");
@@ -270,18 +273,18 @@ function next() {
 
   index += 1;
 
-  // Auto trigger on the last 3rd item
-  if (displayposts.length - index === 3) {
-    console.log("[3rd last item, normal]: loading more ..");
+  // Auto trigger on the last 4th item
+  if (itemNum === 4) {
+    console.log("[4th last item, normal]: loading more ..");
     loadMore();
   }
 
-  // If we're at 2nd last item with a filter, the user
+  // If we're at 3rd/2nd last item with a filter, the user
   // possibly just filtered the list and ended up here.
   // trigger a load more. We dont want to do it always since
   // we normally trigger loadmore @3rd last item. Always doing it
   // Would end up with 2 requests to reddit.com
-  if (displayposts.length - index === 2 && filterValue) {
+  if (((itemNum === 3) || ( itemNum === 2)) && filterValue) {
     console.log("[2nd last item, filtering?]: loading more ..");
     loadMore();
   }
