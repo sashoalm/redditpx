@@ -1,6 +1,12 @@
 import fetchJsonp from "fetch-jsonp";
 import he from "he";
 
+export function query_params(query) {
+  return Object.entries(query)
+    .map(([key, val]) => `${key}=${val}`)
+    .join("&");
+}
+
 export async function get_posts(url) {
   try {
     let res = await fetchJsonp(url, { jsonpCallback: "jsonp" });

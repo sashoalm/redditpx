@@ -12,7 +12,7 @@ import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
 import { onMount, tick } from "svelte";
   import {goto as ahref} from "@sapper/app"
 
-import { get_posts } from "../_utils";
+import { get_posts, query_params } from "../_utils";
 
 import { autoplay, selected, over18 } from "../_prefs";
 autoplay.useLocalStorage(true);
@@ -20,12 +20,12 @@ selected.useLocalStorage({});
 over18.useLocalStorage(true);
 
 export let params, slugstr;
+export let posts
+export let after;
 
 let data;
-let posts = [];
 let displayposts = [];
 let res;
-let after;
 let uiVisible = true;
 let numSelected;
 let tinygoto;
@@ -52,9 +52,7 @@ $: {
   }
 }
 
-let urlParams = Object.entries(params)
-  .map(([key, val]) => `${key}=${val}`)
-  .join("&");
+let urlParams = query_params(params)
 
 //let gotoEl
 //$: {
@@ -108,14 +106,6 @@ async function loadMore() {
 }
 
 onMount(async () => {
-  ({ posts, after, ...res } = await get_posts(
-    `https://reddit.com/${slugstr}.json?${urlParams}`
-  ));
-
-  // Load `selected` from localstorage
-  for (let p of posts) {
-    p["selected"] = !!$selected[p.url];
-  }
 
   // Start autoplay by default
   if ($autoplay) {
