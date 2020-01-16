@@ -1041,7 +1041,8 @@ $over18-border-color: #ea4335
             span.btn.deepsearch(on:click='{function() {gotoDeepSearch()}}')
               p deep search 🡒
               a(href="https://google.com") goog
-              a(href="/r/foox") /r/foox
+              a(href="/r/pics") /r/pics
+              a(href="/r/comics") /r/comics
 
   .prefetch
     +each('nexturls as nexturl')
