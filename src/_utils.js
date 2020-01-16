@@ -1,7 +1,7 @@
 import fetchJsonp from "fetch-jsonp";
 import he from "he";
 
-export function query_params(query) {
+export function queryp(query) {
   return Object.entries(query)
     .map(([key, val]) => `${key}=${val}`)
     .join("&");

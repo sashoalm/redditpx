@@ -12,7 +12,7 @@ import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
 import { onMount, tick } from "svelte";
   import {goto as ahref} from "@sapper/app"
 
-import { get_posts, query_params } from "../_utils";
+import { get_posts, queryp } from "../_utils";
 
 import { autoplay, selected, over18 } from "../_prefs";
 autoplay.useLocalStorage(true);
@@ -52,8 +52,6 @@ $: {
   }
 }
 
-let urlParams = query_params(params)
-
 //let gotoEl
 //$: {
 //    let gotoElWidth = gotoEl.clientWidth - (getComputedStyle(gotoEl).paddingLeft + getComputedStyle(gotoEl).paddingRight)
@@ -90,7 +88,7 @@ async function loadMore() {
   let newposts;
 
   ({ posts: newposts, after, ...res } = await get_posts(
-    `https://reddit.com/${slugstr}.json?after=${after}&${urlParams}`
+    `https://reddit.com/${slugstr}.json?after=${after}&${queryp(params)}`
   ));
 
   // load `selected` from localstorage
