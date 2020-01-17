@@ -65,6 +65,7 @@ let gotoElWidth;
 let downloadstr = "";
 let autoplaystr = "";
 let over18str = "";
+let deepsearchstr = "";
 
 let autoplayinterval = 3;
 let autoplaytimer;
@@ -176,6 +177,7 @@ $: {
   }
   autoplaystr = `autoplay is ${$autoplay ? "on" : "off"}`;
   over18str = `nsfw is ${$over18 ? "on" : "off"}`;
+  deepsearchstr = `search for ${filterValue}`;
 }
 
 $: {
@@ -185,6 +187,7 @@ $: {
     nexturls = displayposts.slice(index + 1, index + 4);
   } else if (filterValue) {
     // We're here because user filtered the list
+
 
     // Unfortunately the filtered list is smaller than the current index
     // set index to last item
@@ -714,16 +717,22 @@ $over18-border-color: #ea4335
         color: rgba(white, 30%)
 
         &.deepsearch
-          grid-column: span 3
+          grid-column: span 4
           bottom: 2px
           cursor: pointer
+          justify-self: center
+
+          &:hover p
+            color: $accent-color
+            border: 1px solid $accent-color
 
           p
             margin: 0
             font-size: 0.9rem
-            color: $accent-color
-            border: 1px solid $accent-color
+            color: darken($accent-color, 30%)
+            border: 1px solid darken($accent-color, 30%)
             border-radius: 3px
+            padding: 0 1rem
 
         &.over18wrapper
 
@@ -1063,7 +1072,7 @@ $over18-border-color: #ea4335
               img.small(alt="foo", src="{displayposts[i].preview.img.default}")
               p.small(class:curr="{index === i}") {i+1}
           +if('filterValue')
-            span.btn.deepsearch(on:click='{function() {gotoDeepSearch()}}')
+            span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{function() {gotoDeepSearch()}}')
               p deep search 🡒
 
   .prefetch
