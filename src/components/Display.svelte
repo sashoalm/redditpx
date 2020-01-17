@@ -271,10 +271,8 @@ function next() {
     return;
   }
 
-  index += 1;
-
   // Auto trigger on the last 4th item
-  if (itemNum === 4) {
+  if ((itemNum === 4) || (itemNum === 3)) {
     console.log("[4th last item, normal]: loading more ..");
     loadMore();
   }
@@ -284,10 +282,12 @@ function next() {
   // trigger a load more. We dont want to do it always since
   // we normally trigger loadmore @3rd last item. Always doing it
   // Would end up with 2 requests to reddit.com
-  if (((itemNum === 3) || ( itemNum === 2)) && filterValue) {
+  if (itemNum === 2 && filterValue) {
     console.log("[2nd last item, filtering?]: loading more ..");
     loadMore();
   }
+
+  index += 1;
 
   if ($autoplay) stopAndStartAutoPlay();
 }
