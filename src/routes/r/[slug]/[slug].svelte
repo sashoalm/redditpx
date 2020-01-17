@@ -29,20 +29,11 @@ export let posts = [];
 export let after;
 export let slugstr;
 
-beforeUpdate(async () => {
-  console.log("[slug]: beforeUpdate");
-});
+// Load `selected` from localstorage
+for (let p of posts) {
+  p["selected"] = !!$selected[p.url];
+}
 
-afterUpdate(async () => {
-  console.log("[slug]: afterUpdate");
-});
-
-onMount(async () => {
-  // Load `selected` from localstorage
-  for (let post of posts) {
-    post["selected"] = !!$selected[post.url];
-  }
-});
 </script>
 
 <template lang="pug">
