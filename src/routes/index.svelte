@@ -1,24 +1,20 @@
 <script context="module">
-	export async function preload({ path, params, query }) {
-    console.log('preload-before', params.slug)
+export async function preload({ path, params, query }) {
+  if (typeof window === "undefined") return;
 
-    if (typeof window === 'undefined') return
+  let slugstr = "";
+  let { posts, after } = await get_posts(
+    `https://reddit.com/${slugstr}.json?${queryp(query)}`
+  );
 
-    let slugstr = ''
-
-    let { posts, after } = await get_posts(
-      `https://reddit.com/${slugstr}.json?${queryp(query)}`
-    );
-
-    return {posts: posts, after: after, slugstr: slugstr}
-
-  }
+  return { posts: posts, after: after, slugstr: slugstr };
+}
 </script>
 <script>
-import Display from '../components/Display.svelte'
+import Display from "../components/Display.svelte";
 
 import { stores } from "@sapper/app";
-import { onMount, beforeUpdate, afterUpdate} from "svelte";
+import { onMount, beforeUpdate, afterUpdate } from "svelte";
 
 import { get_posts, queryp } from "../_utils";
 
@@ -28,26 +24,23 @@ const { slug } = $page.params;
 import { selected } from "../_prefs";
 selected.useLocalStorage({});
 
-export let posts = []
-export let after
-export let slugstr
+export let posts = [];
+export let after;
+export let slugstr;
 
 beforeUpdate(async () => {
-  console.log('[slug]: beforeUpdate')
-  })
+  console.log("[slug]: beforeUpdate");
+});
 
 afterUpdate(async () => {
-  console.log('[slug]: afterUpdate')
-  })
+  console.log("[slug]: afterUpdate");
+});
 
 onMount(async () => {
-
   // Load `selected` from localstorage
   for (let post of posts) {
     post["selected"] = !!$selected[post.url];
   }
-
-
 });
 </script>
 
