@@ -92,7 +92,7 @@ async function loadMore() {
   ));
 
   // load `selected` from localstorage
-  for (let p of posts) {
+  for (let p of newposts) {
     p["selected"] = !!$selected[p.url];
   }
 
@@ -103,7 +103,9 @@ async function loadMore() {
   );
 }
 
+
 onMount(async () => {
+
   // Start autoplay by default
   if ($autoplay) {
     startAutoPlay();
@@ -350,10 +352,14 @@ function openMedia() {
 }
 
 function openSubReddit() {
+  ahref(`/r/${currpost.subreddit}`)
+}
+
+function openComments() {
   window.open(`https://reddit.com/${currpost.permalink}`, "_blank");
 }
 
-function openSubRedditOld() {
+function openCommentsOld() {
   window.open(`https://old.reddit.com/${currpost.permalink}`, "_blank");
 }
 
@@ -434,12 +440,12 @@ function keydown(event) {
 
   // r
   if (event.keyCode == 82) {
-    openSubReddit();
+    openComments();
   }
 
   // o
   if (event.keyCode == 79) {
-    openSubRedditOld();
+    openCommentsOld();
   }
 
   // i
@@ -629,6 +635,15 @@ $over18-border-color: #ea4335
       max-width: 500px
       padding: 1rem
       border-radius: 3px
+
+      .subreddit
+        font-size: 1rem
+        cursor: pointer
+        color: darken($text-color, 30%)
+        width: fit-content
+
+        &:hover
+          color: $text-color
 
       .fav
         user-select: none
@@ -955,6 +970,8 @@ $over18-border-color: #ea4335
         span.fav(on:click|stopPropagation|preventDefault="{function(){toggleSelected()}}")
           Icon(icon="{currpost.selected ? faFav : faUnFav}")
       | {currpost.title}
+      +if('currpost.subreddit')
+        .subreddit(on:click='{function(){openSubReddit()}}') {currpost.subredditp}
     .settings(class:hide="{uiVisible == false}")
       span.btn(on:click='{function() { toggleSettings()}}', class:showSettings='{showSettings}')
         Icon(icon="{faSettings}")

@@ -99,6 +99,8 @@ export async function format(item) {
   let formatted = {
     id: item.data.id,
     title: item.data.title,
+    subreddit: item.data.subreddit,
+    subredditp: item.data.subreddit_name_prefixed,
     permalink: item.data.permalink,
     over18: item.data.over_18,
     is_video: is_video(item),
