@@ -10,7 +10,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
 
 import { onMount, tick } from "svelte";
-  import {goto as ahref} from "@sapper/app"
+import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
 
@@ -20,7 +20,7 @@ selected.useLocalStorage({});
 over18.useLocalStorage(true);
 
 export let params, slugstr;
-export let posts
+export let posts;
 export let after;
 
 let data;
@@ -104,7 +104,6 @@ async function loadMore() {
 }
 
 onMount(async () => {
-
   // Start autoplay by default
   if ($autoplay) {
     startAutoPlay();
@@ -258,7 +257,6 @@ function videoended() {
 }
 
 function next() {
-
   let itemNum = displayposts.length - 1 - index;
 
   // Last item, dont go past the last item
@@ -272,7 +270,7 @@ function next() {
   }
 
   // Auto trigger on the last 4th item
-  if ((itemNum === 4) || (itemNum === 3)) {
+  if (itemNum === 4 || itemNum === 3) {
     console.log("[4th last item, normal]: loading more ..");
     loadMore();
   }
@@ -311,14 +309,16 @@ function toggleSettings() {
 }
 
 function gotoDeepSearch() {
-  let prefix = ''
-  if(slugstr) {
-    prefix = `/${slugstr}`
-  }else {
-    prefix = ``
+  let prefix = "";
+  if (slugstr) {
+    prefix = `/${slugstr}`;
+  } else {
+    prefix = ``;
   }
 
-  ahref(`${prefix}/search?q=${filterValue}&restrict_sr=on&include_over_18=on&sort=relevant&t=all`)
+  ahref(
+    `${prefix}/search?q=${filterValue}&restrict_sr=on&include_over_18=on&sort=relevant&t=all`
+  );
 }
 
 function hideSettings() {
