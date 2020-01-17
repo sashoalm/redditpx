@@ -976,19 +976,19 @@ $over18-border-color: #ea4335
     .control.prev(on:click="{prev}")
     .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}")
       +if('displayposts.length')
-        span.fav(on:click|stopPropagation|preventDefault="{function(){toggleSelected()}}")
+        span.fav(on:click|stopPropagation|preventDefault="{toggleSelected}")
           Icon(icon="{currpost.selected ? faFav : faUnFav}")
       | {currpost.title}
       +if('currpost.subreddit')
-        .subreddit(on:click='{function(){openSubReddit()}}') {currpost.subredditp}
+        .subreddit(on:click='{openSubReddit}') {currpost.subredditp}
     .settings(class:hide="{uiVisible == false}")
-      span.btn(on:click='{function() { toggleSettings()}}', class:showSettings='{showSettings}')
+      span.btn(on:click='{toggleSettings}', class:showSettings='{showSettings}')
         Icon(icon="{faSettings}")
       .settingspanel(class:showSettings='{showSettings}')
         .head
           Icon(icon="{faSettings}")
           | Settings
-        .close(on:click='{function(){ hideSettings()}}')
+        .close(on:click='{hideSettings}')
           Icon(icon="{faClose}")
         .contents
           .nav
@@ -1035,18 +1035,18 @@ $over18-border-color: #ea4335
           span.btn.playpause.tooltip(
             data-tooltip="{autoplaystr}",
             class:play="{$autoplay}",
-            on:click="{function(){toggleAutoPlay()}}"
+            on:click="{toggleAutoPlay}"
           )
             Icon(icon="{$autoplay ? faPause : faPlay}")
           span.btn.download.tooltip(
-            on:click="{function(){downloadFiles()}}",
+            on:click="{downloadFiles}",
             data-tooltip="{downloadstr}",
             class:dlready="{numSelected}"
           )
             Icon(icon="{faDownload}")
           span.btn.filter.tooltip(
             class:filterExpanded="{filterExpanded}",
-            on:click="{function(){toggleFilter()}}",
+            on:click="{toggleFilter}",
             data-tooltip="Filter ( / )",
             bind:this='{filterRef}'
             class:dlready="{numSelected}"
@@ -1058,7 +1058,7 @@ $over18-border-color: #ea4335
           span.btn.over18wrapper.tooltip(
             data-tooltip="{over18str}",
             class:over18="{!$over18}",
-            on:click="{function(){toggleOver18()}}"
+            on:click="{toggleOver18}"
           )
             p nsfw
         .numswrapper
@@ -1072,7 +1072,7 @@ $over18-border-color: #ea4335
               img.small(alt="foo", src="{displayposts[i].preview.img.default}")
               p.small(class:curr="{index === i}") {i+1}
           +if('filterValue')
-            span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{function() {gotoDeepSearch()}}')
+            span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
               p deep search 🡒
 
   .prefetch
