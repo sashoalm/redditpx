@@ -259,7 +259,7 @@ function videoended() {
 
 function next() {
 
-  let itemNum = displayposts.length - index
+  let itemNum = displayposts.length - 1 - index;
 
   // Last item, dont go past the last item
   if (itemNum === 1) {
