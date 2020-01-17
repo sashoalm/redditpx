@@ -632,7 +632,7 @@ $over18-border-color: #ea4335
       background-color: rgba(0, 0, 0, 0.4)
       color: $text-color
       font-size: 1.5rem
-      max-width: 500px
+      max-width: 90%
       padding: 1rem
       border-radius: 3px
 
