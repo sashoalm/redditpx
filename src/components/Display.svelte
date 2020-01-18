@@ -11,6 +11,8 @@ import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
 import { faSync } from "@fortawesome/free-solid-svg-icons/faSync";
 import { faExclamationTriangle as faLoadError } from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons/faSpinner";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons/faPlusCircle";
+import { faMinusCircle } from "@fortawesome/free-solid-svg-icons/faMinusCircle";
 
 import Settings from './Settings.svelte'
 
@@ -19,10 +21,11 @@ import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
 
-import { autoplay, selected, over18 } from "../_prefs";
+import { autoplay, selected, over18, multireddit } from "../_prefs";
 autoplay.useLocalStorage(true);
 selected.useLocalStorage({});
 over18.useLocalStorage(true);
+multireddit.useLocalStorage({});
 
 export let params, slugstr;
 export let posts;
@@ -34,6 +37,17 @@ let res;
 let uiVisible = true;
 let numSelected;
 let tinygoto;
+
+let ismultireddit
+
+$ : {
+  // This tends to run on the server, where there is no localstorage
+  if (typeof window !== "undefined") {
+  ismultireddit = $multireddit[currpost.subreddit]
+  multiredditstr = ismultireddit ? "remove from multi" : "add to multi"
+  }
+
+  }
 
 $: {
   if (gotoElWidth > 1000) {
@@ -68,6 +82,7 @@ let downloadstr = "";
 let autoplaystr = "";
 let over18str = "";
 let deepsearchstr = "";
+let multiredditstr = "";
 
 let autoplayinterval = 3;
 let autoplaytimer;
@@ -361,6 +376,11 @@ function openMedia() {
   window.open(currpost.url, "_blank");
 }
 
+function toggleMultireddit() {
+  console.log('adding to multi', currpost.subreddit)
+  $multireddit[currpost.subreddit] = !$multireddit[currpost.subreddit]
+}
+
 function openSubReddit() {
   if (slugstr != currpost.subredditp) {
     ahref(`/r/${currpost.subreddit}`);
@@ -497,6 +517,8 @@ $selected-color: #fbbc04
 $selected-border-color: #e37400
 $over18-color: #ea4335
 $over18-border-color: #ea4335
+$ismulti-color: #ea4335
+$isnotmulti-color: #34a853
 
 .hide
   display: none !important
@@ -553,9 +575,25 @@ $over18-border-color: #ea4335
         cursor: pointer
         color: darken($text-color, 30%)
         width: fit-content
+        user-select: none
 
         &:hover
           color: $text-color
+
+        .subredditwrapper
+          display: inline-block
+          margin-left: 7px
+          top: 3px
+          position: relative
+          opacity: 0.5
+
+          &:hover.ismulti
+            color: $ismulti-color
+            opacity: 1
+
+          &:hover
+            color: $isnotmulti-color
+            opacity: 1
 
       .fav
         user-select: none
@@ -853,9 +891,12 @@ $over18-border-color: #ea4335
     padding: 5px 4px
     width: 60px
     border-radius: 3px
-    background-color: #000
-    background-color: hsla(0, 0%, 20%, 0.9)
+    background-color: black
     color: #fff
+
+    background-color: rgba(white, 90%)
+    color: black
+
     content: attr(data-tooltip)
     text-align: center
     font-size: 0.8rem
@@ -898,6 +939,8 @@ $over18-border-color: #ea4335
       | {currpost.title}
       +if('currpost.subreddit')
         .subreddit(on:click='{openSubReddit}') {currpost.subredditp}
+          .subredditwrapper.tooltip(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
+            Icon(icon="{ismultireddit ? faMinusCircle : faPlusCircle}")
     .settings(class:hide="{uiVisible == false}")
       span.btn(on:click='{toggleSettings}', class:showSettings='{showSettings}')
         Icon(icon="{faSettings}")

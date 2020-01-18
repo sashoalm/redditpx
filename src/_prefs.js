@@ -27,3 +27,4 @@ const store = (key, initialValue) => {
 export const autoplay = store("autoplay");
 export const selected = store("selected");
 export const over18 = store("over18");
+export const multireddit = store("multireddit");
