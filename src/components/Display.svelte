@@ -52,14 +52,6 @@ $: {
   }
 }
 
-//let gotoEl
-//$: {
-//    let gotoElWidth = gotoEl.clientWidth - (getComputedStyle(gotoEl).paddingLeft + getComputedStyle(gotoEl).paddingRight)
-//    let gotoControls = gotoElWidth / 32
-//    numPostsOver50 = (gotoControls / displayposts.length ) > 2
-//    console.log('width: ', gotoElWidth, 'controls: ', gotoControls, 'posts ', displayposts.length, 'rows: ', gotoControls / displayposts.length)
-//  }
-
 let gotoElWidth;
 
 let downloadstr = "";
@@ -265,12 +257,13 @@ function next() {
   let itemNum = displayposts.length - 1 - index;
 
   // Last item, dont go past the last item
-  if (itemNum === 1) {
+  if (itemNum <= 1) {
     index = displayposts.length - 1;
 
     console.log("[lastitem, autoplay+filter?]: loading more ..");
     // Reached last item, possibly by autoplay + filter
     loadMore();
+
     return;
   }
 
@@ -413,7 +406,6 @@ function toggleSelected() {
 }
 
 function keydown(event) {
-  console.log(event.keyCode);
 
   // q, p
   if (event.keyCode == 81 || event.keyCode == 80) {
@@ -424,7 +416,6 @@ function keydown(event) {
   if (event.keyCode == 191 || event.keyCode == 70) {
     expandFilter();
     // We need this, otherwise filter box will have '/' because of autofocus
-    console.log("preventDefault");
     event.preventDefault();
   }
 
