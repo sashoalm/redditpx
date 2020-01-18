@@ -2,7 +2,12 @@
 import Icon from "fa-svelte";
 import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
 
-import Settings from '../components/Settings.svelte'
+import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
+import { faEye as faSlideshow } from "@fortawesome/free-solid-svg-icons/faEye";
+
+import Settings from "../components/Settings.svelte";
+
+import { goto as ahref } from "@sapper/app";
 
 import { selected, multireddit } from "../_prefs";
 selected.useLocalStorage({});
@@ -14,12 +19,22 @@ function toggleSettings() {
   showSettings = !showSettings;
 }
 
-let displayposts = []
-let mreddits = []
+let displayposts = [];
+let mreddits = [];
 
-$ : displayposts = $selected ? Object.entries($selected) : [];
-$ : mreddits = $multireddit ? Object.entries($multireddit) : []
+$: displayposts = $selected ? Object.entries($selected) : [];
+$: mreddits = $multireddit ? Object.entries($multireddit) : [];
+$: slideshowurl = $multireddit
+  ? `/r/${Object.keys($multireddit).join("+")}`
+  : "";
 
+async function downloadFiles() {
+  window.open("/download", "_blank");
+}
+
+function openSlideshow() {
+  ahref(slideshowurl);
+}
 </script>
 
 <style lang="sass">
@@ -53,6 +68,7 @@ $over18-border-color: #ea4335
     justify-items: center
     align-items: center
     grid-auto-rows: max-content
+    grid-row-gap: 3rem
     padding-top: 5rem
 
     .settings
@@ -107,6 +123,14 @@ $over18-border-color: #ea4335
       .heading
         font-size: 1.5rem
 
+        .icon
+          top: 3px
+          position: relative
+          margin-left: 8px
+
+          &.selected
+            color: $selected-color
+
       .items
         display: grid
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
@@ -126,6 +150,57 @@ $over18-border-color: #ea4335
 
           &:hover
             background-color: rgba(white, 20%)
+
+.tooltip
+  position: relative
+  z-index: 2
+  cursor: pointer
+
+.tooltip
+  &:before, &:after
+    visibility: hidden
+    opacity: 0
+    pointer-events: none
+
+  &:before
+    position: absolute
+    bottom: 120%
+    left: 50%
+    margin-bottom: 5px
+    margin-left: -30px
+    padding: 5px 4px
+    width: 60px
+    border-radius: 3px
+    background-color: black
+    color: #fff
+
+    background-color: rgba(white, 90%)
+    color: black
+
+    content: attr(data-tooltip)
+    text-align: center
+    font-size: 0.8rem
+    line-height: 1.2
+
+  &:after
+    position: absolute
+    bottom: 120%
+    left: 50%
+    margin-left: -5px
+    width: 0
+    border-top: 5px solid #000
+    border-top: 5px solid hsla(0, 0%, 20%, 0.9)
+    border-right: 5px solid transparent
+    border-left: 5px solid transparent
+    content: " "
+    font-size: 0
+    line-height: 0
+
+  &:hover
+    &:before, &:after
+      visibility: visible
+      opacity: 1
+
 </style>
 
 <template lang="pug">
@@ -140,14 +215,21 @@ $over18-border-color: #ea4335
         Icon(icon="{faSettings}")
       Settings('{showSettings}')
     .block.multireddit
-      .heading Multireddit
+      .heading Multireddit {"(" + mreddits.length + ")"}
+        +if('mreddits.length')
+          span.icon.tooltip(on:click="{openSlideshow}", data-tooltip="start slideshow", class:selected='{mreddits.length}')
+            Icon(icon="{faSlideshow}")
       .items
         +each('mreddits as [mreddit, mrdetails]')
           .item(style='background-image: url("{mrdetails.preview}")' )
             span {"r/" + mreddit}
     .block.favs
-      .heading Favorites
+      .heading Favorites {"(" + displayposts.length + ")"}
+        +if('displayposts.length')
+          span.icon.tooltip(on:click="{downloadFiles}", data-tooltip="download all", class:selected='{displayposts.length}')
+            Icon(icon="{faDownload}")
       .items
         +each('displayposts as [url, post]')
-          .item {url}
+          .item(style='background-image: url("{post.preview.img.default}")' )
+            span {"r/" + post.subreddit}
 </template>

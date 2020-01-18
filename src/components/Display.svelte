@@ -383,12 +383,14 @@ function toggleMultireddit() {
     $multireddit[currpost.subreddit] = undefined;
     $multireddit = JSON.parse(JSON.stringify($multireddit));
 
+
   }
   else {
     $multireddit[currpost.subreddit] = {
       preview: currpost.preview.img.default
     }
   }
+    multireddit.set($multireddit)
 }
 
 function openSubReddit() {
