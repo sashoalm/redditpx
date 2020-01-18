@@ -502,9 +502,6 @@ $over18-border-color: #ea4335
     justify-items: center
     align-items: center
 
-    .error
-      z-index: 10
-
     .settings
       z-index: 10
       position: absolute
@@ -706,6 +703,25 @@ $over18-border-color: #ea4335
         text-align: center
         padding-top: 2px
         color: rgba(white, 30%)
+
+        &.reload
+          bottom: 2px
+          cursor: pointer
+          justify-self: center
+          grid-column: span 3
+
+          &:hover p
+            color: $accent-color
+            border: 1px solid $accent-color
+
+          p
+            margin: 0
+            font-size: 0.9rem
+            color: darken($accent-color, 30%)
+            border: 1px solid darken($accent-color, 30%)
+            border-radius: 3px
+            padding: 0 1rem
+
 
         &.deepsearch
           grid-column: span 4
@@ -959,11 +975,6 @@ $over18-border-color: #ea4335
 <template lang="pug">
 .wrapper
   .hero
-    +if('res && !res.res.ok')
-      .error
-        input(bind:value='{errorinputValue}', on:keydown|stopPropagation)
-        a(href="{'/r/' + errorinputValue}") click
-        a(href="/r/gifs") gifs
     .control.prev(on:click="{prev}")
     .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}")
       +if('displayposts.length')
@@ -1065,7 +1076,9 @@ $over18-border-color: #ea4335
           +if('filterValue')
             span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
               p deep search 🡒
-
+          +if('res && !res.res.ok')
+            span.btn.reload.tooltip(data-tooltip="reload", on:click='{loadMore}')
+              p reload
   .prefetch
     +each('nexturls as nexturl')
       img(alt="prefetch", src="{nexturl.preview.img.default}")
