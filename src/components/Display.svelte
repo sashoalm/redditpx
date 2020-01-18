@@ -8,6 +8,9 @@ import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
+import { faSync } from "@fortawesome/free-solid-svg-icons/faSync";
+import { faExclamationTriangle as faLoadError} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons/faSpinner";
 
 import { onMount, tick } from "svelte";
 import { goto as ahref } from "@sapper/app";
@@ -54,6 +57,10 @@ $: {
 
 let gotoElWidth;
 
+$: loadError = res && !res.res.ok
+let loading = false
+let reloadstr = "load more"
+
 let downloadstr = "";
 let autoplaystr = "";
 let over18str = "";
@@ -78,6 +85,9 @@ let errorinputValue = slugstr;
 async function loadMore() {
   if (!after) return;
 
+  loading = true
+  reloadstr = "loading .."
+
   let newposts;
 
   ({ posts: newposts, after, ...res } = await get_posts(
@@ -94,6 +104,9 @@ async function loadMore() {
     (r, i) => (!r.some(j => i.id === j.id) ? [...r, i] : r),
     []
   );
+
+  loading = false
+  reloadstr = "load more"
 }
 
 
@@ -696,6 +709,9 @@ $over18-border-color: #ea4335
           p
             display: none
 
+          .reload
+            grid-column: span 2
+
       .btnwrapper, .numswrapper
         display: contents
 
@@ -705,23 +721,14 @@ $over18-border-color: #ea4335
         color: rgba(white, 30%)
 
         &.reload
-          bottom: 2px
           cursor: pointer
           justify-self: center
-          grid-column: span 3
 
-          &:hover p
-            color: $accent-color
-            border: 1px solid $accent-color
+          &.loaderror
+            color: $over18-color
 
-          p
-            margin: 0
-            font-size: 0.9rem
-            color: darken($accent-color, 30%)
-            border: 1px solid darken($accent-color, 30%)
-            border-radius: 3px
-            padding: 0 1rem
-
+          @include hover()
+            color: white
 
         &.deepsearch
           grid-column: span 4
@@ -1077,9 +1084,11 @@ $over18-border-color: #ea4335
           +if('filterValue')
             span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
               p deep search 🡒
-          +if('res && !res.res.ok')
-            span.btn.reload.tooltip(data-tooltip="reload", on:click='{loadMore}')
-              p reload
+          span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
+            +if('loading')
+              Icon(icon="{faSpinner}")
+              +else()
+                Icon(icon="{faSync}")
   .prefetch
     +each('nexturls as nexturl')
       img(alt="prefetch", src="{nexturl.preview.img.default}")
