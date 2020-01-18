@@ -9,7 +9,7 @@ import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
 import { faSync } from "@fortawesome/free-solid-svg-icons/faSync";
-import { faExclamationTriangle as faLoadError} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
+import { faExclamationTriangle as faLoadError } from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons/faSpinner";
 
 import { onMount, tick } from "svelte";
@@ -57,10 +57,10 @@ $: {
 
 let gotoElWidth;
 
-$: loadError = res && !res.res.ok
-let loading = false
-let reloadstr = "load more"
-let navigation = false
+$: loadError = res && !res.res.ok;
+let loading = false;
+let reloadstr = "load more";
+let navigation = false;
 
 let downloadstr = "";
 let autoplaystr = "";
@@ -86,8 +86,8 @@ let errorinputValue = slugstr;
 async function loadMore() {
   if (!after) return;
 
-  loading = true
-  reloadstr = "loading .."
+  loading = true;
+  reloadstr = "loading ..";
 
   let newposts;
 
@@ -106,13 +106,11 @@ async function loadMore() {
     []
   );
 
-  loading = false
-  reloadstr = "load more"
+  loading = false;
+  reloadstr = "load more";
 }
 
-
 onMount(async () => {
-
   // Start autoplay by default
   if ($autoplay) {
     startAutoPlay();
@@ -193,7 +191,6 @@ $: {
     nexturls = displayposts.slice(index + 1, index + 4);
   } else if (filterValue) {
     // We're here because user filtered the list
-
 
     // Unfortunately the filtered list is smaller than the current index
     // set index to last item
@@ -328,7 +325,7 @@ function gotoDeepSearch() {
     prefix = ``;
   }
 
-  navigation = true
+  navigation = true;
   ahref(
     `${prefix}/search?q=${filterValue}&restrict_sr=on&include_over_18=on&sort=relevant&t=all`
   );
@@ -363,9 +360,8 @@ function openMedia() {
 }
 
 function openSubReddit() {
-  if (slugstr != currpost.subredditp)  {
-
-    ahref(`/r/${currpost.subreddit}`)
+  if (slugstr != currpost.subredditp) {
+    ahref(`/r/${currpost.subreddit}`);
   }
 }
 
@@ -414,7 +410,7 @@ function toggleSelected() {
     $selected[url] = displayposts[index];
     selected.set($selected);
   } else {
-    // setting a value in javascript which after JSON.parse(JSON.stringify(d)) removes it
+    // setting a value in js which after JSON.parse(JSON.stringify(d)) removes it
 
     $selected[url] = undefined;
     $selected = JSON.parse(JSON.stringify($selected));
@@ -424,7 +420,6 @@ function toggleSelected() {
 }
 
 function keydown(event) {
-
   // q, p
   if (event.keyCode == 81 || event.keyCode == 80) {
     toggleAutoPlay();
