@@ -364,6 +364,7 @@ function openMedia() {
 
 function openSubReddit() {
   if (slugstr != currpost.subredditp)  {
+
     ahref(`/r/${currpost.subreddit}`)
   }
 }
