@@ -9,13 +9,13 @@ const dev = NODE_ENV === "development";
 polka() // You can also use Express
   .use(
     compression({ threshold: 0 }),
-    (req, res, next) => {
-      if (req.path == "/") {
-        console.log("\n\n");
-      }
-      console.log(req.method, req.path);
-      next();
-    },
+    //(req, res, next) => {
+    //  if (req.path == "/") {
+    //    console.log("\n\n");
+    //  }
+    //  console.log(req.method, req.path);
+    //  next();
+    //},
     sirv("static", { dev }),
     sapper.middleware()
   )
