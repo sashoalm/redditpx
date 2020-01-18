@@ -983,6 +983,7 @@ $over18-border-color: #ea4335
       | {currpost.title}
       +if('currpost.subreddit')
         .subreddit(on:click='{openSubReddit}') {currpost.subredditp}
+          +if('res') {res.res.ok}
     .settings(class:hide="{uiVisible == false}")
       span.btn(on:click='{toggleSettings}', class:showSettings='{showSettings}')
         Icon(icon="{faSettings}")
