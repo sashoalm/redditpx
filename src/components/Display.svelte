@@ -42,7 +42,7 @@ let ismultireddit
 
 $ : {
   // This tends to run on the server, where there is no localstorage
-  if (typeof window !== "undefined") {
+  if ($multireddit) {
   ismultireddit = $multireddit[currpost.subreddit]
   multiredditstr = ismultireddit ? "remove from multi" : "add to multi"
   }
@@ -377,8 +377,18 @@ function openMedia() {
 }
 
 function toggleMultireddit() {
-  console.log('adding to multi', currpost.subreddit)
-  $multireddit[currpost.subreddit] = !$multireddit[currpost.subreddit]
+
+  if ($multireddit.hasOwnProperty(currpost.subreddit)) {
+
+    $multireddit[currpost.subreddit] = undefined;
+    $multireddit = JSON.parse(JSON.stringify($multireddit));
+
+  }
+  else {
+    $multireddit[currpost.subreddit] = {
+      preview: currpost.preview.img.default
+    }
+  }
 }
 
 function openSubReddit() {

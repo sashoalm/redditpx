@@ -4,11 +4,21 @@ import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
 
 import Settings from '../components/Settings.svelte'
 
+import { selected, multireddit } from "../_prefs";
+selected.useLocalStorage({});
+multireddit.useLocalStorage({});
+
 let showSettings = false;
 
 function toggleSettings() {
   showSettings = !showSettings;
 }
+
+let displayposts = []
+let mreddits = []
+
+$ : displayposts = $selected ? Object.entries($selected) : [];
+$ : mreddits = $multireddit ? Object.entries($multireddit) : []
 
 </script>
 
@@ -39,11 +49,11 @@ $over18-border-color: #ea4335
   .hero
     height: 100vh
     width: 100%
-
-    grid-template-columns: auto
     display: grid
     justify-items: center
     align-items: center
+    grid-auto-rows: max-content
+    padding-top: 5rem
 
     .settings
       z-index: 10
@@ -64,7 +74,6 @@ $over18-border-color: #ea4335
 
         @include hover()
           color: white
-
 
     .title
       z-index: 10
@@ -89,7 +98,34 @@ $over18-border-color: #ea4335
 
         img
           height: 2rem
+    .block
+      color: $text-color
+      padding: 1rem
+      width: 100%
+      align-self: start
 
+      .heading
+        font-size: 1.5rem
+
+      .items
+        display: grid
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
+        grid-gap: 10px
+        margin-top: 5px
+
+        .item
+          padding: 1rem
+          height: 10rem
+          background-size: cover
+          background-position: center
+
+          span
+            background-color: black
+            padding: 0.3rem
+            border-radius: 3px
+
+          &:hover
+            background-color: rgba(white, 20%)
 </style>
 
 <template lang="pug">
@@ -103,4 +139,15 @@ $over18-border-color: #ea4335
       span.btn(on:click='{toggleSettings}', class:showSettings='{showSettings}')
         Icon(icon="{faSettings}")
       Settings('{showSettings}')
+    .block.multireddit
+      .heading Multireddit
+      .items
+        +each('mreddits as [mreddit, mrdetails]')
+          .item(style='background-image: url("{mrdetails.preview}")' )
+            span {"r/" + mreddit}
+    .block.favs
+      .heading Favorites
+      .items
+        +each('displayposts as [url, post]')
+          .item {url}
 </template>
