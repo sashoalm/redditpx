@@ -60,6 +60,7 @@ let gotoElWidth;
 $: loadError = res && !res.res.ok
 let loading = false
 let reloadstr = "load more"
+let navigation = false
 
 let downloadstr = "";
 let autoplaystr = "";
@@ -327,6 +328,7 @@ function gotoDeepSearch() {
     prefix = ``;
   }
 
+  navigation = true
   ahref(
     `${prefix}/search?q=${filterValue}&restrict_sr=on&include_over_18=on&sort=relevant&t=all`
   );
@@ -361,7 +363,9 @@ function openMedia() {
 }
 
 function openSubReddit() {
-  ahref(`/r/${currpost.subreddit}`)
+  if (slugstr != currpost.subredditp)  {
+    ahref(`/r/${currpost.subreddit}`)
+  }
 }
 
 function openComments() {
@@ -990,7 +994,6 @@ $over18-border-color: #ea4335
       | {currpost.title}
       +if('currpost.subreddit')
         .subreddit(on:click='{openSubReddit}') {currpost.subredditp}
-          +if('res') {res.res.ok}
     .settings(class:hide="{uiVisible == false}")
       span.btn(on:click='{toggleSettings}', class:showSettings='{showSettings}')
         Icon(icon="{faSettings}")
