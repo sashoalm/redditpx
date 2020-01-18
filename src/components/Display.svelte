@@ -910,7 +910,6 @@ $over18-border-color: #ea4335
             source(src="{currpost.preview.vid.webm}")
           +if('currpost.preview.vid.mp4')
             source(src="{currpost.preview.vid.mp4}")
-          //img(alt="foo", src='{currpost.preview.vid.gif}')
 
     .control.next(on:click="{next}")
     +if('displayposts.length || posts.length')
@@ -928,6 +927,12 @@ $over18-border-color: #ea4335
             class:dlready="{numSelected}"
           )
             Icon(icon="{faDownload}")
+          +if('tinygoto')
+            span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
+              +if('loading')
+                Icon(icon="{faSpinner}")
+                +else()
+                  Icon(icon="{faSync}")
           span.btn.filter.tooltip(
             class:filterExpanded="{filterExpanded}",
             on:click="{toggleFilter}",
@@ -958,11 +963,12 @@ $over18-border-color: #ea4335
           +if('filterValue')
             span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
               p deep search 🡒
-          span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
-            +if('loading')
-              Icon(icon="{faSpinner}")
-              +else()
-                Icon(icon="{faSync}")
+          +if('!tinygoto')
+            span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
+              +if('loading')
+                Icon(icon="{faSpinner}")
+                +else()
+                  Icon(icon="{faSync}")
   .prefetch
     +each('nexturls as nexturl')
       img(alt="prefetch", src="{nexturl.preview.img.default}")
