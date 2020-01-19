@@ -18,6 +18,16 @@ multireddit.useLocalStorage({});
 
 let showSettings = false;
 
+let exploreSubreddits = [
+  { color: "lightpink", url: "r/pics" },
+  { color: "lightsalmon", url: "r/aww" },
+  { color: "peachpuff", url: "r/wallpapers" },
+  { color: "lavender", url: "r/earthporn" },
+  { color: "palegreen", url: "r/dataisbeautiful" },
+  { color: "turquoise", url: "r/oldschoolcool" },
+  { color: "wheat", url: "r/cinemagraphs"},
+];
+
 function toggleSettings() {
   showSettings = !showSettings;
 }
@@ -44,7 +54,7 @@ function removeFav(url) {
   $selected = JSON.parse(JSON.stringify($selected));
 
   selected.set($selected);
-  }
+}
 </script>
 
 <style lang="sass">
@@ -146,6 +156,10 @@ $over18-border-color: #ea4335
 
         .itemwrapper
 
+          &.explore
+            .item
+              height: 5rem
+
           &.noitems
             color: darken($text-color, 30%)
             background-color: lighten(black, 10%)
@@ -202,6 +216,7 @@ $over18-border-color: #ea4335
               height: 10rem
               background-size: cover
               background-position: center
+              border-radius: 3px
 
               & .subreddit
                 span
@@ -317,4 +332,12 @@ $over18-border-color: #ea4335
                   Icon(icon="{faFav}")
                 span or using shortcut
                 span.key x
+    .block.explore
+      .heading Explore
+      .items
+        +each('exploreSubreddits as subreddit')
+          .itemwrapper.explore
+            a(href='{`/${subreddit.url}`}', rel="prefetch")
+              .item(style='background-color: {subreddit.color}' )
+                span {subreddit.url}
 </template>
