@@ -8,6 +8,9 @@ export let showSettings;
 function hideSettings() {
   showSettings = false;
 }
+
+let activeTab = 2
+
 </script>
 <style lang="sass">
 @mixin hover()
@@ -60,6 +63,10 @@ $over18-border-color: #ea4335
       // flow items one below other
       grid-auto-flow: row
 
+      .active
+        background-color: rgba(255, 255, 255, 0.2)
+        border-bottom: 3px solid $accent-color
+
       div
         padding: 0.5rem 1rem
         border-bottom: 3px solid rgba(0, 0, 0, 0)
@@ -74,6 +81,27 @@ $over18-border-color: #ea4335
     .options
       background-color: rgba(black, 0%)
       border-left: 1px solid white
+
+      .option
+        display: none
+        padding: 0rem 1rem
+
+        .item
+          padding: 0.5rem
+          margin: 0.5rem 0
+
+          .text
+            margin-right: 10px
+
+          .key
+            color: darken($text-color, 20%)
+            margin: 0 4px
+            border: 1px solid darken($text-color, 20%)
+            border-radius: 3px
+            padding: 4px 5px
+
+      .active
+        display: block
 
   .close
     position: absolute
@@ -128,10 +156,10 @@ $over18-border-color: #ea4335
     Icon(icon="{faClose}")
   .contents
     .nav
-      div General
-      div Keybindings
+      div(class:active='{activeTab == 1}', on:click='{function(){activeTab = 1}}') General
+      div(class:active='{activeTab == 2}', on:click='{function(){activeTab = 2}}') Keybindings
     .options
-      div
+      div.option(class:active='{activeTab == 1}')
         p autoplay on/off
         p download files
         p nsfw on/off
@@ -142,18 +170,48 @@ $over18-border-color: #ea4335
         p always show hd?
         p remove duplicates
         p aggressive caching (thumb vs preview)
-      div
-        p play/pause q,p
-        p next space, right, d,  j
-        p prev left, a, k
-        p hide h
-        p fav x
-        p undofav shift-x
-        p undoallfav ctrl-shift-x
-        p undoallfav ctrl-shift-x
-        p filter /, f
-        p subreddit-old,  o
-        p subreddit-default,  r
-        p highres,  i
-        p multireddit m
+      div.option(class:active='{activeTab == 2}')
+        .item
+          span.text Play / Pause
+          span.key q
+          span.key p
+        .item
+          span.text Next item
+          span.key space
+          span.key right
+          span.key d
+          span.key j
+        .item
+          span.text Previous item
+          span.key left
+          span.key a
+          span.key k
+        .item
+          span.text Hide UI / Controls
+          span.key h
+        .item
+          span.text Toggle favorite
+          span.key x
+        .item
+          span.text Remove all current subreddit's favorites
+          span.key Shift + x
+        .item
+          span.text Remove favorites across all subreddits
+          span.key Ctrl + Shift + x
+        .item
+          span.text Filter
+          span.key /
+          span.key f
+        .item
+          span.text Open reddit (old.reddit.com)
+          span.key o
+        .item
+          span.text Open reddit
+          span.key r
+        .item
+          span.text Open high-res
+          span.key i
+        .item
+          span.text Add to multireddit
+          span.key m
 </template>
