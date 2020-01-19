@@ -150,6 +150,10 @@ $over18-border-color: #ea4335
           &:hover .icon
            opacity: 1
 
+          &:hover
+            span
+              opacity: 1 !important
+
           .icon
             position: relative
             float: right
@@ -168,10 +172,15 @@ $over18-border-color: #ea4335
               background-size: cover
               background-position: center
 
+              & .subreddit
+                span
+                  opacity: 0
+
               span
                 background-color: black
                 padding: 0.3rem
                 border-radius: 3px
+
 
 .tooltip
   position: relative
@@ -259,6 +268,6 @@ $over18-border-color: #ea4335
               Icon(icon="{faClose}")
             a(href='{post.url}', target='_blank')
               .item(style='background-image: url("{post.preview.img.default}")' )
-                a(href='{`/r/${post.subreddit}`}')
+                a.subreddit(href='{`/r/${post.subreddit}`}')
                   span {"r/" + post.subreddit}
 </template>
