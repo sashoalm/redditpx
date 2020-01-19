@@ -65,6 +65,8 @@ self.addEventListener("fetch", event => {
 
   if (event.request.cache === "only-if-cached") return;
 
+  if (event.request.destination == "image") return;
+
   // for everything else, try the network first, falling back to
   // cache if the user is offline. (If the pages never change, you
   // might prefer a cache-first approach to a network-first one.)

@@ -25,7 +25,8 @@ let exploreSubreddits = [
   { color: "lavender", url: "r/earthporn" },
   { color: "palegreen", url: "r/dataisbeautiful" },
   { color: "turquoise", url: "r/oldschoolcool" },
-  { color: "wheat", url: "r/cinemagraphs"},
+  { color: "wheat", url: "r/reactiongifs"},
+  { color: "lightskyblue", url: "r/foodporn"},
 ];
 
 function toggleSettings() {
