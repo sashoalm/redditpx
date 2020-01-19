@@ -21,7 +21,7 @@ export async function get_posts(url) {
     console.log("Formatted: ", posts.length, posts);
     return { posts: posts, after: data.data.after, res: res };
   } catch (error) {
-    console.log("oh no");
+    console.log("[get_posts]: error");
     console.log(error);
     return { posts: [], after: "", res: { ok: false, res: error } };
   }
@@ -97,7 +97,7 @@ export async function format(item) {
   }
 
   let imgs = {};
-  let vids = await vidsrc(item.data.url, item);
+  let vids = is_video(item) ? await vidsrc(item.data.url, item) : {};
   try {
     imgs = {
       default: he.decode(
