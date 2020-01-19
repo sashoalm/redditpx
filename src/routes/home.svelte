@@ -4,6 +4,7 @@ import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
 
 import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
 import { faEye as faSlideshow } from "@fortawesome/free-solid-svg-icons/faEye";
+import { faTimesCircle as faClose } from "@fortawesome/free-solid-svg-icons/faTimesCircle";
 
 import Settings from "../components/Settings.svelte";
 
@@ -35,6 +36,10 @@ async function downloadFiles() {
 function openSlideshow() {
   ahref(slideshowurl);
 }
+
+function removeFav(url) {
+  console.log('removing', url)
+  }
 </script>
 
 <style lang="sass">
@@ -102,7 +107,7 @@ $over18-border-color: #ea4335
       border-radius: 3px
       cursor: pointer
 
-      &:hover
+      @include hover()
         color: $text-color
 
       .logo
@@ -137,19 +142,33 @@ $over18-border-color: #ea4335
         grid-gap: 10px
         margin-top: 5px
 
-        .item
-          padding: 1rem
-          height: 10rem
-          background-size: cover
-          background-position: center
+        .itemwrapper
 
-          span
-            background-color: black
-            padding: 0.3rem
-            border-radius: 3px
+          &:hover .icon
+           opacity: 1
 
-          &:hover
-            background-color: rgba(white, 20%)
+          .icon
+            position: relative
+            float: right
+            margin: 1rem
+            opacity: 0
+            color: black
+            font-size: 1.3rem
+
+          a
+            color: $text-color
+            text-decoration: none
+
+            .item
+              padding: 1rem
+              height: 10rem
+              background-size: cover
+              background-position: center
+
+              span
+                background-color: black
+                padding: 0.3rem
+                border-radius: 3px
 
 .tooltip
   position: relative
@@ -221,8 +240,10 @@ $over18-border-color: #ea4335
             Icon(icon="{faSlideshow}")
       .items
         +each('mreddits as [mreddit, mrdetails]')
-          .item(style='background-image: url("{mrdetails.preview}")' )
-            span {"r/" + mreddit}
+          .itemwrapper
+            a(href='{`/r/${mreddit}`}', rel="prefetch")
+              .item(style='background-image: url("{mrdetails.preview}")' )
+                span {"r/" + mreddit}
     .block.favs
       .heading Favorites {"(" + displayposts.length + ")"}
         +if('displayposts.length')
@@ -230,6 +251,10 @@ $over18-border-color: #ea4335
             Icon(icon="{faDownload}")
       .items
         +each('displayposts as [url, post]')
-          .item(style='background-image: url("{post.preview.img.default}")' )
-            span {"r/" + post.subreddit}
+          .itemwrapper
+            span.icon.tooltip(on:click|stopPropagation|preventDefault="{function() {removeFav(url)}}", data-tooltip="remove")
+              Icon(icon="{faClose}")
+            a(href='{post.url}', target='_blank')
+              .item(style='background-image: url("{post.preview.img.default}")' )
+                span {"r/" + post.subreddit}
 </template>

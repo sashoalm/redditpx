@@ -589,7 +589,7 @@ $isnotmulti-color: #34a853
         width: fit-content
         user-select: none
 
-        &:hover
+        @include hover()
           color: $text-color
 
         .subredditwrapper
@@ -599,11 +599,12 @@ $isnotmulti-color: #34a853
           position: relative
           opacity: 0.5
 
-          &:hover.ismulti
-            color: $ismulti-color
-            opacity: 1
+          &.ismulti
+            @include hover()
+              color: $ismulti-color
+              opacity: 1
 
-          &:hover
+          @include hover()
             color: $isnotmulti-color
             opacity: 1
 
