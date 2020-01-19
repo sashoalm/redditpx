@@ -104,6 +104,7 @@ export async function format(item) {
   let formatted = {
     id: item.data.id,
     title: item.data.title,
+    thumbnail: item.data.thumbnail,
     subreddit: item.data.subreddit,
     subredditp: item.data.subreddit_name_prefixed,
     permalink: item.data.permalink,

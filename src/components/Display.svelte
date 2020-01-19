@@ -1031,7 +1031,8 @@ $isnotmulti-color: #34a853
               class:over18="{displayposts[i].over18}",
               on:click="{function(){goto(i)}}"
             )
-              img.small(alt="foo", src="{displayposts[i].preview.img.default}")
+              //img.small(alt="foo", src="{displayposts[i].preview.img.default}")
+              img.small(alt="foo", src="{displayposts[i].thumbnail}")
               p.small(class:curr="{index === i}") {i+1}
           +if('filterValue')
             span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')

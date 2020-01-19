@@ -141,6 +141,7 @@ $over18-border-color: #ea4335
         p prefetch?
         p always show hd?
         p remove duplicates
+        p aggressive caching (thumb vs preview)
       div
         p play/pause q,p
         p next space, right, d,  j
