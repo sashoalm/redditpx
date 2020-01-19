@@ -28,11 +28,15 @@ export async function get_posts(url) {
 }
 
 export function is_image(item) {
-  return item.data.url.endsWith(".jpg") || item.data.url.endsWith(".png");
+  return url(item).endsWith(".jpg") || url(item).endsWith(".png");
+}
+
+export function is_post(item) {
+  return item.kind == "t3";
 }
 
 export function filter(item) {
-  return is_image(item) || is_video(item);
+  return is_post(item) && (is_image(item) || is_video(item));
 }
 
 export function is_video(item) {
@@ -40,8 +44,7 @@ export function is_video(item) {
   return (
     item.data.is_video ||
     item.data.preview.hasOwnProperty("reddit_video_preview") ||
-    (item.data.url.startsWith("https://i.redd.it") &&
-      item.data.url.endsWith(".gif"))
+    (url(item).startsWith("https://i.redd.it") && url(item).endsWith(".gif"))
   );
 }
 
@@ -91,13 +94,21 @@ async function vidsrc(url, item) {
   }
 }
 
+function url(item) {
+  return item.data.url || item.data.link_url;
+}
+
+function title(item) {
+  return item.data.title || item.data.link_title;
+}
+
 export async function format(item) {
   if (Object.entries(item).length == 0) {
     return { title: "Loading ..", vidpreview: {} };
   }
 
   let imgs = {};
-  let vids = is_video(item) ? await vidsrc(item.data.url, item) : {};
+  let vids = is_video(item) ? await vidsrc(url(item), item) : {};
   try {
     imgs = {
       default: he.decode(
@@ -107,14 +118,14 @@ export async function format(item) {
     };
   } catch {
     imgs = {
-      default: item.data.url,
-      hires: item.data.url
+      default: url(item),
+      hires: url(item)
     };
   }
 
   let formatted = {
     id: item.data.id,
-    title: item.data.title,
+    title: title(item),
     thumbnail: item.data.thumbnail,
     subreddit: item.data.subreddit,
     subredditp: item.data.subreddit_name_prefixed,
@@ -123,7 +134,7 @@ export async function format(item) {
     is_video: is_video(item),
     is_image: is_image(item),
     favorite: false,
-    url: item.data.url,
+    url: url(item),
     preview: {
       vid: vids,
       img: imgs
