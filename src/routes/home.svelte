@@ -5,6 +5,8 @@ import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
 import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
 import { faEye as faSlideshow } from "@fortawesome/free-solid-svg-icons/faEye";
 import { faTimesCircle as faClose } from "@fortawesome/free-solid-svg-icons/faTimesCircle";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons/faPlusCircle";
+import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 
 import Settings from "../components/Settings.svelte";
 
@@ -103,15 +105,12 @@ $over18-border-color: #ea4335
       z-index: 10
       position: absolute
       top: 0
-      color: darken($text-color, 20%)
+      color: $text-color
       font-size: 1.5rem
       max-width: 90%
       padding: 1rem
       border-radius: 3px
       cursor: pointer
-
-      @include hover()
-        color: $text-color
 
       .logo
         user-select: none
@@ -147,12 +146,44 @@ $over18-border-color: #ea4335
 
         .itemwrapper
 
-          &:hover .icon
-           opacity: 1
+          &.noitems
+            color: darken($text-color, 30%)
+            background-color: lighten(black, 10%)
+            grid-column: 1 / -1
+            border-radius: 3px
+            margin-top: 1rem
 
-          &:hover
+            .item
+              padding: 4rem
+              display: flex
+              align-items: center
+              justify-content: center
+
+              .inlineicon
+                margin: 0 4px
+                top: 2px
+                position: relative
+                color: white
+
+              .key
+                color: darken($text-color, 30%)
+                margin: 0 4px
+                border: 1px solid darken($text-color, 30%)
+                border-radius: 3px
+                top: -1px
+                position: relative
+                line-height: 1.3rem
+                padding: 0 5px
+
+
+          @include hover()
+            .icon
+              opacity: 1
+
+          @include hover()
             span
               opacity: 1 !important
+
 
           .icon
             position: relative
@@ -256,6 +287,14 @@ $over18-border-color: #ea4335
             a(href='{`/r/${mreddit}`}', rel="prefetch")
               .item(style='background-image: url("{mrdetails.preview}")' )
                 span {"r/" + mreddit}
+          +else()
+            .itemwrapper.noitems
+              .item
+                span Add to multireddit using
+                span.inlineicon
+                  Icon(icon="{faPlusCircle}")
+                span or using shortcut
+                span.key m
     .block.favs
       .heading Favorites {"(" + displayposts.length + ")"}
         +if('displayposts.length')
@@ -270,4 +309,12 @@ $over18-border-color: #ea4335
               .item(style='background-image: url("{post.preview.img.default}")' )
                 a.subreddit(href='{`/r/${post.subreddit}`}')
                   span {"r/" + post.subreddit}
+          +else()
+            .itemwrapper.noitems
+              .item
+                span Add to favorites using
+                span.inlineicon
+                  Icon(icon="{faFav}")
+                span or using shortcut
+                span.key x
 </template>
