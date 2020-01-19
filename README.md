@@ -10,16 +10,7 @@ redditpx is a fast & fun way to make slideshows out of reddit.
 
 ## Features
 
-redditpx.com shares the following features with redditp.com
- - multireddit
- - autoplay on/off
- - nsfw on/off
- - direct open fullimage
- - keyboard shortcuts
- - open reddit post and comments
-
-.. and new features
-
+redditpx has the following new features
  - better mobile mode
  - hover preview
  - filtering
@@ -30,6 +21,16 @@ redditpx.com shares the following features with redditp.com
  - /r/random and /r/randnsfw
  - [ ] customizable keyboard shortcuts
 
+.. in addition to the features it shares with redditp
+
+ - multireddit
+ - autoplay on/off
+ - nsfw on/off
+ - direct open fullimage
+ - keyboard shortcuts
+ - open reddit post and comments
+ - /new, /top, /hot support
+ - /domain, /user support
 
 ## Acknowledgements
  - svelte/sapper for framework
