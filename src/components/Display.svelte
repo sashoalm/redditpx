@@ -258,7 +258,6 @@ $: {
 }
 
 function goto(i) {
-  console.log("goto");
   index = i;
 
   let itemNum = displayposts.length - index;
