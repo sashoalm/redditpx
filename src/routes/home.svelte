@@ -12,8 +12,8 @@ import Settings from "../components/Settings.svelte";
 
 import { goto as ahref } from "@sapper/app";
 
-import { selected, multireddit } from "../_prefs";
-selected.useLocalStorage({});
+import { favorite, multireddit } from "../_prefs";
+favorite.useLocalStorage({});
 multireddit.useLocalStorage({});
 
 let showSettings = false;
@@ -36,7 +36,7 @@ function toggleSettings() {
 let displayposts = [];
 let mreddits = [];
 
-$: displayposts = $selected ? Object.entries($selected) : [];
+$: displayposts = $favorite ? Object.entries($favorite) : [];
 $: mreddits = $multireddit ? Object.entries($multireddit) : [];
 $: slideshowurl = $multireddit
   ? `/r/${Object.keys($multireddit).join("+")}`
@@ -51,10 +51,10 @@ function openSlideshow() {
 }
 
 function removeFav(url) {
-  $selected[url] = undefined;
-  $selected = JSON.parse(JSON.stringify($selected));
+  $favorite[url] = undefined;
+  $favorite = JSON.parse(JSON.stringify($favorite));
 
-  selected.set($selected);
+  favorite.set($favorite);
 }
 </script>
 
@@ -69,8 +69,8 @@ $yellow: #f9ab00
 
 $text-color: #fafafa
 $accent-color: white
-$selected-color: #fbbc04
-$selected-border-color: #e37400
+$favorite-color: #fbbc04
+$favorite-border-color: #e37400
 $over18-color: #ea4335
 $over18-border-color: #ea4335
 
@@ -146,8 +146,8 @@ $over18-border-color: #ea4335
           position: relative
           margin-left: 8px
 
-          &.selected
-            color: $selected-color
+          &.favorite
+            color: $favorite-color
 
       .items
         display: grid
@@ -205,7 +205,7 @@ $over18-border-color: #ea4335
             float: right
             margin: 1.1rem
             opacity: 0
-            color: $selected-color
+            color: $favorite-color
             font-size: 1.3rem
 
           a
@@ -299,7 +299,7 @@ $over18-border-color: #ea4335
     .block.multireddit
       .heading Multireddit {"(" + mreddits.length + ")"}
         +if('mreddits.length')
-          span.icon.tooltip(on:click="{openSlideshow}", data-tooltip="start slideshow", class:selected='{mreddits.length}')
+          span.icon.tooltip(on:click="{openSlideshow}", data-tooltip="start slideshow", class:favorite='{mreddits.length}')
             Icon(icon="{faSlideshow}")
       .items
         +each('mreddits as [mreddit, mrdetails]')
@@ -318,7 +318,7 @@ $over18-border-color: #ea4335
     .block.favs
       .heading Favorites {"(" + displayposts.length + ")"}
         +if('displayposts.length')
-          span.icon.tooltip(on:click="{downloadFiles}", data-tooltip="download all", class:selected='{displayposts.length}')
+          span.icon.tooltip(on:click="{downloadFiles}", data-tooltip="download all", class:favorite='{displayposts.length}')
             Icon(icon="{faDownload}")
       .items
         +each('displayposts as [url, post]')

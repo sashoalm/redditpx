@@ -22,9 +22,9 @@ import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
 
-import { autoplay, selected, over18, multireddit } from "../_prefs";
+import { autoplay, favorite, over18, multireddit } from "../_prefs";
 autoplay.useLocalStorage(true);
-selected.useLocalStorage({});
+favorite.useLocalStorage({});
 over18.useLocalStorage(true);
 multireddit.useLocalStorage({});
 
@@ -36,7 +36,7 @@ let data;
 let displayposts = [];
 let res;
 let uiVisible = true;
-let numSelected;
+let numFavorite;
 let tinygoto;
 
 let ismultireddit
@@ -113,9 +113,9 @@ async function loadMore() {
     `https://reddit.com/${slugstr}.json?after=${after}&${queryp(params)}`
   ));
 
-  // load `selected` from localstorage
+  // load `favorite` from localstorage
   for (let p of newposts) {
-    p["selected"] = !!$selected[p.url];
+    p["favorite"] = !!$favorite[p.url];
   }
 
   // Combine `posts` and `newposts` and remove duplicates from multiple network requests
@@ -174,7 +174,7 @@ function toggleAutoPlay() {
 let renderVideo = true;
 
 // Some operations like fav/unfav causes video to re-render
-// since we're changing post.selected. This should help skip it
+// since we're changing post.favorite. This should help skip it
 let skipRenderVideo = false;
 
 $: {
@@ -188,14 +188,14 @@ function reMountVideo() {
 }
 
 $: {
-  numSelected = displayposts.filter(item => item.selected == true).length;
+  numFavorite = displayposts.filter(item => item.favorite == true).length;
 
-  if (!numSelected) {
+  if (!numFavorite) {
     downloadstr = `Nothing to download`;
-  } else if (numSelected == 1) {
-    downloadstr = `Download ${numSelected} file`;
+  } else if (numFavorite == 1) {
+    downloadstr = `Download ${numFavorite} file`;
   } else {
-    downloadstr = `Download ${numSelected} files`;
+    downloadstr = `Download ${numFavorite} files`;
   }
   autoplaystr = `Autoplay is ${$autoplay ? "on" : "off"}`;
   over18str = `nsfw is ${$over18 ? "on" : "off"}`;
@@ -412,44 +412,44 @@ function toggleOver18() {
   over18.set(!$over18);
 }
 
-function removeAllSelected(removeAllFromLocalStorage) {
+function removeAllFavorite(removeAllFromLocalStorage) {
   skipRenderVideo = true;
 
   for (const [i, post] of displayposts.entries()) {
     // For reactivity
-    displayposts[i].selected = false;
+    displayposts[i].favorite = false;
 
     // If removeAllFromLocalStorage is true, then we'll remove everythign in one shot
     // no need to do it one by one
     if (removeAllFromLocalStorage == false) {
       // Localstorage
-      $selected[post.url] = undefined;
-      $selected = JSON.parse(JSON.stringify($selected));
+      $favorite[post.url] = undefined;
+      $favorite = JSON.parse(JSON.stringify($favorite));
 
-      selected.set($selected);
+      favorite.set($favorite);
     }
   }
 
   if (removeAllFromLocalStorage) {
-    selected.set({});
+    favorite.set({});
   }
 }
-function toggleSelected() {
+function toggleFavorite() {
   skipRenderVideo = true;
-  displayposts[index].selected = !displayposts[index].selected;
+  displayposts[index].favorite = !displayposts[index].favorite;
 
   let url = displayposts[index].url;
-  if (displayposts[index].selected) {
+  if (displayposts[index].favorite) {
     // Set into localStorage
-    $selected[url] = displayposts[index];
-    selected.set($selected);
+    $favorite[url] = displayposts[index];
+    favorite.set($favorite);
   } else {
     // setting a value in js which after JSON.parse(JSON.stringify(d)) removes it
 
-    $selected[url] = undefined;
-    $selected = JSON.parse(JSON.stringify($selected));
+    $favorite[url] = undefined;
+    $favorite = JSON.parse(JSON.stringify($favorite));
 
-    selected.set($selected);
+    favorite.set($favorite);
   }
 }
 
@@ -475,9 +475,9 @@ function keydown(event) {
   // x
   if (event.keyCode == 88) {
     if (event.shiftKey) {
-      removeAllSelected(event.ctrlKey); // if ctrl+shift+x is remove everything from localstorage
+      removeAllFavorite(event.ctrlKey); // if ctrl+shift+x is remove everything from localstorage
     } else {
-      toggleSelected();
+      toggleFavorite();
     }
   }
 
@@ -531,8 +531,8 @@ $yellow: #f9ab00
 
 $text-color: #fafafa
 $accent-color: white
-$selected-color: #fbbc04
-$selected-border-color: #e37400
+$favorite-color: #fbbc04
+$favorite-border-color: #e37400
 $over18-color: #ea4335
 $over18-border-color: #ea4335
 $ismulti-color: #ea4335
@@ -625,10 +625,10 @@ $isnotmulti-color: #34a853
         margin-right: 12px
 
         @include hover()
-          color: $selected-color
+          color: $favorite-color
 
-      &.selected
-        color: $selected-color
+      &.favorite
+        color: $favorite-color
 
     .goto
       user-select: none
@@ -669,8 +669,8 @@ $isnotmulti-color: #34a853
             &.currnum
               border-bottom: 3px solid $accent-color !important
 
-            &.selected
-              border-bottom: 3px solid $selected-color
+            &.favorite
+              border-bottom: 3px solid $favorite-color
 
             &.over18
               border-bottom: 3px solid $over18-color
@@ -754,7 +754,7 @@ $isnotmulti-color: #34a853
           bottom: 2px
 
           &.dlready
-            color: rgba($selected-color, 90%)
+            color: rgba($favorite-color, 90%)
             cursor: pointer
 
             @include hover()
@@ -794,15 +794,15 @@ $isnotmulti-color: #34a853
       span
         position: relative
 
-        &.selected
+        &.favorite
 
           p.small
-            //background-color: $selected-color
-            border-bottom: 3px solid $selected-border-color !important
-            color: $selected-color
+            //background-color: $favorite-color
+            border-bottom: 3px solid $favorite-border-color !important
+            color: $favorite-color
 
           img.small
-            border-color: $selected-border-color !important
+            border-color: $favorite-border-color !important
 
         &.over18
 
@@ -958,10 +958,10 @@ $isnotmulti-color: #34a853
 .wrapper
   .hero
     .control.prev(on:click="{prev}")
-    .title(class:hide="{uiVisible == false}", class:selected="{currpost.selected}")
+    .title(class:hide="{uiVisible == false}", class:favorite="{currpost.favorite}")
       +if('displayposts.length')
-        span.fav(on:click|stopPropagation|preventDefault="{toggleSelected}")
-          Icon(icon="{currpost.selected ? faFav : faUnFav}")
+        span.fav(on:click|stopPropagation|preventDefault="{toggleFavorite}")
+          Icon(icon="{currpost.favorite ? faFav : faUnFav}")
       | {currpost.title}
       +if('currpost.subreddit')
         .subreddit(on:click='{openSubReddit}') {currpost.subredditp}
@@ -996,7 +996,7 @@ $isnotmulti-color: #34a853
           span.btn.download.tooltip(
             on:click="{downloadFiles}",
             data-tooltip="{downloadstr}",
-            class:dlready="{numSelected}"
+            class:dlready="{numFavorite}"
           )
             Icon(icon="{faDownload}")
           +if('tinygoto')
@@ -1010,7 +1010,7 @@ $isnotmulti-color: #34a853
             on:click="{toggleFilter}",
             data-tooltip="Filter ( / )",
             bind:this='{filterRef}'
-            class:dlready="{numSelected}"
+            class:dlready="{numFavorite}"
           )
             +if('filterExpanded')
               input(bind:value='{filterValue}', on:click|stopPropagation, on:keydown|stopPropagation, type="text")
@@ -1026,7 +1026,7 @@ $isnotmulti-color: #34a853
           +each('displayposts as post, i')
             span.nums(
               class:currnum="{index === i}",
-              class:selected="{displayposts[i].selected}",
+              class:favorite="{displayposts[i].favorite}",
               class:over18="{displayposts[i].over18}",
               on:click="{function(){goto(i)}}"
             )

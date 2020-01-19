@@ -19,8 +19,8 @@ $yellow: #f9ab00
 
 $text-color: #fafafa
 $accent-color: white
-$selected-color: #fbbc04
-$selected-border-color: #e37400
+$favorite-color: #fbbc04
+$favorite-border-color: #e37400
 $over18-color: #ea4335
 $over18-border-color: #ea4335
 

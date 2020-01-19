@@ -21,16 +21,16 @@ import { get_posts, queryp } from "../_utils";
 const { page } = stores();
 const { slug } = $page.params;
 
-import { selected } from "../_prefs";
-selected.useLocalStorage({});
+import { favorite } from "../_prefs";
+favorite.useLocalStorage({});
 
 export let posts = [];
 export let after;
 export let slugstr;
 
-// Load `selected` from localstorage
+// Load `favorite` from localstorage
 for (let p of posts) {
-  p["selected"] = !!$selected[p.url];
+  p["favorite"] = !!$favorite[p.url];
 }
 
 </script>

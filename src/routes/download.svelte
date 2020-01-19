@@ -6,8 +6,8 @@ import { faHome } from "@fortawesome/free-solid-svg-icons/faHome";
 
 import Settings from "../components/Settings.svelte";
 
-import { selected } from "../_prefs";
-selected.useLocalStorage({});
+import { favorite } from "../_prefs";
+favorite.useLocalStorage({});
 
 let filterValue;
 let displayposts;
@@ -21,7 +21,7 @@ function toggleSettings() {
 $: {
   let tmp;
   if (filterValue) {
-    tmp = Object.entries($selected).filter(item => {
+    tmp = Object.entries($favorite).filter(item => {
       let details = item[1];
 
       // poor mans search
@@ -32,7 +32,7 @@ $: {
     });
     displayposts = tmp;
   } else {
-    displayposts = $selected ? Object.entries($selected) : [];
+    displayposts = $favorite ? Object.entries($favorite) : [];
   }
 }
 </script>
@@ -213,7 +213,7 @@ $text-color: #fafafa
     .title
       span.logo
         img(alt="redditpx logo", src="logo-192.png")
-      | redditpx download {$selected ? `(${Object.keys($selected).length} items)` : '' }
+      | redditpx download {$favorite ? `(${Object.keys($favorite).length} items)` : '' }
       .subtitle
         p.sub Right click on the page (not on any image) > Save as > Select "Webpage, Complete".
         p.sub Alternatively, hit Ctrl+S > Select "Webpage, Complete"

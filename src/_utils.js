@@ -122,7 +122,7 @@ export async function format(item) {
     over18: item.data.over_18,
     is_video: is_video(item),
     is_image: is_image(item),
-    selected: false,
+    favorite: false,
     url: item.data.url,
     preview: {
       vid: vids,
