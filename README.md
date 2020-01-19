@@ -26,8 +26,9 @@ redditpx.com shares the following features with redditp.com
  - favorite
  - batch download
  - fast and modern code
+ - user profile
+ - /r/random and /r/randnsfw
  - [ ] customizable keyboard shortcuts
- - [ ] user profile
 
 
 ## Acknowledgements
