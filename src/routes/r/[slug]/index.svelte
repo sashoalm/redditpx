@@ -2,7 +2,7 @@
 export async function preload({ path, params, query }) {
   if (typeof window === "undefined") return;
 
-  let slugstr = path.substring(1); // remove the leading slash
+  let slugstr = path.substring(1).replace(/\/$/, ''); // remove the leading and trailing slash
 
   let { posts, after } = await get_posts(
     `https://reddit.com/${slugstr}.json?${queryp(query)}`
