@@ -154,4 +154,5 @@ $over18-border-color: #ea4335
         p subreddit-old,  o
         p subreddit-default,  r
         p highres,  i
+        p multireddit m
 </template>

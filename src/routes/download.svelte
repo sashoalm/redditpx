@@ -1,12 +1,22 @@
 <script>
 import Icon from "fa-svelte";
 import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
+import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
+import { faHome } from "@fortawesome/free-solid-svg-icons/faHome";
+
+import Settings from "../components/Settings.svelte";
 
 import { selected } from "../_prefs";
 selected.useLocalStorage({});
 
 let filterValue;
 let displayposts;
+
+let showSettings = false;
+
+function toggleSettings() {
+  showSettings = !showSettings;
+}
 
 $: {
   let tmp;
@@ -28,68 +38,167 @@ $: {
 </script>
 
 <style lang="sass">
+@mixin hover()
+  @media not all and (pointer:coarse)
+    &:hover
+      @content
+
 $text-color: #fafafa
 
 .wrapper
-  color: $text-color
+  height: 100vh
 
-  .title
-    z-index: 10
-    position: absolute
-    top: 0
-    background-color: rgba(0, 0, 0, 0.4)
-    color: $text-color
-    font-size: 1.5rem
-    padding: 1rem
-    border-radius: 3px
+  display: grid
+  justify-items: center
+  align-items: center
 
-    &:hover
-      background-color: rgba(0, 0, 0, 0.8)
-
-    :global(svg)
-      margin-right: 10px
-      top: 3px
-      position: relative
-
-    p.main
-      display: inline-block
-      margin: 0
-      margin-bottom: 0.5rem
-
-    .subtitle
-      font-size: 1rem
-      color: darken($text-color, 10%)
-
-      p.sub
-        margin: 0
-
-    .filter
-      span
-        font-size: 1rem
-        margin-right: 10px
-
-      input
-        padding-left: 5px
-        padding-right: 5px
-        border: 1px solid rgba(white, 60%)
-        background-color: rgba(0, 0, 0, 0)
-        color: white
-        height: 1.5rem
-
-  .imgwrapper
+  .hero
+    height: 100vh
+    width: 100%
     display: grid
-    grid-gap: 2rem
-    justify-content: center
-    align-content: center
+    justify-items: center
+    align-items: center
+    grid-auto-rows: max-content
+    grid-row-gap: 3rem
+    padding-top: 5rem
 
-    .media
-      justify-self: center
+    .settings
+      z-index: 10
+      position: absolute
+      top: 0
+      right: 0
+      color: $text-color
+      font-size: 1rem
+      padding: 1.5rem
 
-      img
-        max-width: 100%
+      .home
+        margin-right: 7px
 
-      video
-        max-width: 100%
+      .btn
+        user-select: none
+        cursor: pointer
+        color: rgba(white, 80%)
+
+        &.showSettings
+          color: white
+
+        @include hover()
+          color: white
+
+    .title
+      z-index: 10
+      position: absolute
+      top: 0
+      background-color: rgba(0, 0, 0, 0.4)
+      color: $text-color
+      font-size: 1.5rem
+      padding: 1rem
+      border-radius: 3px
+      cursor: pointer
+
+      @include hover()
+        background-color: rgba(0, 0, 0, 0.8)
+
+      .logo
+        user-select: none
+        cursor: pointer
+        top: 5px
+        position: relative
+        margin-right: 9px
+
+        img
+          height: 2rem
+
+      :global(svg)
+        margin-right: 10px
+        top: 3px
+        position: relative
+
+      .subtitle
+        margin-top: 1rem
+        font-size: 1rem
+        color: darken($text-color, 10%)
+
+        p.sub
+          margin: 0
+
+      .filter
+        span
+          font-size: 1rem
+          margin-right: 10px
+
+        input
+          padding-left: 5px
+          padding-right: 5px
+          border: 1px solid rgba(white, 60%)
+          background-color: rgba(0, 0, 0, 0)
+          color: white
+          height: 1.5rem
+
+    .imgwrapper
+      display: grid
+      grid-gap: 2rem
+      justify-content: center
+      align-content: center
+
+      .media
+        justify-self: center
+
+        img
+          max-width: 100%
+
+        video
+          max-width: 100%
+
+.tooltip
+  position: relative
+  z-index: 2
+  cursor: pointer
+
+.tooltip
+  &:before, &:after
+    visibility: hidden
+    opacity: 0
+    pointer-events: none
+
+  &:before
+    position: absolute
+    bottom: 120%
+    left: 50%
+    margin-bottom: 5px
+    margin-left: -30px
+    padding: 5px 4px
+    width: 60px
+    border-radius: 3px
+    background-color: black
+    color: #fff
+
+    background-color: rgba(white, 90%)
+    color: black
+
+    content: attr(data-tooltip)
+    text-align: center
+    font-size: 0.8rem
+    line-height: 1.2
+
+  &:after
+    position: absolute
+    bottom: 120%
+    left: 50%
+    margin-left: -5px
+    width: 0
+    border-top: 5px solid #000
+    border-top: 5px solid hsla(0, 0%, 20%, 0.9)
+    border-right: 5px solid transparent
+    border-left: 5px solid transparent
+    content: " "
+    font-size: 0
+    line-height: 0
+
+  &:hover
+    &:before, &:after
+      visibility: visible
+      opacity: 1
 
 </style>
 
@@ -100,26 +209,36 @@ $text-color: #fafafa
 
 <template lang="pug">
 .wrapper
-  .title
-    Icon(icon="{faDownload}")
-    p.main redditpx.com download {$selected ? `(${Object.keys($selected).length} items)` : '' }
-    .subtitle
-      p.sub Right click on the page (not on any image) > Save as > Select "Webpage, Complete".
-      p.sub Alternatively, hit Ctrl+S > Select "Webpage, Complete"
-    .filter
-      span Filter ({displayposts.length})
-      input(bind:value='{filterValue}', type="text")
+  .hero
+    .title
+      span.logo
+        img(alt="redditpx logo", src="logo-192.png")
+      | redditpx download {$selected ? `(${Object.keys($selected).length} items)` : '' }
+      .subtitle
+        p.sub Right click on the page (not on any image) > Save as > Select "Webpage, Complete".
+        p.sub Alternatively, hit Ctrl+S > Select "Webpage, Complete"
+      .filter
+        span Filter ({displayposts.length})
+        input(bind:value='{filterValue}', type="text")
+    .settings
+      a.home(rel="prefetch", href="/home")
+        span.btn.tooltip(data-tooltip="Home")
+          Icon(icon="{faHome}")
 
-  .imgwrapper
-    +each('displayposts as [url, post]')
-      +if('post.is_image')
-        .media
-          img(alt="image", src='{url}')
-      +if('post.is_video')
-        .media
-          video(autoplay, loop, playsinline, muted)
-            +if('post.preview.vid.webm')
-              source(src="{post.preview.vid.webm}")
-            +if('post.preview.vid.mp4')
-              source(src="{post.preview.vid.mp4}")
+      span.btn(on:click='{toggleSettings}', class:showSettings='{showSettings}')
+        Icon(icon="{faSettings}")
+      Settings('{showSettings}')
+
+    .imgwrapper
+      +each('displayposts as [url, post]')
+        +if('post.is_image')
+          .media
+            img(alt="image", src='{url}')
+        +if('post.is_video')
+          .media
+            video(autoplay, loop, playsinline, muted)
+              +if('post.preview.vid.webm')
+                source(src="{post.preview.vid.webm}")
+              +if('post.preview.vid.mp4')
+                source(src="{post.preview.vid.mp4}")
 </template>

@@ -259,5 +259,6 @@ $over18-border-color: #ea4335
               Icon(icon="{faClose}")
             a(href='{post.url}', target='_blank')
               .item(style='background-image: url("{post.preview.img.default}")' )
-                span {"r/" + post.subreddit}
+                a(href='{`/r/${post.subreddit}`}')
+                  span {"r/" + post.subreddit}
 </template>

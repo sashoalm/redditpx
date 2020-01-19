@@ -3,6 +3,7 @@ import Icon from "fa-svelte";
 import { faPlay } from "@fortawesome/free-solid-svg-icons/faPlay";
 import { faPause } from "@fortawesome/free-solid-svg-icons/faPause";
 import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
+import { faHome } from "@fortawesome/free-solid-svg-icons/faHome";
 import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
 import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
@@ -44,7 +45,7 @@ $ : {
   // This tends to run on the server, where there is no localstorage
   if ($multireddit) {
   ismultireddit = $multireddit[currpost.subreddit]
-  multiredditstr = ismultireddit ? "remove from multi" : "add to multi"
+  multiredditstr = ismultireddit ? "Remove from multi" : "Add to multi"
   }
 
   }
@@ -75,7 +76,7 @@ let gotoElWidth;
 
 $: loadError = res && !res.res.ok;
 let loading = false;
-let reloadstr = "load more";
+let reloadstr = "Load more";
 let navigation = false;
 
 let downloadstr = "";
@@ -104,7 +105,7 @@ async function loadMore() {
   if (!after) return;
 
   loading = true;
-  reloadstr = "loading ..";
+  reloadstr = "Loading ..";
 
   let newposts;
 
@@ -124,7 +125,7 @@ async function loadMore() {
   );
 
   loading = false;
-  reloadstr = "load more";
+  reloadstr = "Load more";
 }
 
 onMount(async () => {
@@ -190,15 +191,15 @@ $: {
   numSelected = displayposts.filter(item => item.selected == true).length;
 
   if (!numSelected) {
-    downloadstr = `nothing to download`;
+    downloadstr = `Nothing to download`;
   } else if (numSelected == 1) {
-    downloadstr = `download ${numSelected} file`;
+    downloadstr = `Download ${numSelected} file`;
   } else {
-    downloadstr = `download ${numSelected} files`;
+    downloadstr = `Download ${numSelected} files`;
   }
-  autoplaystr = `autoplay is ${$autoplay ? "on" : "off"}`;
+  autoplaystr = `Autoplay is ${$autoplay ? "on" : "off"}`;
   over18str = `nsfw is ${$over18 ? "on" : "off"}`;
-  deepsearchstr = `search for ${filterValue}`;
+  deepsearchstr = `Search for ${filterValue}`;
 }
 
 $: {
@@ -454,6 +455,12 @@ function toggleSelected() {
 }
 
 function keydown(event) {
+
+  // m
+  if (event.keyCode == 77) {
+    toggleMultireddit()
+  }
+
   // q, p
   if (event.keyCode == 81 || event.keyCode == 80) {
     toggleAutoPlay();
@@ -559,6 +566,9 @@ $isnotmulti-color: #34a853
       color: $text-color
       font-size: 1rem
       padding: 1.5rem
+
+      .home
+        margin-right: 7px
 
       .btn
         user-select: none
@@ -955,7 +965,10 @@ $isnotmulti-color: #34a853
           .subredditwrapper.tooltip(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
             Icon(icon="{ismultireddit ? faMinusCircle : faPlusCircle}")
     .settings(class:hide="{uiVisible == false}")
-      span.btn(on:click='{toggleSettings}', class:showSettings='{showSettings}')
+      a.home(rel="prefetch", href="/home")
+        span.btn.tooltip(data-tooltip="Home")
+          Icon(icon="{faHome}")
+      span.btn.cog(on:click='{toggleSettings}', class:showSettings='{showSettings}')
         Icon(icon="{faSettings}")
       Settings('{showSettings}')
     +if('currpost.is_image')
