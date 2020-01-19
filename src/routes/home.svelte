@@ -153,7 +153,7 @@ $over18-border-color: #ea4335
           .icon
             position: relative
             float: right
-            margin: 1rem
+            margin: 1.1rem
             opacity: 0
             color: $selected-color
             font-size: 1.3rem
