@@ -39,7 +39,9 @@ export function is_video(item) {
   if (!item.data.hasOwnProperty("preview")) return false;
   return (
     item.data.is_video ||
-    item.data.preview.hasOwnProperty("reddit_video_preview")
+    item.data.preview.hasOwnProperty("reddit_video_preview") ||
+    (item.data.url.startsWith("https://i.redd.it") &&
+      item.data.url.endsWith(".gif"))
   );
 }
 
@@ -76,6 +78,15 @@ async function vidsrc(url, item) {
   } else if (url.includes("reddit.com/r/")) {
     return {
       mp4: item.data.preview.reddit_video_preview.fallback_url
+    };
+  } else if (url.includes("i.redd.it/")) {
+    return {
+      gif: he.decode(
+        item.data.preview.images[0].variants.gif.resolutions.slice(-1)[0].url
+      ),
+      mp4: he.decode(
+        item.data.preview.images[0].variants.mp4.resolutions.slice(-1)[0].url
+      )
     };
   }
 }
