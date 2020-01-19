@@ -281,6 +281,10 @@ $over18-border-color: #ea4335
 
 </style>
 
+<svelte:head>
+  <title>redditpx - home</title>
+</svelte:head>
+
 <template lang="pug">
 .wrapper
   .hero

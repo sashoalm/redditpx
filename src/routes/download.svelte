@@ -203,7 +203,7 @@ $text-color: #fafafa
 </style>
 
 <svelte:head>
-  <title>redditpx download</title>
+  <title>redditpx - download</title>
 </svelte:head>
 
 
