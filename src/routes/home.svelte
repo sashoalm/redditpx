@@ -38,7 +38,10 @@ function openSlideshow() {
 }
 
 function removeFav(url) {
-  console.log('removing', url)
+  $selected[url] = undefined;
+  $selected = JSON.parse(JSON.stringify($selected));
+
+  selected.set($selected);
   }
 </script>
 
@@ -152,7 +155,7 @@ $over18-border-color: #ea4335
             float: right
             margin: 1rem
             opacity: 0
-            color: black
+            color: $selected-color
             font-size: 1.3rem
 
           a
