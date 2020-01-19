@@ -648,6 +648,7 @@ $isnotmulti-color: #34a853
       &.tinygoto
         grid-template-rows: auto 1fr
         grid-template-columns: 1fr
+
         .btnwrapper
           grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
           display: grid
@@ -684,6 +685,10 @@ $isnotmulti-color: #34a853
       .btnwrapper, .numswrapper
         display: contents
 
+      .btnwrapper
+        .reload
+          bottom: -1px
+
       .btn
         text-align: center
         padding-top: 2px
@@ -691,7 +696,6 @@ $isnotmulti-color: #34a853
 
         &.reload
           cursor: pointer
-          justify-self: center
 
           &.loaderror
             color: $over18-color

@@ -16,7 +16,7 @@ $: {
 
   if (typeof window !== "undefined" && slideshowurl) {
     console.log(slideshowurl);
-    ahref(slideshowurl);
+    ahref(slideshowurl, {replaceState: false});
   }
 }
 </script>
