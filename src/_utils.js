@@ -12,6 +12,7 @@ export async function get_posts(url) {
     let res = await fetchJsonp(url, { jsonpCallback: "jsonp", timeout: 10000 });
     let data = await res.json();
     console.log("Fetched: ", data.data.children.length, data.data);
+    let subreddit = data.data.children[0].data.subreddit;
 
     let filtered = data.data.children.filter(item => filter(item));
     console.log("Filtered: ", filtered.length, filtered);
@@ -20,13 +21,19 @@ export async function get_posts(url) {
 
     console.log("Formatted: ", posts.length, posts);
 
-    return { posts, after: data.data.after, res: { ok: true, res: res } };
+    return {
+      posts,
+      subreddit,
+      after: data.data.after,
+      res: { ok: true, res: res }
+    };
   } catch (error) {
     console.log("[get_posts]: error");
     console.log(error);
     return {
       posts: [],
       after: "",
+      subreddit: "",
       res: { ok: false, res: error }
     };
   }
