@@ -102,6 +102,12 @@ function title(item) {
   return item.data.title || item.data.link_title;
 }
 
+function thumbnail(item) {
+  return item.data.thumbnail == "spoiler"
+    ? he.decode(item.data.preview.images[0].resolutions[0].url)
+    : item.data.thumbnail;
+}
+
 export async function format(item) {
   if (Object.entries(item).length == 0) {
     return { title: "Loading ..", vidpreview: {} };
@@ -126,7 +132,7 @@ export async function format(item) {
   let formatted = {
     id: item.data.id,
     title: title(item),
-    thumbnail: item.data.thumbnail,
+    thumbnail: thumbnail(item),
     subreddit: item.data.subreddit,
     subredditp: item.data.subreddit_name_prefixed,
     permalink: item.data.permalink,
