@@ -14,13 +14,10 @@ export async function preload({ path, params, query }) {
 <script>
 import Display from "../../../components/Display.svelte";
 
-import { stores } from "@sapper/app";
-import { onMount, beforeUpdate, afterUpdate } from "svelte";
-
 import { get_posts, queryp } from "../../../_utils";
 
+import { stores } from "@sapper/app";
 const { page } = stores();
-const { slug } = $page.params;
 
 import { favorite } from "../../../_prefs";
 favorite.useLocalStorage({});
@@ -34,7 +31,6 @@ export let slugstr;
 for (let p of posts) {
   p["favorite"] = !!$favorite[p.url];
 }
-
 </script>
 
 <template lang="pug">
