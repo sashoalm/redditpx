@@ -31,10 +31,10 @@ multireddit.useLocalStorage({});
 export let params, slugstr;
 export let posts;
 export let after;
+export let res;
 
 let data;
 let displayposts = [];
-let res;
 let uiVisible = true;
 let numFavorite;
 let tinygoto;

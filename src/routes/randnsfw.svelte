@@ -5,11 +5,11 @@ export async function preload({ path, params, query }) {
 
   let slugstr = path.substring(1).replace(/\/$/, ''); // remove the leading and trailing slash
 
-  let { posts, after } = await get_posts(
+  let { posts, res, after } = await get_posts(
     `https://reddit.com/r/${slugstr}.json?${queryp(query)}`
   );
 
-  return { posts: posts, after: after, slugstr: slugstr };
+  return { posts, after, res, slugstr };
 }
 </script>
 <script>
@@ -27,6 +27,7 @@ import { favorite } from "../_prefs";
 favorite.useLocalStorage({});
 
 export let posts = [];
+export let res;
 export let after;
 export let slugstr;
 
@@ -38,5 +39,5 @@ for (let p of posts) {
 </script>
 
 <template lang="pug">
-  Display({slugstr}, {posts}, {after}, params ='{$page.query}')
+  Display({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
 </template>

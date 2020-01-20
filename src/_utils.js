@@ -9,7 +9,7 @@ export function queryp(query) {
 
 export async function get_posts(url) {
   try {
-    let res = await fetchJsonp(url, { jsonpCallback: "jsonp", timeout: 15000 });
+    let res = await fetchJsonp(url, { jsonpCallback: "jsonp", timeout: 10000 });
     let data = await res.json();
     console.log("Fetched: ", data.data.children.length, data.data);
 
@@ -19,11 +19,16 @@ export async function get_posts(url) {
     let posts = await Promise.all(filtered.map(post => format(post)));
 
     console.log("Formatted: ", posts.length, posts);
-    return { posts: posts, after: data.data.after, res: res };
+
+    return { posts, after: data.data.after, res: { ok: true, res: res } };
   } catch (error) {
     console.log("[get_posts]: error");
     console.log(error);
-    return { posts: [], after: "", res: { ok: false, res: error } };
+    return {
+      posts: [],
+      after: "",
+      res: { ok: false, res: error }
+    };
   }
 }
 

@@ -27,6 +27,7 @@ let exploreSubreddits = [
   { color: "turquoise", url: "r/oldschoolcool" },
   { color: "wheat", url: "r/reactiongifs"},
   { color: "lightskyblue", url: "r/foodporn"},
+  { color: "tomato", url: "r/itookapicture"},
 ];
 
 function toggleSettings() {
