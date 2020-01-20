@@ -9,7 +9,7 @@ export function queryp(query) {
 
 export async function get_posts(url) {
   try {
-    let res = await fetchJsonp(url, { jsonpCallback: "jsonp", timeout: 10000 });
+    let res = await fetchJsonp(url, { jsonpCallback: "jsonp", timeout: 5000 });
     let data = await res.json();
     console.log("Fetched: ", data.data.children.length, data.data);
     let subreddit = data.data.children[0].data.subreddit;
