@@ -14,6 +14,8 @@ import { faExclamationTriangle as faLoadError } from "@fortawesome/free-solid-sv
 import { faSpinner } from "@fortawesome/free-solid-svg-icons/faSpinner";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons/faPlusCircle";
 import { faMinusCircle } from "@fortawesome/free-solid-svg-icons/faMinusCircle";
+import { faEye as faShow } from "@fortawesome/free-solid-svg-icons/faEye";
+import { faEyeSlash as faHide } from "@fortawesome/free-solid-svg-icons/faEyeSlash";
 
 import Settings from './Settings.svelte'
 
@@ -49,7 +51,7 @@ $ : {
   // This tends to run on the server, where there is no localstorage
   if ($multireddit) {
   ismultireddit = $multireddit[currpost.subreddit]
-  multiredditstr = ismultireddit ? "Remove from multi" : "Add to multi"
+  multiredditstr = ismultireddit ? "Remove from multi (m)" : "Add to multi (m)"
   }
 
   }
@@ -88,6 +90,7 @@ let autoplaystr = "";
 let over18str = "";
 let deepsearchstr = "";
 let multiredditstr = "";
+let showhidestr = "Hide (h)";
 
 let autoplayinterval = 3;
 let autoplaytimer;
@@ -330,6 +333,8 @@ function prev() {
 
 function toggleUIVisiblity() {
   uiVisible = !uiVisible;
+
+  showhidestr = uiVisible ? "Hide (h)" : "Show (h)"
 }
 
 function toggleSettings() {
@@ -567,15 +572,18 @@ $isnotmulti-color: #34a853
       right: 0
       color: $text-color
       font-size: 1rem
-      padding: 1.5rem
+      padding: 1.5rem 2rem
 
-      .home
-        margin-right: 7px
 
       .btn
         user-select: none
         cursor: pointer
         color: rgba(white, 80%)
+        margin-left: 7px
+        font-size: 1.2rem
+
+        &.showhide
+          top: 1px
 
         &.showSettings
           color: white
@@ -905,6 +913,39 @@ $isnotmulti-color: #34a853
   z-index: 2
   cursor: pointer
 
+.ttbefore
+  position: absolute
+  bottom: 120%
+  left: 50%
+  margin-bottom: 5px
+  margin-left: -30px
+  padding: 5px 4px
+  width: max-content
+  border-radius: 3px
+  background-color: black
+  color: #fff
+
+  background-color: rgba(white, 90%)
+  color: black
+
+  content: attr(data-tooltip)
+  text-align: center
+  font-size: 0.8rem
+  line-height: 1.2
+
+.ttafter
+  position: absolute
+  bottom: 120%
+  left: 50%
+  margin-left: -5px
+  width: 0
+  border-top: 5px solid rgba(white, 90%)
+  border-right: 5px solid transparent
+  border-left: 5px solid transparent
+  content: " "
+  font-size: 0
+  line-height: 0
+
 .tooltip
   &:before, &:after
     visibility: hidden
@@ -912,38 +953,20 @@ $isnotmulti-color: #34a853
     pointer-events: none
 
   &:before
-    position: absolute
-    bottom: 120%
-    left: 50%
-    margin-bottom: 5px
-    margin-left: -30px
-    padding: 5px 4px
-    width: 60px
-    border-radius: 3px
-    background-color: black
-    color: #fff
+    @extend .ttbefore
 
-    background-color: rgba(white, 90%)
-    color: black
-
-    content: attr(data-tooltip)
-    text-align: center
-    font-size: 0.8rem
-    line-height: 1.2
+  &.bottom:before
+    @extend .ttbefore
+    bottom: -170%
 
   &:after
-    position: absolute
-    bottom: 120%
-    left: 50%
-    margin-left: -5px
-    width: 0
-    border-top: 5px solid #000
-    border-top: 5px solid hsla(0, 0%, 20%, 0.9)
-    border-right: 5px solid transparent
-    border-left: 5px solid transparent
-    content: " "
-    font-size: 0
-    line-height: 0
+    @extend .ttafter
+
+  &.bottom:after
+    @extend .ttafter
+    bottom: -33%
+    border-bottom: 5px solid rgba(white, 90%)
+    border-top: 5px solid transparent
 
   &:hover
     &:before, &:after
@@ -968,15 +991,18 @@ $isnotmulti-color: #34a853
       | {currpost.title}
       +if('currpost.subreddit')
         .subreddit(on:click='{openSubReddit}') {currpost.subredditp}
-          .subredditwrapper.tooltip(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
+          .subredditwrapper.tooltip.bottom(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
             Icon(icon="{ismultireddit ? faMinusCircle : faPlusCircle}")
-    .settings(class:hide="{uiVisible == false}")
-      a.home(rel="prefetch", href="/home")
-        span.btn.tooltip(data-tooltip="Home")
+    .settings
+      a.home(rel="prefetch", href="/home", class:hide='{uiVisible == false}')
+        span.btn.tooltip.bottom(data-tooltip="Home")
           Icon(icon="{faHome}")
-      span.btn.cog(on:click='{toggleSettings}', class:showSettings='{showSettings}')
+      span.btn.tooltip.bottom.showhide(data-tooltip="{showhidestr}", on:click="{toggleUIVisiblity}")
+        Icon(icon="{uiVisible ? faHide : faShow }")
+      span.btn.cog(on:click='{toggleSettings}', class:showSettings='{showSettings}', class:hide='{uiVisible == false}')
         Icon(icon="{faSettings}")
-      Settings('{showSettings}')
+      .div(class:hide='{uiVisible == false}')
+        Settings('{showSettings}')
     +if('currpost.is_image')
       .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
