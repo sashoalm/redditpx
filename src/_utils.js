@@ -111,7 +111,7 @@ function url(item) {
 }
 
 function title(item) {
-  return item.data.title || item.data.link_title;
+  return he.decode(item.data.title) || he.decode(item.data.link_title);
 }
 
 function thumbnail(item) {
