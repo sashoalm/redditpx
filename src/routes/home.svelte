@@ -152,7 +152,7 @@ $over18-border-color: #ea4335
 
       .items
         display: grid
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))
         grid-gap: 10px
         margin-top: 5px
 
@@ -168,12 +168,11 @@ $over18-border-color: #ea4335
             grid-column: 1 / -1
             border-radius: 3px
             margin-top: 1rem
+            display: grid
+            justify-content: center
 
             .item
               padding: 4rem
-              display: flex
-              align-items: center
-              justify-content: center
 
               .inlineicon
                 margin: 0 4px

@@ -579,8 +579,11 @@ $isnotmulti-color: #34a853
         user-select: none
         cursor: pointer
         color: rgba(white, 80%)
-        margin-left: 7px
+        margin-left: 10px
         font-size: 1.2rem
+
+        &.cog
+          font-size: 1.1rem
 
         &.showhide
           top: 1px
@@ -598,7 +601,7 @@ $isnotmulti-color: #34a853
       background-color: rgba(0, 0, 0, 0.4)
       color: $text-color
       font-size: 1.5rem
-      max-width: 90%
+      max-width: 77%
       padding: 1rem
       border-radius: 3px
 
@@ -608,6 +611,9 @@ $isnotmulti-color: #34a853
         color: darken($text-color, 30%)
         width: fit-content
         user-select: none
+
+        &.ismulti
+          color: $isnotmulti-color
 
         @include hover()
           color: $text-color
@@ -620,6 +626,8 @@ $isnotmulti-color: #34a853
           opacity: 0.5
 
           &.ismulti
+            color: darken($text-color, 30%)
+
             @include hover()
               color: $ismulti-color
               opacity: 1
@@ -964,7 +972,7 @@ $isnotmulti-color: #34a853
 
   &.bottom:after
     @extend .ttafter
-    bottom: -33%
+    bottom: -40%
     border-bottom: 5px solid rgba(white, 90%)
     border-top: 5px solid transparent
 
@@ -990,17 +998,17 @@ $isnotmulti-color: #34a853
           Icon(icon="{currpost.favorite ? faFav : faUnFav}")
       | {currpost.title}
       +if('currpost.subreddit')
-        .subreddit(on:click='{openSubReddit}') {currpost.subredditp}
+        .subreddit(on:click='{openSubReddit}', class:ismulti='{ismultireddit}') {currpost.subredditp}
           .subredditwrapper.tooltip.bottom(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
             Icon(icon="{ismultireddit ? faMinusCircle : faPlusCircle}")
     .settings
       a.home(rel="prefetch", href="/home", class:hide='{uiVisible == false}')
         span.btn.tooltip.bottom(data-tooltip="Home")
           Icon(icon="{faHome}")
-      span.btn.tooltip.bottom.showhide(data-tooltip="{showhidestr}", on:click="{toggleUIVisiblity}")
-        Icon(icon="{uiVisible ? faHide : faShow }")
       span.btn.cog(on:click='{toggleSettings}', class:showSettings='{showSettings}', class:hide='{uiVisible == false}')
         Icon(icon="{faSettings}")
+      span.btn.tooltip.bottom.showhide(data-tooltip="{showhidestr}", on:click="{toggleUIVisiblity}")
+        Icon(icon="{uiVisible ? faHide : faShow }")
       .div(class:hide='{uiVisible == false}')
         Settings('{showSettings}')
     +if('currpost.is_image')
