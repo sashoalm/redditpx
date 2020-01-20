@@ -115,9 +115,12 @@ function title(item) {
 }
 
 function thumbnail(item) {
-  return item.data.thumbnail == "spoiler"
-    ? he.decode(item.data.preview.images[0].resolutions[0].url)
-    : item.data.thumbnail;
+  let thumbnail = item.data.thumbnail;
+  if (thumbnail == "spoiler" || thumbnail == "nsfw") {
+    return he.decode(item.data.preview.images[0].resolutions[0].url);
+  } else {
+    return thumbnail;
+  }
 }
 
 export async function format(item) {
