@@ -39,6 +39,10 @@ let uiVisible = true;
 let numFavorite;
 let tinygoto;
 
+let subreddit
+
+$ : subreddit = slugstr ? slugstr.split('/')[1] : ""
+
 let ismultireddit
 
 $ : {
@@ -98,8 +102,6 @@ let currpost = { title: "Loading .." };
 let nexturls = [];
 
 let index = 0;
-
-let errorinputValue = slugstr;
 
 async function loadMore() {
   if (!after) return;
@@ -335,9 +337,10 @@ function toggleSettings() {
 }
 
 function gotoDeepSearch() {
+
   let prefix = "";
   if (slugstr) {
-    prefix = `/${slugstr}`;
+    prefix = `/r/${subreddit}`;
   } else {
     prefix = ``;
   }
@@ -951,7 +954,7 @@ $isnotmulti-color: #34a853
 
 <svelte:window on:keydown={keydown} />
 <svelte:head>
-  <title>redditpx - {slugstr ? slugstr : 'reddit.com'}</title>
+  <title>redditpx - {slugstr ? `r/${subreddit}` : 'reddit.com'}</title>
 </svelte:head>
 
 <template lang="pug">
