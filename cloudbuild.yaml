@@ -4,11 +4,11 @@ steps:
   #
   # 1. build the container image
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/sleddit-264313/sleddit", "."]
+    args: ["build", "-t", "gcr.io/redditpx/stage", "."]
 
     # 2. push the container image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/sleddit-264313/sleddit"]
+    args: ["push", "gcr.io/redditpx/stage"]
 
     # 3. Deploy container image to Cloud Run
   - name: "gcr.io/cloud-builders/gcloud"
@@ -17,9 +17,9 @@ steps:
         "beta",
         "run",
         "deploy",
-        "sleddit",
+        "stage",
         "--image",
-        "gcr.io/sleddit-264313/sleddit",
+        "gcr.io/redditpx/stage",
         "--region",
         "us-central1",
         "--platform",
@@ -28,4 +28,4 @@ steps:
       ]
 
 images:
-  - gcr.io/sleddit-264313/sleddit
+  - gcr.io/redditpx/stage
