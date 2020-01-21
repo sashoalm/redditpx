@@ -4,11 +4,11 @@ steps:
   #
   # 1. build the container image
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/redditpx/stage", "."]
+    args: ["build", "-t", "gcr.io/redditpx/$_MODE", "."]
 
     # 2. push the container image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/redditpx/stage"]
+    args: ["push", "gcr.io/redditpx/$_MODE"]
 
     # 3. Deploy container image to Cloud Run
   - name: "gcr.io/cloud-builders/gcloud"
@@ -17,9 +17,9 @@ steps:
         "beta",
         "run",
         "deploy",
-        "stage",
+        "$_MODE",
         "--image",
-        "gcr.io/redditpx/stage",
+        "gcr.io/redditpx/$_MODE",
         "--region",
         "us-central1",
         "--platform",
@@ -28,4 +28,4 @@ steps:
       ]
 
 images:
-  - gcr.io/redditpx/stage
+  - gcr.io/redditpx/$_MODE
