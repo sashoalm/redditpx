@@ -5,11 +5,40 @@ import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
 
 export let showSettings;
 
+import { autoplayinterval, prefetch, hires } from "../_prefs";
+autoplayinterval.useLocalStorage(3);
+prefetch.useLocalStorage(true);
+hires.useLocalStorage(false);
+
 function hideSettings() {
   showSettings = false;
 }
 
-let activeTab = 2
+let activeTab = 1
+
+let _autoplayinterval = $autoplayinterval
+let _hires = $hires
+let _prefetch = $prefetch
+
+$ : {
+let i = Math.round(_autoplayinterval)
+if (i) {
+  autoplayinterval.set(i)
+}
+}
+
+function toggleHiRes() {
+  _hires = !_hires
+
+  hires.set(_hires)
+}
+
+function togglePrefetch() {
+  _prefetch = !_prefetch
+
+  prefetch.set(_prefetch)
+}
+
 
 </script>
 <style lang="sass">
@@ -49,6 +78,7 @@ $over18-border-color: #ea4335
     grid-row: contents
     display: grid
     grid-template-columns: 1fr 2fr
+    overflow: hidden
 
     .nav
       font-size: 1.1rem
@@ -81,6 +111,7 @@ $over18-border-color: #ea4335
     .options
       background-color: rgba(black, 0%)
       border-left: 1px solid white
+      overflow: auto
 
       .option
         display: none
@@ -94,11 +125,30 @@ $over18-border-color: #ea4335
             margin-right: 10px
 
           .key
-            color: darken($text-color, 20%)
+            color: $yellow
             margin: 0 4px
-            border: 1px solid darken($text-color, 20%)
+            border: 1px solid $yellow
             border-radius: 3px
             padding: 4px 5px
+
+          .input
+            input
+              border: 1px solid white
+              background-color: rgba(black, 0)
+              color: white
+              padding: 5px
+              width: 100px
+
+          .button
+            border: 1px solid white
+            margin: 0 5px
+            padding: 5px
+            border-radius: 3px
+            cursor: pointer
+
+            @include hover()
+              background-color: white
+              color: black
 
       .active
         display: block
@@ -145,6 +195,9 @@ $over18-border-color: #ea4335
       .options
         border-left-width: 0px
         border-top: 1px solid white
+
+        .option
+          padding: 0
 </style>
 
 <template lang="pug">
@@ -160,16 +213,29 @@ $over18-border-color: #ea4335
       div(class:active='{activeTab == 2}', on:click='{function(){activeTab = 2}}') Keybindings
     .options
       div.option(class:active='{activeTab == 1}')
-        p autoplay on/off
-        p download files
-        p nsfw on/off
-        p autoplay time
-        p make all fav
-        p remove all fav
-        p prefetch?
-        p always show hd?
-        p remove duplicates
-        p aggressive caching (thumb vs preview)
+        //p autoplay on/off
+        //p download files
+        //p nsfw on/off
+        .item
+          span.text Autoplay time (seconds)
+          span.input
+            input(type="number", bind:value='{_autoplayinterval}')
+        //.item
+        //  span Favorite
+        //    span
+        //      span.button Mark all
+        //      span.button Unmark all
+        //      span.button Unmark all (all subreddits)
+        .item
+          span Prefetch media
+          span
+            span.button(on:click='{togglePrefetch}') {_prefetch ? "Prefetch is on" : "Prefetch is off"}
+        .item
+          span.text Display image resolution
+          span
+            span.button(on:click='{toggleHiRes}') {_hires ? "Original (slow)" : "Optimized (fast)"}
+        //p remove duplicates
+        //p aggressive caching (thumb vs preview)
       div.option(class:active='{activeTab == 2}')
         .item
           span.text Play / Pause
@@ -177,15 +243,17 @@ $over18-border-color: #ea4335
           span.key p
         .item
           span.text Next item
-          span.key space
-          span.key right
+          span.key Space
+          span.key Right
           span.key d
           span.key j
+          span.key Page-down
         .item
           span.text Previous item
-          span.key left
+          span.key Left
           span.key a
           span.key k
+          span.key Page-up
         .item
           span.text Hide UI / Controls
           span.key h
@@ -193,10 +261,10 @@ $over18-border-color: #ea4335
           span.text Toggle favorite
           span.key x
         .item
-          span.text Remove all current subreddit's favorites
+          span.text Remove all favorites
           span.key Shift + x
         .item
-          span.text Remove favorites across all subreddits
+          span.text Remove all favorites (across all subreddits)
           span.key Ctrl + Shift + x
         .item
           span.text Filter

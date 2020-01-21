@@ -25,6 +25,9 @@ const store = (key, initialValue) => {
 };
 
 export const autoplay = store("autoplay");
+export const autoplayinterval = store("autoplayinterval");
 export const favorite = store("favorite");
 export const over18 = store("over18");
 export const multireddit = store("multireddit");
+export const prefetch = store("prefetch");
+export const hires = store("hires");

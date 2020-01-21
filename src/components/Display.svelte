@@ -24,11 +24,14 @@ import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
 
-import { autoplay, favorite, over18, multireddit } from "../_prefs";
+import { autoplay, autoplayinterval, favorite, over18, multireddit, prefetch, hires } from "../_prefs";
 autoplay.useLocalStorage(true);
+autoplayinterval.useLocalStorage(3);
 favorite.useLocalStorage({});
 over18.useLocalStorage(true);
 multireddit.useLocalStorage({});
+prefetch.useLocalStorage(true);
+hires.useLocalStorage(false);
 
 export let params, slugstr;
 export let posts;
@@ -92,7 +95,6 @@ let deepsearchstr = "";
 let multiredditstr = "";
 let showhidestr = "Hide (h)";
 
-let autoplayinterval = 3;
 let autoplaytimer;
 
 let filterRef;
@@ -151,7 +153,7 @@ function startAutoPlay() {
       //console.log('---- vNEXT')
       next();
     }
-  }, autoplayinterval * 1000);
+  }, $autoplayinterval * 1000);
 
   autoplay.set(true);
 }
@@ -462,6 +464,7 @@ function toggleFavorite() {
 }
 
 function keydown(event) {
+  console.log(event.keyCode)
 
   // m
   if (event.keyCode == 77) {
@@ -513,16 +516,17 @@ function keydown(event) {
     toggleUIVisiblity();
   }
 
-  // Left Arrow, a, k
-  if (event.keyCode == 37 || event.keyCode == 65 || event.keyCode == 75) {
+  // Left Arrow, a, k, Page-up
+  if (event.keyCode == 37 || event.keyCode == 65 || event.keyCode == 75 || event.keyCode == 33) {
     prev();
   }
-  // Right Arrow, d, j, Space
+  // Right Arrow, d, j, Space, Page-down
   else if (
     event.keyCode == 39 ||
     event.keyCode == 68 ||
     event.keyCode == 74 ||
-    event.keyCode == 32
+    event.keyCode == 32 ||
+    event.keyCode == 34
   ) {
     next();
   }
@@ -1010,9 +1014,12 @@ $isnotmulti-color: #34a853
       span.btn.tooltip.bottom.showhide(data-tooltip="{showhidestr}", on:click="{toggleUIVisiblity}")
         Icon(icon="{uiVisible ? faHide : faShow }")
       .div(class:hide='{uiVisible == false}')
-        Settings('{showSettings}')
+        Settings(bind:showSettings)
     +if('currpost.is_image')
-      .image(style="background-image: url('{currpost.preview.img.default}')")
+      +if('$hires')
+        .image(style="background-image: url('{currpost.url}')")
+        +else()
+          .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
         video.video(autoplay, loop='{!$autoplay}', playsinline, muted, on:ended="{videoended}")
           +if('currpost.preview.vid.webm')
@@ -1079,13 +1086,17 @@ $isnotmulti-color: #34a853
                 Icon(icon="{faSpinner}")
                 +else()
                   Icon(icon="{faSync}")
-  .prefetch
-    +each('nexturls as nexturl')
-      img(alt="prefetch", src="{nexturl.preview.img.default}")
-      +if('nexturl.is_video')
-        video
-          +if('nexturl.preview.vid.webm')
-            source(src="{nexturl.preview.vid.webm}")
-          +if('nexturl.preview.vid.mp4')
-            source(src="{nexturl.preview.vid.mp4}")
+  +if('$prefetch')
+    .prefetch
+      +each('nexturls as nexturl')
+        +if('$hires')
+          img(alt="prefetch", src="{nexturl.url}")
+          +else()
+            img(alt="prefetch", src="{nexturl.preview.img.default}")
+        +if('nexturl.is_video')
+          video
+            +if('nexturl.preview.vid.webm')
+              source(src="{nexturl.preview.vid.webm}")
+            +if('nexturl.preview.vid.mp4')
+              source(src="{nexturl.preview.vid.mp4}")
 </template>
