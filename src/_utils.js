@@ -40,7 +40,11 @@ export async function get_posts(url) {
 }
 
 export function is_image(item) {
-  return url(item).endsWith(".jpg") || url(item).endsWith(".png");
+  return (
+    url(item).endsWith(".jpg") ||
+    url(item).endsWith(".png") ||
+    url(item).includes("imgur.com/a/")
+  );
 }
 
 export function is_post(item) {
@@ -58,6 +62,30 @@ export function is_video(item) {
     item.data.preview.hasOwnProperty("reddit_video_preview") ||
     (url(item).startsWith("https://i.redd.it") && url(item).endsWith(".gif"))
   );
+}
+async function imgsrc(url, item) {
+  let imgs;
+  try {
+    imgs = {
+      default: he.decode(
+        item.data.preview.images[0].resolutions.slice(-1)[0].url
+      ),
+      hires: he.decode(item.data.preview.images[0].source.url)
+    };
+  } catch {
+    imgs = {
+      default: url(item),
+      hires: url(item)
+    };
+  }
+
+  if (url.includes("imgur.com/a/")) {
+    let res = await fetchJsonp(`${url}/embed`);
+    debugger;
+    let data = await res.text();
+  }
+
+  return imgs;
 }
 
 async function vidsrc(url, item) {
@@ -128,21 +156,8 @@ export async function format(item) {
     return { title: "Loading ..", vidpreview: {} };
   }
 
-  let imgs = {};
+  let imgs = await imgsrc(url(item), item);
   let vids = is_video(item) ? await vidsrc(url(item), item) : {};
-  try {
-    imgs = {
-      default: he.decode(
-        item.data.preview.images[0].resolutions.slice(-1)[0].url
-      ),
-      hires: he.decode(item.data.preview.images[0].source.url)
-    };
-  } catch {
-    imgs = {
-      default: url(item),
-      hires: url(item)
-    };
-  }
 
   let formatted = {
     id: item.data.id,
