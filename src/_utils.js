@@ -1,6 +1,8 @@
 import fetchJsonp from "fetch-jsonp";
 import he from "he";
 
+import { parse } from "node-html-parser";
+
 export function queryp(query) {
   return Object.entries(query)
     .map(([key, val]) => `${key}=${val}`)
@@ -39,7 +41,11 @@ export async function get_posts(url) {
   }
 }
 
-export function is_image(item) {
+function is_album(imgs) {
+  return imgs.hasOwnProperty("album");
+}
+
+function is_image(item) {
   return (
     url(item).endsWith(".jpg") ||
     url(item).endsWith(".png") ||
@@ -47,7 +53,7 @@ export function is_image(item) {
   );
 }
 
-export function is_post(item) {
+function is_post(item) {
   return item.kind == "t3";
 }
 
@@ -80,12 +86,30 @@ async function imgsrc(url, item) {
   }
 
   if (url.includes("imgur.com/a/")) {
-    let res = await fetchJsonp(`${url}/embed`);
-    debugger;
-    let data = await res.text();
-  }
+    // Other cors proxies
+    // https://gist.github.com/jimmywarting/ac1be6ea0297c16c477e17f8fbe51347
+    let res = await fetch(`https://thingproxy.freeboard.io/fetch/${url}/embed`);
+    let html = await res.text();
+    let images = [];
+    for (const node of parse(html).querySelectorAll(".thumb-title-embed")) {
+      let img = imgur(node);
 
+      images.push(img);
+    }
+
+    imgs["album"] = images;
+  }
   return imgs;
+}
+
+function imgur(node) {
+  let url = node.attributes["data-src"];
+  let [a, b, domain, filename] = url.split("/");
+
+  let [base, ext] = filename.split(".");
+
+  // Remove the `s` from the base since s stands for "small"
+  return `https://${domain}/${base.slice(0, -1)}.${ext}`;
 }
 
 async function vidsrc(url, item) {
@@ -169,6 +193,7 @@ export async function format(item) {
     over18: item.data.over_18,
     is_video: is_video(item),
     is_image: is_image(item),
+    is_album: is_album(imgs), // based on `imgs`
     favorite: false,
     url: url(item),
     preview: {

@@ -43,6 +43,18 @@ let displayposts = [];
 let uiVisible = true;
 let numFavorite;
 let tinygoto;
+let title
+let albumindex = 0
+
+  $ : {
+    if (currpost.is_album) {
+      title = `(${albumindex + 1}/${currpost.preview.img.album.length}) ${currpost.title}`
+    }
+    else {
+      title = currpost.title
+    }
+
+  }
 
 let subreddit
 
@@ -265,6 +277,7 @@ $: {
 }
 
 function goto(i) {
+  albumindex = 0
   index = i;
 
   let itemNum = displayposts.length - index;
@@ -289,6 +302,7 @@ function videoended() {
 }
 
 function next() {
+  albumindex = 0
   let itemNum = displayposts.length - 1 - index;
 
   // Last item, dont go past the last item
@@ -324,6 +338,8 @@ function next() {
 }
 
 function prev() {
+  albumindex = 0
+
   if (index === 0) return;
   index -= 1;
 
@@ -463,8 +479,38 @@ function toggleFavorite() {
   }
 }
 
+function albumPrev() {
+  if (albumindex == 0) {
+    albumindex = currpost.preview.img.album.length - 1
+  }
+  else {
+    albumindex -= 1
+  }
+
+}
+function albumNext() {
+
+  if (albumindex == (currpost.preview.img.album.length -1)) {
+    albumindex = 0
+  }
+  else {
+    albumindex += 1
+  }
+
+}
+
 function keydown(event) {
   console.log(event.keyCode)
+
+
+  // up
+  if (event.keyCode == 38) {
+    albumPrev()
+  }
+
+  if (event.keyCode == 40) {
+    albumNext()
+  }
 
   // m
   if (event.keyCode == 77) {
@@ -692,6 +738,9 @@ $isnotmulti-color: #34a853
             &.currnum
               border-bottom: 3px solid $accent-color !important
 
+              &.album
+                border-bottom: 3px dotted $accent-color !important
+
             &.favorite
               border-bottom: 3px solid $favorite-color
 
@@ -847,6 +896,9 @@ $isnotmulti-color: #34a853
             background-color: rgba(255, 255, 255, 0.2)
             border-bottom: 3px solid $accent-color !important
 
+            &.album
+              border-bottom: 3px dashed $accent-color !important
+
         img.small
           z-index: 10
           width: 0px
@@ -1000,7 +1052,7 @@ $isnotmulti-color: #34a853
       +if('displayposts.length')
         span.fav(on:click|stopPropagation|preventDefault="{toggleFavorite}")
           Icon(icon="{currpost.favorite ? faFav : faUnFav}")
-      | {currpost.title}
+      | {title}
       +if('currpost.subreddit')
         .subreddit(on:click='{openSubReddit}', class:ismulti='{ismultireddit}') {currpost.subredditp}
           .subredditwrapper.tooltip.bottom(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
@@ -1015,7 +1067,7 @@ $isnotmulti-color: #34a853
         Icon(icon="{uiVisible ? faHide : faShow }")
       .div(class:hide='{uiVisible == false}')
         Settings(bind:showSettings)
-    +if('currpost.is_image')
+    +if('currpost.is_image && !currpost.is_album')
       +if('$hires')
         .image(style="background-image: url('{currpost.url}')")
         +else()
@@ -1026,7 +1078,15 @@ $isnotmulti-color: #34a853
             source(src="{currpost.preview.vid.webm}")
           +if('currpost.preview.vid.mp4')
             source(src="{currpost.preview.vid.mp4}")
-
+      +elseif('currpost.is_album')
+        // index=0 can be optimized
+        +if('albumindex === 0')
+          +if('$hires')
+            .image(style="background-image: url('{currpost.url}')")
+            +else()
+              .image(style="background-image: url('{currpost.preview.img.default}')")
+          +else()
+            .image(style="background-image: url('{currpost.preview.img.album[albumindex]}')")
     .control.next(on:click="{next}")
     +if('displayposts.length || posts.length')
       .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{gotoElWidth}')
@@ -1070,13 +1130,14 @@ $isnotmulti-color: #34a853
           +each('displayposts as post, i')
             span.nums(
               class:currnum="{index === i}",
+              class:album="{currpost.is_album}",
               class:favorite="{displayposts[i].favorite}",
               class:over18="{displayposts[i].over18}",
               on:click="{function(){goto(i)}}"
             )
               //img.small(alt="{displayposts[i].title}", src="{displayposts[i].preview.img.default}")
               img.small(alt="{displayposts[i].title}", src="{displayposts[i].thumbnail}")
-              p.small(class:curr="{index === i}") {i+1}
+              p.small(class:curr="{index === i}", class:album="{currpost.is_album}") {i+1}
           +if('filterValue')
             span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
               p deep search 🡒

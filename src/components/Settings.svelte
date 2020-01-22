@@ -198,6 +198,72 @@ $over18-border-color: #ea4335
 
         .option
           padding: 0
+
+.tooltip
+  position: relative
+  z-index: 2
+  cursor: pointer
+
+.ttbefore
+  position: absolute
+  bottom: 120%
+  left: 50%
+  margin-bottom: 5px
+  margin-left: -30px
+  padding: 5px 4px
+  width: max-content
+  border-radius: 3px
+  background-color: black
+  color: #fff
+
+  background-color: rgba(white, 90%)
+  color: black
+
+  content: attr(data-tooltip)
+  text-align: center
+  font-size: 0.8rem
+  line-height: 1.2
+
+.ttafter
+  position: absolute
+  bottom: 120%
+  left: 50%
+  margin-left: -5px
+  width: 0
+  border-top: 5px solid rgba(white, 90%)
+  border-right: 5px solid transparent
+  border-left: 5px solid transparent
+  content: " "
+  font-size: 0
+  line-height: 0
+
+.tooltip
+  &:before, &:after
+    visibility: hidden
+    opacity: 0
+    pointer-events: none
+
+  &:before
+    @extend .ttbefore
+
+  &.bottom:before
+    @extend .ttbefore
+    bottom: -170%
+
+  &:after
+    @extend .ttafter
+
+  &.bottom:after
+    @extend .ttafter
+    bottom: -40%
+    border-bottom: 5px solid rgba(white, 90%)
+    border-top: 5px solid transparent
+
+  &:hover
+    &:before, &:after
+      visibility: visible
+      opacity: 1
+
 </style>
 
 <template lang="pug">
@@ -227,11 +293,11 @@ $over18-border-color: #ea4335
         //      span.button Unmark all
         //      span.button Unmark all (all subreddits)
         .item
-          span Prefetch media
+          span.tooltip(data-tooltip="Preload media in the background") Prefetch media
           span
             span.button(on:click='{togglePrefetch}') {_prefetch ? "Prefetch is on" : "Prefetch is off"}
         .item
-          span.text Display image resolution
+          span.text.tooltip(data-tooltip="Choose what type of image to display") Display image resolution
           span
             span.button(on:click='{toggleHiRes}') {_hires ? "Original (slow)" : "Optimized (fast)"}
         //p remove duplicates
