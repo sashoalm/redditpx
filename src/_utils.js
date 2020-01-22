@@ -88,7 +88,8 @@ async function imgsrc(url, item) {
   if (url.includes("imgur.com/a/")) {
     // Other cors proxies
     // https://gist.github.com/jimmywarting/ac1be6ea0297c16c477e17f8fbe51347
-    let res = await fetch(`https://thingproxy.freeboard.io/fetch/${url}/embed`);
+    let corsproxy = "https://cors-anywhere.herokuapp.com";
+    let res = await fetch(`${corsproxy}/${url}/embed`);
     let html = await res.text();
     let images = [];
     for (const node of parse(html).querySelectorAll(".thumb-title-embed")) {
