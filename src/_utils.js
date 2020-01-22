@@ -88,7 +88,10 @@ async function imgsrc(url, item) {
   if (url.includes("imgur.com/a/")) {
     // Other cors proxies
     // https://gist.github.com/jimmywarting/ac1be6ea0297c16c477e17f8fbe51347
+    //
     let corsproxy = "https://cors-anywhere.herokuapp.com";
+    //let corsproxy = "https://yacdn.org/serve/"
+
     let res = await fetch(`${corsproxy}/${url}/embed`);
     let html = await res.text();
     let images = [];
