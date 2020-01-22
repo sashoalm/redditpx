@@ -486,8 +486,10 @@ function albumPrev() {
   else {
     albumindex -= 1
   }
+  if ($autoplay) stopAndStartAutoPlay();
 
 }
+
 function albumNext() {
 
   if (albumindex == (currpost.preview.img.album.length -1)) {
@@ -496,6 +498,8 @@ function albumNext() {
   else {
     albumindex += 1
   }
+
+  if ($autoplay) stopAndStartAutoPlay();
 
 }
 
