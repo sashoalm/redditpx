@@ -1,8 +1,6 @@
 import fetchJsonp from "fetch-jsonp";
 import he from "he";
 
-import { parse } from "node-html-parser";
-
 export function queryp(query) {
   return Object.entries(query)
     .map(([key, val]) => `${key}=${val}`)
@@ -95,7 +93,11 @@ async function imgsrc(url, item) {
     let res = await fetch(`${corsproxy}/${url}/embed`);
     let html = await res.text();
     let images = [];
-    for (const node of parse(html).querySelectorAll(".thumb-title-embed")) {
+
+    let parser = new DOMParser();
+    for (const node of parser
+      .parseFromString(html, "text/html")
+      .querySelectorAll(".thumb-title-embed")) {
       let img = imgur(node);
 
       images.push(img);
@@ -107,7 +109,7 @@ async function imgsrc(url, item) {
 }
 
 function imgur(node) {
-  let url = node.attributes["data-src"];
+  let url = node.attributes["data-src"].value;
   let [a, b, domain, filename] = url.split("/");
 
   let [base, ext] = filename.split(".");
