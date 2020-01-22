@@ -1,5 +1,4 @@
 import fetchJsonp from "fetch-jsonp";
-import he from "he";
 
 export function queryp(query) {
   return Object.entries(query)
@@ -71,10 +70,8 @@ async function imgsrc(url, item) {
   let imgs;
   try {
     imgs = {
-      default: he.decode(
-        item.data.preview.images[0].resolutions.slice(-1)[0].url
-      ),
-      hires: he.decode(item.data.preview.images[0].source.url)
+      default: decode(item.data.preview.images[0].resolutions.slice(-1)[0].url),
+      hires: decode(item.data.preview.images[0].source.url)
     };
   } catch {
     imgs = {
@@ -88,9 +85,10 @@ async function imgsrc(url, item) {
     // https://gist.github.com/jimmywarting/ac1be6ea0297c16c477e17f8fbe51347
     //
     let corsproxy = "https://cors-anywhere.herokuapp.com";
-    //let corsproxy = "https://yacdn.org/serve/"
+    //let corsproxy2 = "https://yacdn.org/serve"
 
     let res = await fetch(`${corsproxy}/${url}/embed`);
+
     let html = await res.text();
     let images = [];
 
@@ -154,10 +152,10 @@ async function vidsrc(url, item) {
     };
   } else if (url.includes("i.redd.it/")) {
     return {
-      gif: he.decode(
+      gif: decode(
         item.data.preview.images[0].variants.gif.resolutions.slice(-1)[0].url
       ),
-      mp4: he.decode(
+      mp4: decode(
         item.data.preview.images[0].variants.mp4.resolutions.slice(-1)[0].url
       )
     };
@@ -168,14 +166,20 @@ function url(item) {
   return item.data.url || item.data.link_url;
 }
 
+function decode(str) {
+  let parser = new DOMParser();
+  return parser.parseFromString(`<!doctype html><body>${str}`, "text/html").body
+    .textContent;
+}
+
 function title(item) {
-  return he.decode(item.data.title) || he.decode(item.data.link_title);
+  return decode(item.data.title) || decode(item.data.link_title);
 }
 
 function thumbnail(item) {
   let thumbnail = item.data.thumbnail;
   if (thumbnail == "spoiler" || thumbnail == "nsfw") {
-    return he.decode(item.data.preview.images[0].resolutions[0].url);
+    return decode(item.data.preview.images[0].resolutions[0].url);
   } else {
     return thumbnail;
   }
