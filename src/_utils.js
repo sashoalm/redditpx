@@ -130,7 +130,12 @@ function extractAlbumInfoNode(html) {
   let album = [];
   for (const _i of info.album_images.images) {
     let i = {
-      url: `https://i.imgur.com/${_i.hash}.${_i.ext}`,
+      // Force mp4 for imgur gifs
+      hires: `https://i.imgur.com/${_i.hash}${_i.ext}`.replace(".gif", ".mp4"),
+      default: `https://i.imgur.com/${_i.hash}h${_i.ext}`.replace(
+        ".gif",
+        ".mp4"
+      ),
       is_image: !_i.prefer_video,
       is_video: _i.prefer_video
     };
