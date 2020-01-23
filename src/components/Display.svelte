@@ -480,6 +480,8 @@ function toggleFavorite() {
 }
 
 function albumPrev() {
+  if (!currpost.is_album) return
+
   if (albumindex == 0) {
     albumindex = currpost.preview.img.album.length - 1
   }
@@ -491,6 +493,7 @@ function albumPrev() {
 }
 
 function albumNext() {
+  if (!currpost.is_album) return
 
   if (albumindex == (currpost.preview.img.album.length -1)) {
     albumindex = 0
