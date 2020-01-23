@@ -231,14 +231,22 @@ $text-color: #fafafa
 
     .imgwrapper
       +each('displayposts as [url, post]')
-        +if('post.is_image')
-          .media
-            img(alt="image", src='{url}')
-        +if('post.is_video')
-          .media
-            video(autoplay, loop, playsinline, muted)
-              +if('post.preview.vid.webm')
-                source(src="{post.preview.vid.webm}")
-              +if('post.preview.vid.mp4')
-                source(src="{post.preview.vid.mp4}")
+        +if('post.is_album')
+          +each('post.preview.img.album as album')
+            +if('album.is_image')
+              .media
+                img(alt="image", src='{album.hires}')
+              +else()
+                video(autoplay, loop, playsinline, muted)
+                  source(src="{album.hires}")
+          +elseif('post.is_image')
+            .media
+              img(alt="image", src='{url}')
+          +elseif('post.is_video')
+            .media
+              video(autoplay, loop, playsinline, muted)
+                +if('post.preview.vid.webm')
+                  source(src="{post.preview.vid.webm}")
+                +if('post.preview.vid.mp4')
+                  source(src="{post.preview.vid.mp4}")
 </template>
