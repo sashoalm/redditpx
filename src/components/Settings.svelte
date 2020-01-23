@@ -5,10 +5,11 @@ import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
 
 export let showSettings;
 
-import { autoplayinterval, prefetch, hires } from "../_prefs";
+import { autoplayinterval, prefetch, hires, oldreddit } from "../_prefs";
 autoplayinterval.useLocalStorage(3);
 prefetch.useLocalStorage(true);
 hires.useLocalStorage(false);
+oldreddit.useLocalStorage(false);
 
 function hideSettings() {
   showSettings = false;
@@ -18,6 +19,7 @@ let activeTab = 1
 
 let _autoplayinterval = $autoplayinterval
 let _hires = $hires
+let _oldreddit = $oldreddit
 let _prefetch = $prefetch
 
 $ : {
@@ -25,6 +27,12 @@ let i = Math.round(_autoplayinterval)
 if (i) {
   autoplayinterval.set(i)
 }
+}
+
+function toggleOldReddit() {
+  _oldreddit = !_oldreddit
+
+  oldreddit.set(_oldreddit)
 }
 
 function toggleHiRes() {
@@ -300,6 +308,10 @@ $over18-border-color: #ea4335
           span.text.tooltip(data-tooltip="Choose what type of image to display") Display image resolution
           span
             span.button(on:click='{toggleHiRes}') {_hires ? "Original (slow)" : "Optimized (fast)"}
+        .item
+          span.text.tooltip(data-tooltip="Choose whether to go to reddit.com or old.reddit.com") reddit.com link handling
+          span
+            span.button(on:click='{toggleOldReddit}') {_oldreddit ? "old.reddit.com" : "reddit.com (New)"}
         //p remove duplicates
         //p aggressive caching (thumb vs preview)
       div.option(class:active='{activeTab == 2}')

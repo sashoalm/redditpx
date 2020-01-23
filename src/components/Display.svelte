@@ -24,7 +24,7 @@ import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
 
-import { autoplay, autoplayinterval, favorite, over18, multireddit, prefetch, hires } from "../_prefs";
+import { autoplay, autoplayinterval, favorite, over18, multireddit, prefetch, hires, oldreddit } from "../_prefs";
 autoplay.useLocalStorage(true);
 autoplayinterval.useLocalStorage(3);
 favorite.useLocalStorage({});
@@ -32,6 +32,7 @@ over18.useLocalStorage(true);
 multireddit.useLocalStorage({});
 prefetch.useLocalStorage(true);
 hires.useLocalStorage(false);
+oldreddit.useLocalStorage(false);
 
 export let params, slugstr;
 export let posts;
@@ -551,7 +552,12 @@ function keydown(event) {
 
   // r
   if (event.keyCode == 82) {
-    openComments();
+    if ($oldreddit) {
+      openCommentsOld();
+    }
+    else {
+      openComments();
+    }
   }
 
   // o

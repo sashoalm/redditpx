@@ -31,3 +31,4 @@ export const over18 = store("over18");
 export const multireddit = store("multireddit");
 export const prefetch = store("prefetch");
 export const hires = store("hires");
+export const oldreddit = store("oldreddit");
