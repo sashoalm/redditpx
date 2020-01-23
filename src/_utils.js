@@ -87,7 +87,6 @@ async function imgsrc(url, item) {
     //
     try {
       //let corsproxy = "https://cors-anywhere.herokuapp.com/";
-      //let corsproxy = "https://yacdn.org/serve/"
       let corsproxy = "https://cors-anywhere.glitch.me/";
 
       let res = await fetch(`${corsproxy}${url}/embed`, {
