@@ -66,6 +66,7 @@ export function is_video(item) {
     (url(item).startsWith("https://i.redd.it") && url(item).endsWith(".gif"))
   );
 }
+
 async function imgsrc(url, item) {
   let imgs;
   try {
@@ -84,36 +85,56 @@ async function imgsrc(url, item) {
     // Other cors proxies
     // https://gist.github.com/jimmywarting/ac1be6ea0297c16c477e17f8fbe51347
     //
-    let corsproxy = "https://cors-anywhere.herokuapp.com";
-    //let corsproxy2 = "https://yacdn.org/serve"
+    try {
+      let corsproxy = "https://cors-anywhere.herokuapp.com";
+      //let corsproxy = "https://yacdn.org/serve"
 
-    let res = await fetch(`${corsproxy}/${url}/embed`);
+      let res = await fetch(`${corsproxy}/${url}/embed`);
 
-    let html = await res.text();
-    let images = [];
+      let html = await res.text();
+      let images = [];
 
-    let parser = new DOMParser();
-    for (const node of parser
-      .parseFromString(html, "text/html")
-      .querySelectorAll(".thumb-title-embed")) {
-      let img = imgur(node);
-
-      images.push(img);
-    }
-
-    imgs["album"] = images;
+      imgs["album"] = extractAlbumInfoNode(html);
+    } catch (error) {}
   }
   return imgs;
 }
 
-function imgur(node) {
-  let url = node.attributes["data-src"].value;
-  let [a, b, domain, filename] = url.split("/");
+function extractAlbumInfoNode(html) {
+  let parser = new DOMParser();
+  let scripts = parser
+    .parseFromString(html, "text/html")
+    .querySelectorAll('script[type="text/javascript"]');
 
-  let [base, ext] = filename.split(".");
+  let node = Array.from(scripts).filter(node =>
+    node.text.includes("album.generalInit()")
+  )[0];
 
-  // Remove the `s` from the base since s stands for "small"
-  return `https://${domain}/${base.slice(0, -1)}.${ext}`;
+  // Extract JSON embedded inside js code
+  //
+  // 1. Remove extra spaces
+  // 2. Remove newlines
+  // 3. Grab everything inbetween `,album: and ,images:`
+  // 4. Convert to JSON
+  //
+  let info = JSON.parse(
+    node.text
+      .replace(/ /g, "")
+      .replace(/\n/g, "")
+      .match(/,album:(.*),images:/)[1]
+  );
+
+  let album = [];
+  for (const _i of info.album_images.images) {
+    let i = {
+      url: `https://i.imgur.com/${_i.hash}.${_i.ext}`,
+      is_image: !_i.prefer_video,
+      is_video: _i.prefer_video
+    };
+
+    album.push(i);
+  }
+  return album;
 }
 
 async function vidsrc(url, item) {
