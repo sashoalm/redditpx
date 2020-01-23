@@ -88,10 +88,22 @@ async function imgsrc(url, item) {
     try {
       //let corsproxy = "https://cors-anywhere.herokuapp.com/";
       let corsproxy = "https://cors-anywhere.glitch.me/";
+      let backupproxies = [
+        "https://redditpx-cors-2.glitch.me/",
+        "https://redditpx-cors.glitch.me/"
+      ];
 
-      let res = await fetch(`${corsproxy}${url}/embed`, {
-        headers: { origin: "redditpx" }
-      });
+      try {
+        let res = await fetch(`${corsproxy}${url}/embed`, {
+          headers: { origin: "redditpx" }
+        });
+      } catch (error) {
+        corsproxy = backupproxies[randint(0, backupproxies.length - 1)];
+
+        let res = await fetch(`${corsproxy}${url}/embed`, {
+          headers: { origin: "redditpx" }
+        });
+      }
 
       let html = await res.text();
       let images = [];
@@ -100,6 +112,10 @@ async function imgsrc(url, item) {
     } catch (error) {}
   }
   return imgs;
+}
+
+function randint(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function extractAlbumInfoNode(html) {
