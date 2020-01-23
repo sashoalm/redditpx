@@ -93,14 +93,15 @@ async function imgsrc(url, item) {
         "https://redditpx-cors.glitch.me/"
       ];
 
+      let res;
       try {
-        let res = await fetch(`${corsproxy}${url}/embed`, {
+        res = await fetch(`${corsproxy}${url}/embed`, {
           headers: { origin: "redditpx" }
         });
       } catch (error) {
         corsproxy = backupproxies[randint(0, backupproxies.length - 1)];
 
-        let res = await fetch(`${corsproxy}${url}/embed`, {
+        res = await fetch(`${corsproxy}${url}/embed`, {
           headers: { origin: "redditpx" }
         });
       }
