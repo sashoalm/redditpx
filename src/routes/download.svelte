@@ -237,8 +237,9 @@ $text-color: #fafafa
               .media
                 img(alt="image", src='{album.hires}')
               +else()
-                video(autoplay, loop, playsinline, muted)
-                  source(src="{album.hires}")
+                .media
+                  video(autoplay, loop, playsinline, muted)
+                    source(src="{album.hires}")
           +elseif('post.is_image')
             .media
               img(alt="image", src='{url}')
