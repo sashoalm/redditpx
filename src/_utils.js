@@ -86,10 +86,13 @@ async function imgsrc(url, item) {
     // https://gist.github.com/jimmywarting/ac1be6ea0297c16c477e17f8fbe51347
     //
     try {
-      let corsproxy = "https://cors-anywhere.herokuapp.com";
-      //let corsproxy = "https://yacdn.org/serve"
+      //let corsproxy = "https://cors-anywhere.herokuapp.com/";
+      //let corsproxy = "https://yacdn.org/serve/"
+      let corsproxy = "https://cors-anywhere.glitch.me/";
 
-      let res = await fetch(`${corsproxy}/${url}/embed`);
+      let res = await fetch(`${corsproxy}${url}/embed`, {
+        headers: { origin: "redditpx" }
+      });
 
       let html = await res.text();
       let images = [];
