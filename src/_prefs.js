@@ -26,6 +26,7 @@ const store = (key, initialValue) => {
 
 export const autoplay = store("autoplay");
 export const autoplayinterval = store("autoplayinterval");
+export const imageVideo = store("imageVideo");
 export const favorite = store("favorite");
 export const over18 = store("over18");
 export const multireddit = store("multireddit");

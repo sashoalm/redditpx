@@ -5,6 +5,9 @@ import { faPause } from "@fortawesome/free-solid-svg-icons/faPause";
 import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
 import { faHome } from "@fortawesome/free-solid-svg-icons/faHome";
 import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
+import { faPhotoVideo as faImageVideo} from "@fortawesome/free-solid-svg-icons/faPhotoVideo";
+import { faImage } from "@fortawesome/free-solid-svg-icons/faImage";
+import { faVideo } from "@fortawesome/free-solid-svg-icons/faVideo";
 import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
@@ -24,9 +27,10 @@ import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
 
-import { autoplay, autoplayinterval, favorite, over18, multireddit, prefetch, hires, oldreddit } from "../_prefs";
+import { autoplay, autoplayinterval, imageVideo, favorite, over18, multireddit, prefetch, hires, oldreddit } from "../_prefs";
 autoplay.useLocalStorage(true);
 autoplayinterval.useLocalStorage(3);
+imageVideo.useLocalStorage(0);
 favorite.useLocalStorage({});
 over18.useLocalStorage(true);
 multireddit.useLocalStorage({});
@@ -101,6 +105,7 @@ let loading = false;
 let reloadstr = "Load more";
 let navigation = false;
 
+let imageVideoStr = "";
 let downloadstr = "";
 let autoplaystr = "";
 let over18str = "";
@@ -120,6 +125,8 @@ let currpost = { title: "Loading .." };
 let nexturls = [];
 
 let index = 0;
+
+let imageVideoStates = ["imageVideo", "video", "photo"]
 
 async function loadMore() {
   if (!after) return;
@@ -191,6 +198,15 @@ function toggleAutoPlay() {
   }
 }
 
+function toggleImageVideo() {
+
+  $imageVideo = $imageVideo + 1
+
+  if ($imageVideo == 3) {
+    $imageVideo = 0
+  }
+}
+
 let renderVideo = true;
 
 // Some operations like fav/unfav causes video to re-render
@@ -220,6 +236,17 @@ $: {
   autoplaystr = `Autoplay is ${$autoplay ? "on" : "off"}`;
   over18str = `nsfw is ${$over18 ? "on" : "off"}`;
   deepsearchstr = `Search for ${filterValue}`;
+
+  if ($imageVideo == 0) {
+    imageVideoStr = "Show both image and video"
+  }
+  else if ($imageVideo == 1) {
+    imageVideoStr = "Show videos only"
+  }
+  else if ($imageVideo == 2) {
+    imageVideoStr = "Show images only"
+  }
+
 }
 
 $: {
@@ -272,6 +299,15 @@ $: {
     tmp = tmp.filter(item =>
       item.title.toLowerCase().includes(filterValue.toLowerCase())
     );
+  }
+
+  // Filter only videos
+  if ($imageVideo == 1) {
+    tmp = tmp.filter(item => item.is_video);
+  }
+  // Filter only images
+  else if ($imageVideo == 2) {
+    tmp = tmp.filter(item => item.is_image);
   }
 
   displayposts = tmp;
@@ -833,6 +869,12 @@ $isnotmulti-color: #34a853
             position: relative
             top: -1px
 
+        &.imagevideo
+          cursor: pointer
+          font-size: 1.4rem
+          bottom: 2px
+          color: white
+
         &.download
           cursor: default
           font-size: 1.4rem
@@ -1120,6 +1162,16 @@ $isnotmulti-color: #34a853
             class:dlready="{numFavorite}"
           )
             Icon(icon="{faDownload}")
+          span.btn.imagevideo.tooltip(
+            data-tooltip="{imageVideoStr}",
+            on:click="{toggleImageVideo}"
+          )
+            +if('$imageVideo == 0')
+              Icon(icon="{faImageVideo}")
+              +elseif('$imageVideo == 1')
+                Icon(icon="{faVideo}")
+              +elseif('$imageVideo == 2')
+                Icon(icon="{faImage}")
           +if('tinygoto')
             span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
               +if('loading')
@@ -1149,7 +1201,7 @@ $isnotmulti-color: #34a853
               class:currnum="{index === i}",
               class:album="{currpost.is_album}",
               class:favorite="{displayposts[i].favorite}",
-              class:over18="{displayposts[i].over18}",
+           e  class:over18="{displayposts[i].over18}",
               on:click="{function(){goto(i)}}"
             )
               //img.small(alt="{displayposts[i].title}", src="{displayposts[i].preview.img.default}")

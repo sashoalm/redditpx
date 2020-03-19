@@ -5,11 +5,12 @@ import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
 
 export let showSettings;
 
-import { autoplayinterval, prefetch, hires, oldreddit } from "../_prefs";
+import { autoplayinterval, prefetch, hires, oldreddit, imageVideo } from "../_prefs";
 autoplayinterval.useLocalStorage(3);
 prefetch.useLocalStorage(true);
 hires.useLocalStorage(false);
 oldreddit.useLocalStorage(false);
+imageVideo.useLocalStorage(0)
 
 function hideSettings() {
   showSettings = false;
@@ -21,6 +22,9 @@ let _autoplayinterval = $autoplayinterval
 let _hires = $hires
 let _oldreddit = $oldreddit
 let _prefetch = $prefetch
+let _imageVideo = $imageVideo
+
+let imagesVideoStates = ['Both images and videos', 'Videos only', 'Images only']
 
 $ : {
 let i = Math.round(_autoplayinterval)
@@ -33,6 +37,16 @@ function toggleOldReddit() {
   _oldreddit = !_oldreddit
 
   oldreddit.set(_oldreddit)
+}
+
+function toggleImageVideo() {
+  _imageVideo = _imageVideo + 1
+
+  if (_imageVideo == 3) {
+    _imageVideo = 0
+  }
+
+  imageVideo.set(_imageVideo)
 }
 
 function toggleHiRes() {
@@ -87,6 +101,7 @@ $over18-border-color: #ea4335
     display: grid
     grid-template-columns: 1fr 2fr
     overflow: hidden
+    user-select: none
 
     .nav
       font-size: 1.1rem
@@ -312,6 +327,10 @@ $over18-border-color: #ea4335
           span.text.tooltip(data-tooltip="Choose whether to go to reddit.com or old.reddit.com") reddit.com link handling
           span
             span.button(on:click='{toggleOldReddit}') {_oldreddit ? "old.reddit.com" : "reddit.com (New)"}
+        .item
+          span.text.tooltip(data-tooltip="Choose whether to show videos only, images only or both") Display images/videos/both
+          span
+            span.button(on:click='{toggleImageVideo}') {imagesVideoStates[_imageVideo]}
         //p remove duplicates
         //p aggressive caching (thumb vs preview)
       div.option(class:active='{activeTab == 2}')
