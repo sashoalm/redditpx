@@ -890,7 +890,13 @@ $isnotmulti-color: #34a853
         &.playpause
           cursor: pointer
           top: 1px
-          color: white
+
+          // When it is play icon, make it white
+          &.play
+            color: white
+
+          @include hover()
+            color: white
 
         &.filter
           cursor: pointer
@@ -1146,9 +1152,10 @@ $isnotmulti-color: #34a853
         .btnwrapper
           span.btn.playpause.tooltip(
             data-tooltip="{autoplaystr}",
+            class:play="{$autoplay}",
             on:click="{toggleAutoPlay}"
           )
-            Icon(icon="{$autoplay ? faPlay : faPause}")
+            Icon(icon="{$autoplay ? faPause : faPlay}")
           span.btn.download.tooltip(
             on:click="{downloadFiles}",
             data-tooltip="{downloadstr}",
