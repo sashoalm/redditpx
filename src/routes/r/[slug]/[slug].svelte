@@ -4,6 +4,15 @@ export async function preload({ path, params, query }) {
 
   let slugstr = path.substring(1).replace(/\/$/, '').replace(/%20/g, ''); // remove the leading and trailing slash, and %20 (spaces)
 
+  // If the user has r/user/username, they probably wanted
+  // /user/username
+
+  // The case of r/user/username/m/multi is handled inside _error.svelte
+  if (slugstr.startsWith("r/user/") || slugstr.startsWith("r/u/")) {
+    let newPath = slugstr.replace("r/", "");
+    this.redirect(302, newPath);
+  }
+
   let { posts, res, after } = await get_posts(
     `https://reddit.com/${slugstr}.json?${queryp(query)}`
   );
