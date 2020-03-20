@@ -5,21 +5,21 @@ export async function preload({ path, params, query }) {
   let slugstr = path.substring(1).replace(/\/$/, ''); // remove the leading and trailing slash
 
   let { posts, res, after } = await get_posts(
-    `https://reddit.com/user/${params.slug}.json?${queryp(query)}`
+    `https://reddit.com/${slugstr}.json?${queryp(query)}`
   );
 
   return { posts, after, res, slugstr };
 }
 </script>
 <script>
-import Display from "../../../components/Display.svelte";
+import Display from "../../../../components/Display.svelte";
 
-import { get_posts, queryp } from "../../../_utils";
+import { get_posts, queryp } from "../../../../_utils";
 
 import { stores } from "@sapper/app";
 const { page } = stores();
 
-import { favorite } from "../../../_prefs";
+import { favorite } from "../../../../_prefs";
 favorite.useLocalStorage({});
 
 export let posts = [];

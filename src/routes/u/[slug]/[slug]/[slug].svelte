@@ -12,14 +12,14 @@ export async function preload({ path, params, query }) {
 }
 </script>
 <script>
-import Display from "../../../components/Display.svelte";
+import Display from "../../../../components/Display.svelte";
 
-import { get_posts, queryp } from "../../../_utils";
+import { get_posts, queryp } from "../../../../_utils";
 
 import { stores } from "@sapper/app";
 const { page } = stores();
 
-import { favorite } from "../../../_prefs";
+import { favorite } from "../../../../_prefs";
 favorite.useLocalStorage({});
 
 export let posts = [];
