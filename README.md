@@ -19,6 +19,7 @@ redditpx has the following new features
  - fast and modern code
  - user profile
  - /r/random and /r/randnsfw
+ - filter images, videos or both
  - [ ] customizable keyboard shortcuts
 
 .. in addition to the features it shares with redditp
@@ -30,7 +31,7 @@ redditpx has the following new features
  - keyboard shortcuts
  - open reddit post and comments
  - /new, /top, /hot support
- - /domain, /user support
+ - /domain, /user, /u support
 
 ## Acknowledgements
  - svelte/sapper for framework
