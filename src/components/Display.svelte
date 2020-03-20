@@ -267,12 +267,12 @@ $: {
     } else {
       // nothing was filtered
       index = 0;
-      currpost = { title: "Nothing to show" };
+      currpost = { title: "Nothing to show. Change filters" };
     }
   } else {
     if (res && res.res.ok) {
       // No media found
-      currpost = { title: "Nothing to show" };
+      currpost = { title: "Nothing to show. Change filters" };
     } else if (res && !res.res.ok) {
       // Invalid subreddit
       currpost = { title: "Error" };
