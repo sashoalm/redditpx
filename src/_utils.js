@@ -181,12 +181,16 @@ async function vidsrc(url, item) {
     let res = await fetch(`https://api.gfycat.com/v1/gfycats/${name}`, {
       //mode: "no-cors"
     });
-    let data = await res.json();
-    return {
-      webm: data.gfyItem.webmUrl,
-      mp4: data.gfyItem.mp4Url,
-      gif: data.gfyItem.gifUrl
-    };
+    try {
+      let data = await res.json();
+      return {
+        webm: data.gfyItem.webmUrl,
+        mp4: data.gfyItem.mp4Url,
+        gif: data.gfyItem.gifUrl
+      };
+    } catch {
+      return {};
+    }
   } else if (url.includes("v.redd.it")) {
     return {
       mp4: item.data.media.reddit_video.fallback_url
