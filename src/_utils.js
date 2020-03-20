@@ -51,7 +51,9 @@ function is_image(item) {
 }
 
 function is_post(item) {
-  return item.kind == "t3";
+  // t3
+  // t1 = to support /u/jeffjose
+  return item.kind == "t3" || item.kind == "t1";
 }
 
 export function filter(item) {
@@ -67,7 +69,7 @@ export function is_video(item) {
   );
 }
 
-async function imgsrc(url, item) {
+async function imgsrc(u, item) {
   let imgs;
   try {
     imgs = {
@@ -81,7 +83,7 @@ async function imgsrc(url, item) {
     };
   }
 
-  if (url.includes("imgur.com/a/")) {
+  if (u.includes("imgur.com/a/")) {
     // Other cors proxies
     // https://gist.github.com/jimmywarting/ac1be6ea0297c16c477e17f8fbe51347
     //
@@ -95,13 +97,13 @@ async function imgsrc(url, item) {
 
       let res;
       try {
-        res = await fetch(`${corsproxy}${url}/embed`, {
+        res = await fetch(`${corsproxy}${u}/embed`, {
           headers: { origin: "redditpx" }
         });
       } catch (error) {
         corsproxy = backupproxies[randint(0, backupproxies.length - 1)];
 
-        res = await fetch(`${corsproxy}${url}/embed`, {
+        res = await fetch(`${corsproxy}${u}/embed`, {
           headers: { origin: "redditpx" }
         });
       }
@@ -216,6 +218,7 @@ function url(item) {
 }
 
 function decode(str) {
+  if (str === undefined) return undefined;
   let parser = new DOMParser();
   return parser.parseFromString(`<!doctype html><body>${str}`, "text/html").body
     .textContent;
