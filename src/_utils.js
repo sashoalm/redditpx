@@ -13,10 +13,10 @@ export async function get_posts(url) {
     console.log("Fetched: ", data.data.children.length, data.data);
     let subreddit = data.data.children[0].data.subreddit;
 
-    let filtered = data.data.children.filter(item => filter(item));
+    let filtered = data.data.children.filter((item) => filter(item));
     console.log("Filtered: ", filtered.length, filtered);
 
-    let posts = await Promise.all(filtered.map(post => format(post)));
+    let posts = await Promise.all(filtered.map((post) => format(post)));
 
     console.log("Formatted: ", posts.length, posts);
 
@@ -24,7 +24,7 @@ export async function get_posts(url) {
       posts,
       subreddit,
       after: data.data.after,
-      res: { ok: true, res: res }
+      res: { ok: true, res: res },
     };
   } catch (error) {
     console.log("[get_posts]: error");
@@ -33,7 +33,7 @@ export async function get_posts(url) {
       posts: [],
       after: "",
       subreddit: "",
-      res: { ok: false, res: error }
+      res: { ok: false, res: error },
     };
   }
 }
@@ -74,12 +74,12 @@ async function imgsrc(u, item) {
   try {
     imgs = {
       default: decode(item.data.preview.images[0].resolutions.slice(-1)[0].url),
-      hires: decode(item.data.preview.images[0].source.url)
+      hires: decode(item.data.preview.images[0].source.url),
     };
   } catch {
     imgs = {
       default: url(item),
-      hires: url(item)
+      hires: url(item),
     };
   }
 
@@ -92,19 +92,19 @@ async function imgsrc(u, item) {
       let corsproxy = "https://cors-anywhere.glitch.me/";
       let backupproxies = [
         "https://redditpx-cors-2.glitch.me/",
-        "https://redditpx-cors.glitch.me/"
+        "https://redditpx-cors.glitch.me/",
       ];
 
       let res;
       try {
         res = await fetch(`${corsproxy}${u}/embed`, {
-          headers: { origin: "redditpx" }
+          headers: { origin: "redditpx" },
         });
       } catch (error) {
         corsproxy = backupproxies[randint(0, backupproxies.length - 1)];
 
         res = await fetch(`${corsproxy}${u}/embed`, {
-          headers: { origin: "redditpx" }
+          headers: { origin: "redditpx" },
         });
       }
 
@@ -127,7 +127,7 @@ function extractAlbumInfoNode(html) {
     .parseFromString(html, "text/html")
     .querySelectorAll('script[type="text/javascript"]');
 
-  let node = Array.from(scripts).filter(node =>
+  let node = Array.from(scripts).filter((node) =>
     node.text.includes("album.generalInit()")
   )[0];
 
@@ -155,7 +155,7 @@ function extractAlbumInfoNode(html) {
         ".mp4"
       ),
       is_image: !_i.prefer_video,
-      is_video: _i.prefer_video
+      is_video: _i.prefer_video,
     };
 
     album.push(i);
@@ -169,7 +169,7 @@ async function vidsrc(url, item) {
     return {
       gif: `https://i.imgur.com/${name}.gif`,
       //webm: `https://i.imgur.com/${name}.webm`,
-      mp4: `https://i.imgur.com/${name}.mp4`
+      mp4: `https://i.imgur.com/${name}.mp4`,
     };
   } else if (url.includes("gfycat.com/")) {
     let name = url.match(/gfycat.com\/(.*)/)[1];
@@ -188,18 +188,18 @@ async function vidsrc(url, item) {
       return {
         webm: data.gfyItem.webmUrl,
         mp4: data.gfyItem.mp4Url,
-        gif: data.gfyItem.gifUrl
+        gif: data.gfyItem.gifUrl,
       };
     } catch {
       return {};
     }
   } else if (url.includes("v.redd.it")) {
     return {
-      mp4: item.data.media.reddit_video.fallback_url
+      mp4: item.data.media.reddit_video.fallback_url,
     };
   } else if (url.includes("reddit.com/r/")) {
     return {
-      mp4: item.data.preview.reddit_video_preview.fallback_url
+      mp4: item.data.preview.reddit_video_preview.fallback_url,
     };
   } else if (url.includes("i.redd.it/")) {
     return {
@@ -208,7 +208,11 @@ async function vidsrc(url, item) {
       ),
       mp4: decode(
         item.data.preview.images[0].variants.mp4.resolutions.slice(-1)[0].url
-      )
+      ),
+    };
+  } else {
+    return {
+      mp4: item.data.preview.reddit_video_preview.fallback_url,
     };
   }
 }
@@ -260,8 +264,8 @@ export async function format(item) {
     url: url(item),
     preview: {
       vid: vids,
-      img: imgs
-    }
+      img: imgs,
+    },
   };
 
   return formatted;
