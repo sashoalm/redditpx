@@ -191,6 +191,21 @@ async function vidsrc(url, item) {
         gif: data.gfyItem.gifUrl,
       };
     } catch {
+      // If gfycat.com fails, try redgifs.com
+      // https://www.reddit.com/r/redditp/comments/gpwo5u/why_do_so_many_gifs_and_video_come_up_blank_black/
+      try {
+        let res = await fetch(`https://api.redgifs.com/v1/gfycats/${name}`, {
+          //mode: "no-cors"
+        });
+        let data = await res.json();
+        return {
+          webm: data.gfyItem.webmUrl,
+          mp4: data.gfyItem.mp4Url,
+          gif: data.gfyItem.gifUrl,
+        };
+      } catch {
+        return {};
+      }
       return {};
     }
   } else if (url.includes("v.redd.it")) {
