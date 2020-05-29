@@ -1105,7 +1105,10 @@ $isnotmulti-color: #34a853
       +if('displayposts.length')
         span.fav(on:click|stopPropagation|preventDefault="{toggleFavorite}")
           Icon(icon="{currpost.favorite ? faFav : faUnFav}")
-      | {title} ({currpost.dims.width}x{currpost.dims.height})
+      +if('currpost.dims')
+        | {title} ({currpost.dims.width}x{currpost.dims.height})
+        +else
+          | {title}
       +if('currpost.subreddit')
         .subreddit(on:click='{openSubReddit}', class:ismulti='{ismultireddit}') {currpost.subredditp}
           .subredditwrapper.tooltip.bottom(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
