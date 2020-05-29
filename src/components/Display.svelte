@@ -544,8 +544,6 @@ function albumNext() {
 }
 
 function keydown(event) {
-  console.log(event.keyCode)
-
 
   // up
   if (event.keyCode == 38) {
@@ -1107,7 +1105,7 @@ $isnotmulti-color: #34a853
       +if('displayposts.length')
         span.fav(on:click|stopPropagation|preventDefault="{toggleFavorite}")
           Icon(icon="{currpost.favorite ? faFav : faUnFav}")
-      | {title}
+      | {title} ({currpost.dims.width}x{currpost.dims.height})
       +if('currpost.subreddit')
         .subreddit(on:click='{openSubReddit}', class:ismulti='{ismultireddit}') {currpost.subredditp}
           .subredditwrapper.tooltip.bottom(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')

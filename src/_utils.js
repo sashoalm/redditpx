@@ -69,6 +69,24 @@ export function is_video(item) {
   );
 }
 
+export function get_dims(item) {
+  let dims = {};
+
+  if (is_image(item)) {
+    dims = {
+      height: item.data.preview.images[0].source.height,
+      width: item.data.preview.images[0].source.width,
+    };
+  } else if (is_video(item)) {
+    dims = {
+      height: item.data.secure_media.oembed.height,
+      width: item.data.secure_media.oembed.width,
+    };
+  }
+
+  return dims;
+}
+
 async function imgsrc(u, item) {
   let imgs;
   try {
@@ -80,6 +98,10 @@ async function imgsrc(u, item) {
     imgs = {
       default: url(item),
       hires: url(item),
+      dims: {
+        height: item.data.preview.images[0].source.height,
+        width: item.data.preview.images[0].source.width,
+      },
     };
   }
 
@@ -277,6 +299,7 @@ export async function format(item) {
     is_album: is_album(imgs), // based on `imgs`
     favorite: false,
     url: url(item),
+    dims: get_dims(item),
     preview: {
       vid: vids,
       img: imgs,
