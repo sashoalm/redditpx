@@ -70,7 +70,7 @@ export function is_video(item) {
 }
 
 export function get_dims(item) {
-  let dims = {};
+  let dims = { height: "", width: "" };
 
   if (is_image(item)) {
     dims = {
@@ -78,10 +78,18 @@ export function get_dims(item) {
       width: item.data.preview.images[0].source.width,
     };
   } else if (is_video(item)) {
-    dims = {
-      height: item.data.secure_media.oembed.height,
-      width: item.data.secure_media.oembed.width,
-    };
+    try {
+      dims = {
+        height: item.data.preview.reddit_video_preview.height,
+        width: item.data.preview.reddit_video_preview.width,
+      };
+    } catch {
+      // if you cant get the dims from the video, pick it up from the preview image
+      dims = {
+        height: item.data.preview.images[0].source.height,
+        width: item.data.preview.images[0].source.width,
+      };
+    }
   }
 
   return dims;
@@ -98,10 +106,6 @@ async function imgsrc(u, item) {
     imgs = {
       default: url(item),
       hires: url(item),
-      dims: {
-        height: item.data.preview.images[0].source.height,
-        width: item.data.preview.images[0].source.width,
-      },
     };
   }
 
