@@ -20,6 +20,9 @@ import { faMinusCircle } from "@fortawesome/free-solid-svg-icons/faMinusCircle";
 import { faEye as faShow } from "@fortawesome/free-solid-svg-icons/faEye";
 import { faEyeSlash as faHide } from "@fortawesome/free-solid-svg-icons/faEyeSlash";
 
+import { faMobileAlt as faPortrait } from "@fortawesome/free-solid-svg-icons/faMobileAlt";
+import { faDesktop as faLandscape } from "@fortawesome/free-solid-svg-icons/faDesktop";
+
 import Settings from './Settings.svelte'
 
 import { onMount, tick } from "svelte";
@@ -27,10 +30,11 @@ import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
 
-import { autoplay, autoplayinterval, imageVideo, favorite, over18, multireddit, prefetch, hires, oldreddit } from "../_prefs";
+import { autoplay, autoplayinterval, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit } from "../_prefs";
 autoplay.useLocalStorage(true);
 autoplayinterval.useLocalStorage(3);
 imageVideo.useLocalStorage(0);
+portraitLandscape.useLocalStorage(0);
 favorite.useLocalStorage({});
 over18.useLocalStorage(true);
 multireddit.useLocalStorage({});
@@ -106,6 +110,7 @@ let reloadstr = "Load more";
 let navigation = false;
 
 let imageVideoStr = "";
+let portraitLandscapeStr = "";
 let downloadstr = "";
 let autoplaystr = "";
 let over18str = "";
@@ -125,8 +130,6 @@ let currpost = { title: "Loading .." };
 let nexturls = [];
 
 let index = 0;
-
-let imageVideoStates = ["imageVideo", "video", "photo"]
 
 async function loadMore() {
   if (!after) return;
@@ -150,6 +153,8 @@ async function loadMore() {
     (r, i) => (!r.some(j => i.id === j.id) ? [...r, i] : r),
     []
   );
+
+  console.log("Total loaded: ", posts.length)
 
   loading = false;
   reloadstr = "Load more";
@@ -207,6 +212,14 @@ function toggleImageVideo() {
   }
 }
 
+function togglePortraitLandscape() {
+  $portraitLandscape = $portraitLandscape + 1
+
+  if ($portraitLandscape == 3) {
+    $portraitLandscape = 0
+  }
+}
+
 let renderVideo = true;
 
 // Some operations like fav/unfav causes video to re-render
@@ -245,6 +258,16 @@ $: {
   }
   else if ($imageVideo == 2) {
     imageVideoStr = "Show images only"
+  }
+
+  if ($portraitLandscape == 0) {
+    portraitLandscapeStr = "Show all media"
+  }
+  else if ($portraitLandscape == 1) {
+    portraitLandscapeStr = "Show only portrait media"
+  }
+  else if ($portraitLandscape == 2) {
+    portraitLandscapeStr = "Show only landscape media"
   }
 
 }
@@ -308,6 +331,13 @@ $: {
   // Filter only images
   else if ($imageVideo == 2) {
     tmp = tmp.filter(item => item.is_image);
+  }
+
+  if ($portraitLandscape == 1) {
+    tmp = tmp.filter(item => (item.dims.width / item.dims.height) <= 1.2)
+  }
+  else if ($portraitLandscape == 2) {
+    tmp = tmp.filter(item => (item.dims.width / item.dims.height) > 1.2)
   }
 
   displayposts = tmp;
@@ -873,6 +903,15 @@ $isnotmulti-color: #34a853
           bottom: 2px
           color: white
 
+        &.portraitlandscape
+          cursor: pointer
+          font-size: 1.4rem
+          bottom: 2px
+          color: white
+
+          & :global(.landscape)
+            transform: rotate(270deg)
+
         &.download
           cursor: default
           font-size: 1.4rem
@@ -1163,6 +1202,17 @@ $isnotmulti-color: #34a853
             class:dlready="{numFavorite}"
           )
             Icon(icon="{faDownload}")
+          span.btn.portraitlandscape.tooltip(
+            on:click="{togglePortraitLandscape}",
+            data-tooltip="{portraitLandscapeStr}",
+            class:active="{$portraitLandscape}"
+          )
+            +if('$portraitLandscape == 0')
+              Icon(icon="{faLandscape}")
+              +elseif('$portraitLandscape == 1')
+                Icon(icon="{faPortrait}")
+              +elseif('$portraitLandscape == 2')
+                Icon(class="landscape", icon="{faPortrait}")
           span.btn.imagevideo.tooltip(
             data-tooltip="{imageVideoStr}",
             on:click="{toggleImageVideo}"

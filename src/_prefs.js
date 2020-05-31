@@ -6,7 +6,7 @@ const store = (key, initialValue) => {
   return {
     subscribe,
     set,
-    useLocalStorage: defaultValue => {
+    useLocalStorage: (defaultValue) => {
       if (!process.browser) return;
 
       const json = localStorage.getItem(key);
@@ -17,16 +17,17 @@ const store = (key, initialValue) => {
         set(defaultValue);
       }
 
-      subscribe(current => {
+      subscribe((current) => {
         localStorage.setItem(key, JSON.stringify(current));
       });
-    }
+    },
   };
 };
 
 export const autoplay = store("autoplay");
 export const autoplayinterval = store("autoplayinterval");
 export const imageVideo = store("imageVideo");
+export const portraitLandscape = store("portraitLandscape");
 export const favorite = store("favorite");
 export const over18 = store("over18");
 export const multireddit = store("multireddit");
