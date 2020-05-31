@@ -1,67 +1,92 @@
 <script>
-import Icon from "fa-svelte";
-import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
-import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
+  import Icon from "fa-svelte";
+  import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
+  import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
 
-export let showSettings;
+  export let showSettings;
 
-import { autoplayinterval, prefetch, hires, oldreddit, imageVideo } from "../_prefs";
-autoplayinterval.useLocalStorage(3);
-prefetch.useLocalStorage(true);
-hires.useLocalStorage(false);
-oldreddit.useLocalStorage(false);
-imageVideo.useLocalStorage(0)
+  import {
+    autoplayinterval,
+    prefetch,
+    hires,
+    oldreddit,
+    imageVideo,
+    portraitLandscape
+  } from "../_prefs";
+  autoplayinterval.useLocalStorage(3);
+  prefetch.useLocalStorage(true);
+  hires.useLocalStorage(false);
+  oldreddit.useLocalStorage(false);
+  imageVideo.useLocalStorage(0);
+  portraitLandscape.useLocalStorage(0);
 
-function hideSettings() {
-  showSettings = false;
-}
-
-let activeTab = 1
-
-let _autoplayinterval = $autoplayinterval
-let _hires = $hires
-let _oldreddit = $oldreddit
-let _prefetch = $prefetch
-let _imageVideo = $imageVideo
-
-let imagesVideoStates = ['Both images and videos', 'Videos only', 'Images only']
-
-$ : {
-let i = Math.round(_autoplayinterval)
-if (i) {
-  autoplayinterval.set(i)
-}
-}
-
-function toggleOldReddit() {
-  _oldreddit = !_oldreddit
-
-  oldreddit.set(_oldreddit)
-}
-
-function toggleImageVideo() {
-  _imageVideo = _imageVideo + 1
-
-  if (_imageVideo == 3) {
-    _imageVideo = 0
+  function hideSettings() {
+    showSettings = false;
   }
 
-  imageVideo.set(_imageVideo)
-}
+  let activeTab = 1;
 
-function toggleHiRes() {
-  _hires = !_hires
+  let _autoplayinterval = $autoplayinterval;
+  let _hires = $hires;
+  let _oldreddit = $oldreddit;
+  let _prefetch = $prefetch;
+  let _imageVideo = $imageVideo;
+  let _portraitLandscape = $portraitLandscape;
 
-  hires.set(_hires)
-}
+  let imagesVideoStates = [
+    "Both images and videos",
+    "Videos only",
+    "Images only"
+  ];
+  let portraitLandscapeStates = [
+    "Both landscape and portrait",
+    "Portrait only",
+    "Landscape only"
+  ];
 
-function togglePrefetch() {
-  _prefetch = !_prefetch
+  $: {
+    let i = Math.round(_autoplayinterval);
+    if (i) {
+      autoplayinterval.set(i);
+    }
+  }
 
-  prefetch.set(_prefetch)
-}
+  function toggleOldReddit() {
+    _oldreddit = !_oldreddit;
 
+    oldreddit.set(_oldreddit);
+  }
 
+  function toggleImageVideo() {
+    _imageVideo = _imageVideo + 1;
+
+    if (_imageVideo == 3) {
+      _imageVideo = 0;
+    }
+
+    imageVideo.set(_imageVideo);
+  }
+  function togglePortraitLandscape() {
+    _portraitLandscape = _portraitLandscape + 1;
+
+    if (_portraitLandscape == 3) {
+      _portraitLandscape = 0;
+    }
+
+    portraitLandscape.set(_portraitLandscape);
+  }
+
+  function toggleHiRes() {
+    _hires = !_hires;
+
+    hires.set(_hires);
+  }
+
+  function togglePrefetch() {
+    _prefetch = !_prefetch;
+
+    prefetch.set(_prefetch);
+  }
 </script>
 <style lang="sass">
 @mixin hover()
@@ -331,6 +356,10 @@ $over18-border-color: #ea4335
           span.text.tooltip(data-tooltip="Choose whether to show videos only, images only or both") Display images/videos/both
           span
             span.button(on:click='{toggleImageVideo}') {imagesVideoStates[_imageVideo]}
+        .item
+          span.text.tooltip(data-tooltip="Choose whether to show portrait only, landscape only or both") Display portrait/landscape/both
+          span
+            span.button(on:click='{togglePortraitLandscape}') {portraitLandscapeStates[_portraitLandscape]}
         //p remove duplicates
         //p aggressive caching (thumb vs preview)
       div.option(class:active='{activeTab == 2}')
