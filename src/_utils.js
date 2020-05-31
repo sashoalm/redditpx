@@ -109,37 +109,40 @@ async function imgsrc(u, item) {
     };
   }
 
-  if (u.includes("imgur.com/a/")) {
-    // Other cors proxies
-    // https://gist.github.com/jimmywarting/ac1be6ea0297c16c477e17f8fbe51347
-    //
-    try {
-      //let corsproxy = "https://cors-anywhere.herokuapp.com/";
-      let corsproxy = "https://cors-anywhere.glitch.me/";
-      let backupproxies = [
-        "https://redditpx-cors-2.glitch.me/",
-        "https://redditpx-cors.glitch.me/",
-      ];
-
-      let res;
-      try {
-        res = await fetch(`${corsproxy}${u}/embed`, {
-          headers: { origin: "redditpx" },
-        });
-      } catch (error) {
-        corsproxy = backupproxies[randint(0, backupproxies.length - 1)];
-
-        res = await fetch(`${corsproxy}${u}/embed`, {
-          headers: { origin: "redditpx" },
-        });
-      }
-
-      let html = await res.text();
-      let images = [];
-
-      imgs["album"] = extractAlbumInfoNode(html);
-    } catch (error) {}
-  }
+  //  if (u.includes("imgur.com/a/")) {
+  //    //
+  //    //
+  //
+  //    // Other cors proxies
+  //    // https://gist.github.com/jimmywarting/ac1be6ea0297c16c477e17f8fbe51347
+  //    //
+  //    try {
+  //      //let corsproxy = "https://cors-anywhere.herokuapp.com/";
+  //      let corsproxy = "https://cors-anywhere.glitch.me/";
+  //      let backupproxies = [
+  //        "https://redditpx-cors-2.glitch.me/",
+  //        "https://redditpx-cors.glitch.me/",
+  //      ];
+  //
+  //      let res;
+  //      try {
+  //        res = await fetch(`${corsproxy}${u}/embed`, {
+  //          headers: { origin: "redditpx" },
+  //        });
+  //      } catch (error) {
+  //        corsproxy = backupproxies[randint(0, backupproxies.length - 1)];
+  //
+  //        res = await fetch(`${corsproxy}${u}/embed`, {
+  //          headers: { origin: "redditpx" },
+  //        });
+  //      }
+  //
+  //      let html = await res.text();
+  //      let images = [];
+  //
+  //      imgs["album"] = extractAlbumInfoNode(html);
+  //    } catch (error) {}
+  //  }
   return imgs;
 }
 
