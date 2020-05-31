@@ -243,14 +243,18 @@ async function vidsrc(url, item) {
       mp4: item.data.preview.reddit_video_preview.fallback_url,
     };
   } else if (url.includes("i.redd.it/")) {
-    return {
-      gif: decode(
-        item.data.preview.images[0].variants.gif.resolutions.slice(-1)[0].url
-      ),
-      mp4: decode(
-        item.data.preview.images[0].variants.mp4.resolutions.slice(-1)[0].url
-      ),
-    };
+    let gif, mp4;
+    try {
+      gif = item.data.preview.images[0].variants.gif.resolutions.slice(-1)[0]
+        .url;
+      mp4 = item.data.preview.images[0].variants.mp4.resolutions.slice(-1)[0]
+        .url;
+    } catch (error) {
+      gif = item.data.preview.images[0].variants.gif.source.url;
+      mp4 = item.data.preview.images[0].variants.mp4.source.url;
+    }
+
+    return { gif: decode(gif), mp4: decode(mp4) };
   } else {
     return {
       mp4: item.data.preview.reddit_video_preview.fallback_url,
