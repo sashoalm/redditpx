@@ -73,10 +73,14 @@ export function get_dims(item) {
   let dims = { height: "", width: "" };
 
   if (is_image(item)) {
-    dims = {
-      height: item.data.preview.images[0].source.height,
-      width: item.data.preview.images[0].source.width,
-    };
+    try {
+      dims = {
+        height: item.data.preview.images[0].source.height,
+        width: item.data.preview.images[0].source.width,
+      };
+    } catch {
+      console.info(`No dims for ${url(item)}`, item);
+    }
   } else if (is_video(item)) {
     try {
       dims = {
