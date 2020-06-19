@@ -65,7 +65,8 @@ export function is_video(item) {
   return (
     item.data.is_video ||
     item.data.preview.hasOwnProperty("reddit_video_preview") ||
-    (url(item).startsWith("https://i.redd.it") && url(item).endsWith(".gif"))
+    (url(item).startsWith("https://i.redd.it") && url(item).endsWith(".gif")) ||
+    url(item).startsWith("https://gfycat.com/")
   );
 }
 
