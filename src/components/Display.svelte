@@ -500,6 +500,11 @@ function openCommentsOld() {
   window.open(`https://old.reddit.com/${currpost.permalink}`, "_blank");
 }
 
+function openDuplicates() {
+  window.open(`https://old.reddit.com/${currpost.subredditp}/duplicates/${currpost.id}`, "_blank");
+}
+
+
 function toggleOver18() {
   skipRenderVideo = true;
   over18.set(!$over18);
@@ -632,6 +637,11 @@ function keydown(event) {
   // i
   if (event.keyCode == 73) {
     openMedia();
+  }
+
+  // l
+  if (event.keyCode == 76) {
+    openDuplicates();
   }
 
   // h
