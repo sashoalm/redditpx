@@ -301,6 +301,14 @@ export async function format(item) {
 
   let imgs = await imgsrc(url(item), item);
   let vids = is_video(item) ? await vidsrc(url(item), item) : {};
+  let dims = get_dims(item);
+
+  let orientation = "normal";
+  if (dims.width / dims.height <= 0.7) {
+    orientation = "portrait";
+  } else if (dims.width / dims.height >= 1.7) {
+    orientation = "landscape";
+  }
 
   let formatted = {
     id: item.data.id,
@@ -315,7 +323,8 @@ export async function format(item) {
     is_album: is_album(imgs), // based on `imgs`
     favorite: false,
     url: url(item),
-    dims: get_dims(item),
+    dims: dims,
+    orientation: orientation,
     preview: {
       vid: vids,
       img: imgs,
