@@ -226,11 +226,13 @@ function startAutoPlay() {
 function autoscroll() {
 
   // If scrollPos != window.pageYOffset, then the user scrolled manually.
-  if (scrollPos != window.pageYOffset) {
+  if (Math.floor(scrollPos) != Math.floor(window.pageYOffset)) {
+    //console.log('stop and start autoplay', scrollPos, window.pageYOffset, window.scrollY)
     stopAndStartAutoPlay()
   }
   else {
     scrollPos = scrollPos + (($scrollspeed / 5) * 5)
+    //console.log('Scrolling to', scrollPos)
     window.scrollTo(0, scrollPos)
   }
 }
