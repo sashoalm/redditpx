@@ -66,18 +66,21 @@ $: {
     let numGotoControlsRows =
       (displayposts.length + 5) / numGotoControlsInOneRow;
     tinygoto = numGotoControlsRows > 3;
+    numCols = 3
   } else if (gotoElWidth > 800) {
     // padding on right side
     let numGotoControlsInOneRow = (gotoElWidth - (154 + 14)) / 32;
     let numGotoControlsRows =
       (displayposts.length + 5) / numGotoControlsInOneRow;
     tinygoto = numGotoControlsRows > 3;
+    numCols = 3
   } else {
     // no padding
     let numGotoControlsInOneRow = (gotoElWidth - (14 + 14)) / 32;
     let numGotoControlsRows =
       (displayposts.length + 5) / numGotoControlsInOneRow;
     tinygoto = numGotoControlsRows > 3;
+    numCols = 1
   }
 }
 
@@ -109,6 +112,7 @@ let multiredditstr = "";
 let showhidestr = "Hide (h)";
 
 let autoplaytimer;
+let scrolldelaytimer;
 
 let filterRef;
 let filterExpanded = false;
@@ -178,10 +182,26 @@ function togglePortraitLandscape() {
   }
 }
 
-function stopAutoPlay() {
-  console.log('STOP')
+function stopAutoPlay(silent) {
+  //console.log('STOP')
   clearInterval(autoplaytimer);
-  autoplay.set(false);
+  if (silent === true) {
+    autoplay.set(true);
+  }
+  else {
+    autoplay.set(false);
+  }
+}
+
+function stopAndStartAutoPlay() {
+  stopAutoPlay(true);
+
+  // Start autoplay after 1 second
+  scrolldelaytimer = setTimeout(() => {
+      scrollPos = window.pageYOffset
+      startAutoPlay()
+  }, 1200);
+
 }
 
 function toggleAutoPlay() {
@@ -195,19 +215,30 @@ function toggleAutoPlay() {
 function startAutoPlay() {
   //console.log('START')
   autoplaytimer = setInterval(() => {
-    // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
     if ($autoplay) {
-      console.log('autoplay')
-      scroll()
+      autoscroll()
     }
   }, 30);
 
   autoplay.set(true);
 }
 
-function scroll() {
-  scrollPos = scrollPos + (($scrollspeed / 5) * 5)
-  window.scrollTo(0, scrollPos)
+function autoscroll() {
+
+  // If scrollPos != window.pageYOffset, then the user scrolled manually.
+  if (scrollPos != window.pageYOffset) {
+    stopAndStartAutoPlay()
+  }
+  else {
+    scrollPos = scrollPos + (($scrollspeed / 5) * 5)
+    window.scrollTo(0, scrollPos)
+  }
+}
+
+function scroll(event)  {
+  if(!$autoplay) {
+    scrollPos = window.pageYOffset
+  }
 }
 
 
@@ -395,6 +426,23 @@ function toggleOver18() {
 }
 
 function keydown(event) {
+
+  // q, p
+  if (event.keyCode == 81 || event.keyCode == 80) {
+    toggleAutoPlay();
+  }
+
+  // slash, f
+  if (event.keyCode == 191 || event.keyCode == 70) {
+    expandFilter();
+    // We need this, otherwise filter box will have '/' because of autofocus
+    event.preventDefault();
+  }
+
+  // h
+  if (event.keyCode == 72) {
+    toggleUIVisiblity();
+  }
 }
 
 $ : {
@@ -687,7 +735,7 @@ $isnotmulti-color: #34a853
         img.small
           display: none
 </style>
-<svelte:window on:keydown={keydown} bind:scrollY={scrollY} bind:innerHeight={innerHeight}/>
+<svelte:window on:scroll={scroll} on:keydown={keydown} bind:scrollY={scrollY} bind:innerHeight={innerHeight}/>
 <svelte:head>
   <title>redditpx - {slugstr ? `r/${subreddit}` : 'reddit.com'}</title>
 </svelte:head>
