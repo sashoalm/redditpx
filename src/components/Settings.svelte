@@ -11,7 +11,8 @@
     hires,
     oldreddit,
     imageVideo,
-    portraitLandscape
+    portraitLandscape,
+    muted
   } from "../_prefs";
   autoplayinterval.useLocalStorage(3);
   prefetch.useLocalStorage(true);
@@ -19,6 +20,7 @@
   oldreddit.useLocalStorage(false);
   imageVideo.useLocalStorage(0);
   portraitLandscape.useLocalStorage(0);
+  muted.useLocalStorage(true);
 
   function hideSettings() {
     showSettings = false;
@@ -30,6 +32,7 @@
   let _hires = $hires;
   let _oldreddit = $oldreddit;
   let _prefetch = $prefetch;
+  let _muted = $muted;
   let _imageVideo = $imageVideo;
   let _portraitLandscape = $portraitLandscape;
 
@@ -86,6 +89,12 @@
     _prefetch = !_prefetch;
 
     prefetch.set(_prefetch);
+  }
+
+  function toggleMuted() {
+    _muted = !_muted;
+
+    muted.set(_muted);
   }
 </script>
 <style lang="sass">
@@ -345,6 +354,10 @@ $over18-border-color: #ea4335
           span
             span.button(on:click='{togglePrefetch}') {_prefetch ? "Prefetch is on" : "Prefetch is off"}
         .item
+          span.tooltip(data-tooltip="Sound on/off") Sound
+          span
+            span.button(on:click='{toggleMuted}') {_muted ? "Sound is off" : "Sound is on"}
+        .item
           span.text.tooltip(data-tooltip="Choose what type of image to display") Display image resolution
           span
             span.button(on:click='{toggleHiRes}') {_hires ? "Original (slow)" : "Optimized (fast)"}
@@ -386,6 +399,9 @@ $over18-border-color: #ea4335
         .item
           span.text Toggle favorite
           span.key x
+        .item
+          span.text Toggle Sound
+          span.key s
         .item
           span.text Remove all favorites
           span.key Shift + x

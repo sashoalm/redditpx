@@ -1,5 +1,7 @@
 <script>
 import Icon from "fa-svelte";
+import { faVolumeUp as faSoundOn } from "@fortawesome/free-solid-svg-icons/faVolumeUp";
+import { faVolumeMute as faSoundOff } from "@fortawesome/free-solid-svg-icons/faVolumeMute";
 import { faPlay } from "@fortawesome/free-solid-svg-icons/faPlay";
 import { faPause } from "@fortawesome/free-solid-svg-icons/faPause";
 import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
@@ -27,10 +29,10 @@ import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
 
-import { autoplay, scrollspeed, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit } from "../_prefs";
+import { autoplay, scrollspeed, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit, muted } from "../_prefs";
 import Display from "./Display.svelte";
 autoplay.useLocalStorage(true);
-scrollspeed.useLocalStorage(5);
+scrollspeed.useLocalStorage(3);
 imageVideo.useLocalStorage(0);
 portraitLandscape.useLocalStorage(0);
 favorite.useLocalStorage({});
@@ -39,6 +41,7 @@ multireddit.useLocalStorage({});
 prefetch.useLocalStorage(true);
 hires.useLocalStorage(false);
 oldreddit.useLocalStorage(false);
+muted.useLocalStorage(true);
 
 export let params, slugstr;
 export let posts;

@@ -1,5 +1,7 @@
 <script>
 import Icon from "fa-svelte";
+import { faVolumeUp as faSoundOn } from "@fortawesome/free-solid-svg-icons/faVolumeUp";
+import { faVolumeMute as faSoundOff } from "@fortawesome/free-solid-svg-icons/faVolumeMute";
 import { faPlay } from "@fortawesome/free-solid-svg-icons/faPlay";
 import { faPause } from "@fortawesome/free-solid-svg-icons/faPause";
 import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
@@ -30,7 +32,7 @@ import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
 
-import { autoplay, autoplayinterval, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit } from "../_prefs";
+import { autoplay, autoplayinterval, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit, muted } from "../_prefs";
 autoplay.useLocalStorage(true);
 autoplayinterval.useLocalStorage(3);
 imageVideo.useLocalStorage(0);
@@ -41,6 +43,7 @@ multireddit.useLocalStorage({});
 prefetch.useLocalStorage(true);
 hires.useLocalStorage(false);
 oldreddit.useLocalStorage(false);
+muted.useLocalStorage(true);
 
 export let params, slugstr;
 export let posts;
@@ -117,6 +120,7 @@ let over18str = "";
 let deepsearchstr = "";
 let multiredditstr = "";
 let showhidestr = "Hide (h)";
+let mutedstr = "Sound Off"
 
 let autoplaytimer;
 
@@ -212,6 +216,12 @@ function toggleImageVideo() {
   }
 }
 
+function toggleMuted() {
+
+  $muted = !$muted
+
+}
+
 function togglePortraitLandscape() {
   $portraitLandscape = $portraitLandscape + 1
 
@@ -248,6 +258,8 @@ $: {
   }
   autoplaystr = `Autoplay is ${$autoplay ? "on" : "off"}`;
   deepsearchstr = `Search for ${filterValue}`;
+
+  mutedstr = `Sound ${$muted ? "off": "on"}`
 
   if ($over18 == 0) {
     over18str = "nsfw off"
@@ -609,6 +621,11 @@ function keydown(event) {
     toggleMultireddit()
   }
 
+  // s
+  if (event.keyCode == 83) {
+    toggleMuted()
+  }
+
   // q, p
   if (event.keyCode == 81 || event.keyCode == 80) {
     toggleAutoPlay();
@@ -928,6 +945,12 @@ $isnotmulti-color: #34a853
           bottom: 2px
           color: white
 
+        &.muted
+          cursor: pointer
+          font-size: 1.4rem
+          bottom: 2px
+          color: white
+
         &.portraitlandscape
           cursor: pointer
           font-size: 1.4rem
@@ -1193,14 +1216,14 @@ $isnotmulti-color: #34a853
         +else()
           .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
-        video.video(autoplay, loop='{!$autoplay}', playsinline, muted, on:ended="{videoended}")
+        video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}")
           +if('currpost.preview.vid.webm')
             source(src="{currpost.preview.vid.webm}")
           +if('currpost.preview.vid.mp4')
             source(src="{currpost.preview.vid.mp4}")
       +elseif('currpost.is_album')
         +if('currpost.preview.img.album[albumindex].is_video')
-          video.video(autoplay, loop='{!$autoplay}', playsinline, muted, on:ended="{videoended}")
+          video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}")
             source(src="{currpost.preview.img.album[albumindex].hires}")
           +else()
             +if('$hires')
@@ -1248,6 +1271,11 @@ $isnotmulti-color: #34a853
                 Icon(icon="{faVideo}")
               +elseif('$imageVideo == 2')
                 Icon(icon="{faImage}")
+          span.btn.muted.tooltip(
+            data-tooltip="{mutedstr}",
+            on:click="{toggleMuted}"
+          )
+            Icon(icon="{$muted ? faSoundOff : faSoundOn}")
           +if('tinygoto')
             span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
               +if('loading')
