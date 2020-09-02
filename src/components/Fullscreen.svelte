@@ -113,6 +113,7 @@ let over18str = "";
 let deepsearchstr = "";
 let multiredditstr = "";
 let showhidestr = "Hide (h)";
+let mutedstr = "Sound Off"
 
 let autoplaytimer;
 let scrolldelaytimer;
@@ -175,6 +176,12 @@ function toggleImageVideo() {
   if ($imageVideo == 3) {
     $imageVideo = 0
   }
+}
+
+function toggleMuted() {
+
+  $muted = !$muted
+
 }
 
 function togglePortraitLandscape() {
@@ -259,6 +266,8 @@ $: {
   }
   autoplaystr = `Autoplay is ${$autoplay ? "on" : "off"}`;
   deepsearchstr = `Search for ${filterValue}`;
+
+  mutedstr = `Sound ${$muted ? "off": "on"}`
 
   if ($over18 == 0) {
     over18str = "nsfw off"
@@ -447,6 +456,11 @@ function keydown(event) {
   // h
   if (event.keyCode == 72) {
     toggleUIVisiblity();
+  }
+
+  // s
+  if (event.keyCode == 83) {
+    toggleMuted()
   }
 }
 
@@ -651,6 +665,12 @@ $isnotmulti-color: #34a853
           bottom: 2px
           color: white
 
+        &.muted
+          cursor: pointer
+          font-size: 1.4rem
+          bottom: 2px
+          color: white
+
         &.portraitlandscape
           cursor: pointer
           font-size: 1.4rem
@@ -823,6 +843,11 @@ $isnotmulti-color: #34a853
                 Icon(icon="{faVideo}")
               +elseif('$imageVideo == 2')
                 Icon(icon="{faImage}")
+          span.btn.muted.tooltip(
+            data-tooltip="{mutedstr}",
+            on:click="{toggleMuted}"
+          )
+            Icon(icon="{$muted ? faSoundOff : faSoundOn}")
           +if('tinygoto')
             span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
               +if('loading')
