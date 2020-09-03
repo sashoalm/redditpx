@@ -462,9 +462,10 @@ function toggleOver18() {
 
 function keydown(event) {
 
-  // q, p
-  if (event.keyCode == 81 || event.keyCode == 80) {
+  // q, p, Space
+  if (event.keyCode == 81 || event.keyCode == 80 || event.keyCode == 32) {
     toggleAutoPlay();
+    event.preventDefault();
   }
 
   // slash, f
