@@ -32,7 +32,7 @@ import { get_posts, queryp } from "../_utils";
 import { autoplay, scrollspeed, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit, muted } from "../_prefs";
 import Display from "./Display.svelte";
 autoplay.useLocalStorage(true);
-scrollspeed.useLocalStorage(3);
+scrollspeed.useLocalStorage(2);
 imageVideo.useLocalStorage(0);
 portraitLandscape.useLocalStorage(0);
 favorite.useLocalStorage({});
@@ -165,6 +165,7 @@ async function loadMore() {
 onMount(async () => {
   // Start autoplay by default
   if ($autoplay) {
+    scrollPos = window.pageYOffset
     startAutoPlay();
   }
 });
@@ -193,7 +194,8 @@ function togglePortraitLandscape() {
 }
 
 function stopAutoPlay(silent) {
-  //console.log('STOP')
+  //console.log('STOP', autoplaytimer)
+  //console.log('--------------')
   clearInterval(autoplaytimer);
   if (silent === true) {
     autoplay.set(true);
@@ -204,13 +206,15 @@ function stopAutoPlay(silent) {
 }
 
 function stopAndStartAutoPlay() {
+  //console.log('STOP AND START autoplay')
   stopAutoPlay(true);
 
   // Start autoplay after 1 second
   scrolldelaytimer = setTimeout(() => {
       scrollPos = window.pageYOffset
+    //console.log('setting scrollPos = window.pageYOffset')
       startAutoPlay()
-  }, 1200);
+  }, 2000);
 
 }
 
@@ -223,27 +227,44 @@ function toggleAutoPlay() {
 }
 
 function startAutoPlay() {
-  //console.log('START')
+  //console.log('--------------')
+
+  if(autoplaytimer) {
+    //console.log('CLEARINTERVAL', autoplaytimer)
+    clearInterval(autoplaytimer)
+  }
+
+  // Force the scrollPos to be the current so that scroll starts immediately
+  //scrollPos = window.pageYOffset
+
   autoplaytimer = setInterval(() => {
     if ($autoplay) {
       autoscroll()
     }
-  }, 30);
+  }, 10);
 
+
+  //console.log('START', autoplaytimer, scrollPos, window.pageYOffset)
   autoplay.set(true);
 }
 
 function autoscroll() {
 
   // If scrollPos != window.pageYOffset, then the user scrolled manually.
-  if (Math.floor(scrollPos) != Math.floor(window.pageYOffset)) {
-    //console.log('stop and start autoplay', scrollPos, window.pageYOffset, window.scrollY)
-    stopAndStartAutoPlay()
+  let a = Math.floor(scrollPos)
+  let b = Math.floor(window.pageYOffset)
+  let c = Math.abs(a-b)
+  // If c == 0, then its the exact location. If c == 1, then its the weird scrolling offset issue. Ignore
+  if ((c == 1) || (c == 0)) {
+    //console.log(`[scrollTo] speed: ${$scrollspeed} ${scrollPos} (${window.pageYOffset}, ${window.scrollY}) + ${Math.floor(($scrollspeed / 5) * 5)} = ${scrollPos + Math.floor(($scrollspeed / 5) * 5)}`)
+    scrollPos = scrollPos + (($scrollspeed / 5) * 5)
+    window.scrollTo(0, scrollPos)
+
   }
   else {
-    scrollPos = scrollPos + (($scrollspeed / 5) * 5)
-    //console.log('Scrolling to', scrollPos)
-    window.scrollTo(0, scrollPos)
+    //console.log(`Manual scroll ${scrollPos} != ${window.pageYOffset}, ${Math.floor(scrollPos)} != ${Math.floor(window.pageYOffset)}`)
+    //console.log(`${scrollPos} != ${window.pageYOffset}, ${a} != ${b}, ${Math.abs(a-b)}`)
+    stopAndStartAutoPlay()
   }
 }
 
@@ -782,21 +803,21 @@ $isnotmulti-color: #34a853
         .col
           +each('displayposts as currpost, i')
             +if('i%numCols === c')
-              .brick(class:portrait="{currpost.orientation == 'portrait'}")
+              .brick(on:mouseenter="{currpost.hover = true}", on:mouseleave="{currpost.hover = false}", class:portrait="{currpost.orientation == 'portrait'}")
                 +if('currpost.is_image && !currpost.is_album')
                   +if('$hires')
                     img.image(src='{currpost.url}')
                     +else()
                       img.image(src='{currpost.preview.img.default}')
                   +elseif('currpost.is_video')
-                    video.video(autoplay, loop, playsinline, muted)
+                    video.video(autoplay, playsinline, muted="{!!currpost.hover}")
                       +if('currpost.preview.vid.webm')
                         source(src="{currpost.preview.vid.webm}")
                       +if('currpost.preview.vid.mp4')
                         source(src="{currpost.preview.vid.mp4}")
                   +elseif('currpost.is_album')
                     +if('currpost.preview.img.album[albumindex].is_video')
-                      video.video(autoplay, playsinline, muted)
+                      video.video(autoplay, playsinline, muted="{!!currpost.hover}")
                         source(src="{currpost.preview.img.album[albumindex].hires}")
                       +else()
                         +if('$hires')
