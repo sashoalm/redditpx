@@ -7,6 +7,7 @@
 
   import {
     autoplayinterval,
+    scrollspeed,
     prefetch,
     hires,
     oldreddit,
@@ -15,6 +16,7 @@
     muted
   } from "../_prefs";
   autoplayinterval.useLocalStorage(3);
+  scrollspeed.useLocalStorage(2);
   prefetch.useLocalStorage(true);
   hires.useLocalStorage(false);
   oldreddit.useLocalStorage(false);
@@ -29,6 +31,7 @@
   let activeTab = 1;
 
   let _autoplayinterval = $autoplayinterval;
+  let _scrollspeed = $scrollspeed;
   let _hires = $hires;
   let _oldreddit = $oldreddit;
   let _prefetch = $prefetch;
@@ -51,6 +54,14 @@
     let i = Math.round(_autoplayinterval);
     if (i) {
       autoplayinterval.set(i);
+    }
+
+    let j = Math.round(_scrollspeed);
+    if (j >= 20) {
+      scrollspeed.set(10);
+    }
+    else  {
+      scrollspeed.set(j);
     }
   }
 
@@ -343,6 +354,10 @@ $over18-border-color: #ea4335
           span.text Autoplay time (seconds)
           span.input
             input(type="number", bind:value='{_autoplayinterval}')
+        .item
+          span.text Scroll speed (0-20)
+          span.input
+            input(type="number", bind:value='{_scrollspeed}')
         //.item
         //  span Favorite
         //    span
