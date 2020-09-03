@@ -213,7 +213,12 @@ function stopAndStartAutoPlay() {
   scrolldelaytimer = setTimeout(() => {
       scrollPos = window.pageYOffset
     //console.log('setting scrollPos = window.pageYOffset')
-      startAutoPlay()
+
+      // Its possible user paused the autoplay during the delay.
+      // Double check the autoplay status
+      if ($autoplay) {
+        startAutoPlay()
+      }
   }, 2000);
 
 }
