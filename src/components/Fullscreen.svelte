@@ -219,7 +219,7 @@ function stopAndStartAutoPlay() {
       if ($autoplay) {
         startAutoPlay()
       }
-  }, 2000);
+  }, 2500);
 
 }
 
@@ -262,7 +262,7 @@ function autoscroll() {
   // If c == 0, then its the exact location. If c == 1, then its the weird scrolling offset issue. Ignore
   if ((c == 1) || (c == 0)) {
     //console.log(`[scrollTo] speed: ${$scrollspeed} ${scrollPos} (${window.pageYOffset}, ${window.scrollY}) + ${Math.floor(($scrollspeed / 5) * 5)} = ${scrollPos + Math.floor(($scrollspeed / 5) * 5)}`)
-    scrollPos = scrollPos + (($scrollspeed / 5) * 5)
+    scrollPos = scrollPos + (($scrollspeed / 10) * 5)
     window.scrollTo(0, scrollPos)
 
   }
