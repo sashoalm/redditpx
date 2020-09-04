@@ -198,7 +198,7 @@ onMount(async () => {
     startAutoPlay();
   }
 
-  observer = new IntersectionObserver(handleIntersection, {threshold: 0.5})
+  observer = new IntersectionObserver(handleIntersection, {threshold: 0.25})
 });
 
 function toggleImageVideo() {
@@ -809,7 +809,7 @@ $isnotmulti-color: #34a853
 
           &.playing
             border: 5px solid $green !important
-            
+
           &.canplaythrough
             border: 5px solid $yellow
 
