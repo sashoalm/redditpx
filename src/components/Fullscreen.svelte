@@ -24,7 +24,7 @@ import { faMobileAlt as faPortrait } from "@fortawesome/free-solid-svg-icons/faM
 import { faDesktop as faLandscape } from "@fortawesome/free-solid-svg-icons/faDesktop";
 
 import Settings from './Settings.svelte'
-import { onMount, tick } from "svelte";
+import { onMount, afterUpdate, tick } from "svelte";
 import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
@@ -62,43 +62,27 @@ let subreddit
 
 $ : subreddit = slugstr ? slugstr.split('/')[1] : ""
 
+let numCols = 3
+let gridTemplateColsStyle
+let cols
+
 $: {
+  //console.log('block 1: gotoElWidth', displayposts.length, gotoElWidth)
   if (gotoElWidth > 1000) {
-    // padding on both sides
-    let numGotoControlsInOneRow = (gotoElWidth - 154 * 2) / 32;
-    let numGotoControlsRows =
-      (displayposts.length + 5) / numGotoControlsInOneRow;
-    tinygoto = numGotoControlsRows > 3;
     numCols = 3
   } else if (gotoElWidth > 800) {
-    // padding on right side
-    let numGotoControlsInOneRow = (gotoElWidth - (154 + 14)) / 32;
-    let numGotoControlsRows =
-      (displayposts.length + 5) / numGotoControlsInOneRow;
-    tinygoto = numGotoControlsRows > 3;
     numCols = 3
   } else {
-    // no padding
-    let numGotoControlsInOneRow = (gotoElWidth - (14 + 14)) / 32;
-    let numGotoControlsRows =
-      (displayposts.length + 5) / numGotoControlsInOneRow;
-    tinygoto = numGotoControlsRows > 3;
     numCols = 1
   }
+
+  cols = Array(numCols).fill(0).map(Number.call, Number)
+  gridTemplateColsStyle = `grid-template-columns: ${Array(numCols).fill('1fr').join(' ')}`
 }
 
 let gotoElWidth;
 
 $: loadError = res && !res.res.ok;
-
-let numCols = 3
-let gridTemplateColsStyle
-let cols
-$: {
-  cols = Array(numCols).fill(0).map(Number.call, Number)
-  gridTemplateColsStyle = `grid-template-columns: ${Array(numCols).fill('1fr').join(' ')}`
-}
-
 
 
 let loading = false;
@@ -162,12 +146,54 @@ async function loadMore() {
   reloadstr = "Load more";
 }
 
+
+
+
+let observer
+
+async function handleIntersection(events) {
+
+  events.forEach(event => {
+    let el = event.target
+    //console.log(event, el)
+
+    let visible = event.isIntersecting
+
+    let _i = parseInt(el.getAttribute('i'))
+    displayposts[_i] && (displayposts[_i].visible = visible)
+  })
+
+
+}
+
+let observerCount = 0
+
+afterUpdate(async() => {
+
+
+
+  console.log('after update')
+  if (observer && observerCount != displayposts.length) {
+    //console.log('setting up observers', displayposts.length)
+    observerCount = displayposts.length
+    console.log('observing', displayposts.length)
+
+    await tick()
+
+    for (const post of document.getElementsByClassName('brick')) {
+      observer.observe(post)
+    }
+  }
+})
+
 onMount(async () => {
   // Start autoplay by default
   if ($autoplay) {
     scrollPos = window.pageYOffset
     startAutoPlay();
   }
+
+  observer = new IntersectionObserver(handleIntersection, {})
 });
 
 function toggleImageVideo() {
@@ -281,6 +307,7 @@ function scroll(event)  {
 
 
 $: {
+  //console.log('block 3: numFavorites')
   numFavorite = displayposts.filter(item => item.favorite == true).length;
 
   if (!numFavorite) {
@@ -326,38 +353,7 @@ $: {
 }
 
 $: {
-  if (filterValue) {
-    // We're here because user filtered the list
-
-    // Unfortunately the filtered list is smaller than the current index
-    // set index to last item
-    if (displayposts.length > 0) {
-      console.log("setting index from ", index, " to ", displayposts.length);
-      index = displayposts.length - 1;
-      console.log("loading more ..");
-      loadMore();
-    } else {
-      // nothing was filtered
-      index = 0;
-      //currpost = { title: "Nothing to show. Try changing filters or tweak/update URL." };
-    }
-  } else {
-    if (res && res.res.ok) {
-      // No media found
-      //currpost = { title: "Nothing to show. Try changing filters or tweak/update URL." };
-    } else if (res && !res.res.ok) {
-      // Invalid subreddit
-      //currpost = { title: "Error" };
-    } else {
-      // Default
-      //currpost = { title: "Loading .." };
-    }
-
-    nexturls = [];
-  }
-}
-
-$: {
+  //console.log('block 5: buttons')
   let tmp = [];
 
   if ($over18 == 0) {
@@ -392,7 +388,16 @@ $: {
     tmp = tmp.filter(item => (item.dims.width / item.dims.height) > 1.2)
   }
 
-  displayposts = tmp;
+  console.log('final filtered:', tmp.length)
+  displayposts = tmp
+}
+
+$ : {
+  //console.log('block 6: observers')
+  // This block is run very often, which can use some optimization
+  // The theory is since this block depends on displayposts, when we change an attribute `currpost.visible`
+  // this blocks ends up running
+
 }
 
 function toggleUIVisiblity() {
@@ -492,10 +497,11 @@ function keydown(event) {
 }
 
 $ : {
+  //console.log('block 6: scroll')
   if(wallEl) {
     let pctScrolled = (scrollY + innerHeight) / wallEl.scrollHeight
     if (pctScrolled >= 0.8) {
-      console.log('loading more ...')
+      console.log('[scroll] loading more ...')
       loadMore()
     }
   }
@@ -753,9 +759,11 @@ $isnotmulti-color: #34a853
       span
         position: relative
 
+
     .wall
       display: grid
       grid-gap: 10px
+
 
       .col
         display: flex
@@ -764,9 +772,14 @@ $isnotmulti-color: #34a853
 
         .brick
           display: grid
+          position: relative
+          background-color: #3C4043
 
           .image, .video
             width: 100%
+
+            &.absolute
+              position: absolute
 
   @media (max-width: 1000px)
     .hero
@@ -804,26 +817,26 @@ $isnotmulti-color: #34a853
         Icon(icon="{uiVisible ? faHide : faShow }")
       .div(class:hide='{uiVisible == false}')
         Settings(bind:showSettings)
-    .wall(bind:this='{wallEl}', style="{gridTemplateColsStyle}")
+    .wall#wall(bind:this='{wallEl}', style="{gridTemplateColsStyle}")
       +each('cols as c')
         .col
           +each('displayposts as currpost, i')
             +if('i%numCols === c')
-              .brick(on:mouseenter="{currpost.hover = true}", on:mouseleave="{currpost.hover = false}", class:portrait="{currpost.orientation == 'portrait'}")
+              .brick(i="{i}")
                 +if('currpost.is_image && !currpost.is_album')
                   +if('$hires')
                     img.image(src='{currpost.url}')
                     +else()
                       img.image(src='{currpost.preview.img.default}')
                   +elseif('currpost.is_video')
-                    video.video(autoplay, playsinline, loop, muted="{!!currpost.hover}")
+                    video.video(autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
                       +if('currpost.preview.vid.webm')
                         source(src="{currpost.preview.vid.webm}")
                       +if('currpost.preview.vid.mp4')
                         source(src="{currpost.preview.vid.mp4}")
                   +elseif('currpost.is_album')
                     +if('currpost.preview.img.album[albumindex].is_video')
-                      video.video(autoplay, playsinline, loop, muted="{!!currpost.hover}")
+                      video.video(autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
                         source(src="{currpost.preview.img.album[albumindex].hires}")
                       +else()
                         +if('$hires')
@@ -881,6 +894,12 @@ $isnotmulti-color: #34a853
                 Icon(icon="{faSpinner}")
                 +else()
                   Icon(icon="{faSync}")
+          span.btn.over18wrapper.tooltip(
+            data-tooltip="{over18str}",
+            class:over18="{!$over18}",
+            on:click="{toggleOver18}"
+          )
+            p {over18str}
           span.btn.filter.tooltip(
             class:filterExpanded="{filterExpanded}",
             on:click="{toggleFilter}",
@@ -892,12 +911,6 @@ $isnotmulti-color: #34a853
               input(bind:value='{filterValue}', on:click|stopPropagation, on:keydown|stopPropagation, type="text")
               +else
                 Icon(icon="{faSearch}")
-          span.btn.over18wrapper.tooltip(
-            data-tooltip="{over18str}",
-            class:over18="{!$over18}",
-            on:click="{toggleOver18}"
-          )
-            p {over18str}
         .numswrapper
           +if('filterValue')
             span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
