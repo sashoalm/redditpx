@@ -146,9 +146,6 @@ async function loadMore() {
   reloadstr = "Load more";
 }
 
-
-
-
 let observer
 
 async function handleIntersection(events) {
@@ -169,8 +166,6 @@ async function handleIntersection(events) {
 let observerCount = 0
 
 afterUpdate(async() => {
-
-
 
   console.log('after update')
   if (observer && observerCount != displayposts.length) {
@@ -506,6 +501,12 @@ $ : {
     }
   }
 }
+
+function handler(event) {
+  console.log(event.path[1].getAttribute('id'))
+  let _i = parseInt(event.path[1].getAttribute('i'))
+  displayposts[_i].playing = true
+}
 </script>
 
 <style lang="sass">
@@ -774,6 +775,10 @@ $isnotmulti-color: #34a853
           display: grid
           position: relative
           background-color: #3C4043
+          border: 5px solid rbga(0, 0, 0, 0)
+
+          &.highlight
+            border: 5px solid #34A853
 
           .image, .video
             width: 100%
@@ -822,21 +827,21 @@ $isnotmulti-color: #34a853
         .col
           +each('displayposts as currpost, i')
             +if('i%numCols === c')
-              .brick(i="{i}")
+              .brick(id="{'brick-' + i}", i="{i}", class:highlight="{currpost.playing}")
                 +if('currpost.is_image && !currpost.is_album')
                   +if('$hires')
                     img.image(src='{currpost.url}')
                     +else()
                       img.image(src='{currpost.preview.img.default}')
                   +elseif('currpost.is_video')
-                    video.video(autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
+                    video.video(on:play="{handler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
                       +if('currpost.preview.vid.webm')
                         source(src="{currpost.preview.vid.webm}")
                       +if('currpost.preview.vid.mp4')
                         source(src="{currpost.preview.vid.mp4}")
                   +elseif('currpost.is_album')
                     +if('currpost.preview.img.album[albumindex].is_video')
-                      video.video(autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
+                      video.video(on:play="{handler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
                         source(src="{currpost.preview.img.album[albumindex].hires}")
                       +else()
                         +if('$hires')
