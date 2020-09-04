@@ -177,7 +177,6 @@ let observerCount = 0
 
 afterUpdate(async() => {
 
-  console.log('after update')
   if (observer && observerCount != displayposts.length) {
     //console.log('setting up observers', displayposts.length)
     observerCount = displayposts.length
@@ -871,7 +870,6 @@ $isnotmulti-color: #34a853
                     +else()
                       img.image(src='{currpost.preview.img.default}')
                   +elseif('currpost.is_video')
-                    p {i}
                     video.video(on:pause="{pausedHandler}", on:play="{playHandler}", on:canplaythrough="{canPlayThroughHandler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
                       +if('currpost.preview.vid.webm')
                         source(src="{currpost.preview.vid.webm}")
@@ -879,7 +877,6 @@ $isnotmulti-color: #34a853
                         source(src="{currpost.preview.vid.mp4}")
                   +elseif('currpost.is_album')
                     +if('currpost.preview.img.album[albumindex].is_video')
-                      p {i}
                       video.video(on:pause="{pausedHandler}", on:play="{playHandler}", on:canplaythrough="{canPlayThroughHandler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
                         source(src="{currpost.preview.img.album[albumindex].hires}")
                       +else()
