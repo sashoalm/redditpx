@@ -158,6 +158,16 @@ async function handleIntersection(events) {
 
     let _i = parseInt(el.getAttribute('i'))
     displayposts[_i] && (displayposts[_i].visible = visible)
+
+    // Force play if the brick is visible, and have the data
+    let vidEl = el.querySelector('video')
+    if(visible && (displayposts[_i].canplaythrough || displayposts[_i].playing)) {
+      console.log('Force playing', _i)
+      vidEl.play()
+    } else {
+      console.log('force pausing', _i)
+      vidEl && vidEl.pause()
+    }
   })
 
 
@@ -188,7 +198,7 @@ onMount(async () => {
     startAutoPlay();
   }
 
-  observer = new IntersectionObserver(handleIntersection, {})
+  observer = new IntersectionObserver(handleIntersection, {threshold: 0.5})
 });
 
 function toggleImageVideo() {
@@ -502,11 +512,29 @@ $ : {
   }
 }
 
+function handler3(event) {
+  console.log('pausing', event.path[1].getAttribute('id'))
+  let _i = parseInt(event.path[1].getAttribute('i'))
+  displayposts[_i].paused = true
+}
+
 function handler(event) {
-  console.log(event.path[1].getAttribute('id'))
+  console.log('playing', event.path[1].getAttribute('id'))
   let _i = parseInt(event.path[1].getAttribute('i'))
   displayposts[_i].playing = true
+  // If it is playing, then it can playthrough as well.
+  displayposts[_i].canplaythrough = true
+  displayposts[_i].paused = false
 }
+
+function handler2(event) {
+  console.log('canplaythrough', event.path[1].getAttribute('id'))
+  let _i = parseInt(event.path[1].getAttribute('i'))
+  displayposts[_i].canplaythrough = true
+  event.path[0].removeEventListener('canplaythrough', handler2)
+  event.path[0].play()
+}
+
 </script>
 
 <style lang="sass">
@@ -515,7 +543,9 @@ function handler(event) {
     &:hover
       @content
 
-$yellow: #f9ab00
+$red: #D93025
+$green: #1E8E3E
+$yellow: #F9AB00
 
 $text-color: #fafafa
 $accent-color: white
@@ -777,8 +807,14 @@ $isnotmulti-color: #34a853
           background-color: #3C4043
           border: 5px solid rbga(0, 0, 0, 0)
 
-          &.highlight
-            border: 5px solid #34A853
+          &.playing
+            border: 5px solid $green !important
+            
+          &.canplaythrough
+            border: 5px solid $yellow
+
+          &.paused
+            border: 5px solid $red !important
 
           .image, .video
             width: 100%
@@ -827,21 +863,23 @@ $isnotmulti-color: #34a853
         .col
           +each('displayposts as currpost, i')
             +if('i%numCols === c')
-              .brick(id="{'brick-' + i}", i="{i}", class:highlight="{currpost.playing}")
+              .brick(id="{'brick-' + i}", i="{i}", class:paused="{currpost.paused}", class:canplaythrough="{currpost.canplaythrough}", class:playing="{currpost.playing}")
                 +if('currpost.is_image && !currpost.is_album')
                   +if('$hires')
                     img.image(src='{currpost.url}')
                     +else()
                       img.image(src='{currpost.preview.img.default}')
                   +elseif('currpost.is_video')
-                    video.video(on:play="{handler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
+                    p {i}
+                    video.video(on:pause="{handler3}", on:play="{handler}", on:canplaythrough="{handler2}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
                       +if('currpost.preview.vid.webm')
                         source(src="{currpost.preview.vid.webm}")
                       +if('currpost.preview.vid.mp4')
                         source(src="{currpost.preview.vid.mp4}")
                   +elseif('currpost.is_album')
                     +if('currpost.preview.img.album[albumindex].is_video')
-                      video.video(on:play="{handler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
+                      p {i}
+                      video.video(on:pause="{handler3}", on:play="{handler}", on:canplaythrough="{handler2}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
                         source(src="{currpost.preview.img.album[albumindex].hires}")
                       +else()
                         +if('$hires')
