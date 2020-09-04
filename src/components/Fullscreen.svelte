@@ -164,7 +164,7 @@ async function handleIntersection(events) {
     if(visible && (displayposts[_i].canplaythrough || displayposts[_i].playing)) {
       console.log('Force playing', _i)
       vidEl.play()
-    } else {
+    } else if (displayposts[_i].is_video){
       console.log('force pausing', _i)
       vidEl && vidEl.pause()
     }
@@ -512,13 +512,14 @@ $ : {
   }
 }
 
-function handler3(event) {
+
+function pausedHandler(event) {
   console.log('pausing', event.path[1].getAttribute('id'))
   let _i = parseInt(event.path[1].getAttribute('i'))
   displayposts[_i].paused = true
 }
 
-function handler(event) {
+function playHandler(event) {
   console.log('playing', event.path[1].getAttribute('id'))
   let _i = parseInt(event.path[1].getAttribute('i'))
   displayposts[_i].playing = true
@@ -527,11 +528,11 @@ function handler(event) {
   displayposts[_i].paused = false
 }
 
-function handler2(event) {
+function canPlayThroughHandler(event) {
   console.log('canplaythrough', event.path[1].getAttribute('id'))
   let _i = parseInt(event.path[1].getAttribute('i'))
   displayposts[_i].canplaythrough = true
-  event.path[0].removeEventListener('canplaythrough', handler2)
+  event.path[0].removeEventListener('canplaythrough', canPlayThroughHandler)
   event.path[0].play()
 }
 
@@ -863,7 +864,7 @@ $isnotmulti-color: #34a853
         .col
           +each('displayposts as currpost, i')
             +if('i%numCols === c')
-              .brick(id="{'brick-' + i}", i="{i}", class:paused="{currpost.paused}", class:canplaythrough="{currpost.canplaythrough}", class:playing="{currpost.playing}")
+              .brick(id="{'brick-' + i}", i="{i}", on:click="{toggleAutoPlay}", class:paused="{currpost.paused}", class:canplaythrough="{currpost.canplaythrough}", class:playing="{currpost.playing}")
                 +if('currpost.is_image && !currpost.is_album')
                   +if('$hires')
                     img.image(src='{currpost.url}')
@@ -871,7 +872,7 @@ $isnotmulti-color: #34a853
                       img.image(src='{currpost.preview.img.default}')
                   +elseif('currpost.is_video')
                     p {i}
-                    video.video(on:pause="{handler3}", on:play="{handler}", on:canplaythrough="{handler2}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
+                    video.video(on:pause="{pausedHandler}", on:play="{playHandler}", on:canplaythrough="{canPlayThroughHandler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
                       +if('currpost.preview.vid.webm')
                         source(src="{currpost.preview.vid.webm}")
                       +if('currpost.preview.vid.mp4')
@@ -879,7 +880,7 @@ $isnotmulti-color: #34a853
                   +elseif('currpost.is_album')
                     +if('currpost.preview.img.album[albumindex].is_video')
                       p {i}
-                      video.video(on:pause="{handler3}", on:play="{handler}", on:canplaythrough="{handler2}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
+                      video.video(on:pause="{pausedHandler}", on:play="{playHandler}", on:canplaythrough="{canPlayThroughHandler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
                         source(src="{currpost.preview.img.album[albumindex].hires}")
                       +else()
                         +if('$hires')
