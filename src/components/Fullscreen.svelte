@@ -67,8 +67,11 @@ let gridTemplateColsStyle
 let cols
 
 $: {
-  //console.log('block 1: gotoElWidth', displayposts.length, gotoElWidth)
-  if (gotoElWidth > 1000) {
+  console.log('block 1: gotoElWidth', displayposts.length, gotoElWidth)
+  if (gotoElWidth > 2000) {
+    numCols = 4
+  }
+  else if (gotoElWidth > 1000) {
     numCols = 3
   } else if (gotoElWidth > 800) {
     numCols = 3
