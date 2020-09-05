@@ -303,6 +303,20 @@ function autoscroll() {
   }
 }
 
+function scrollSpeedPlus() {
+  let newSpeed = $scrollspeed + 1
+
+  scrollspeed.set(Math.min(20, newSpeed))
+
+}
+
+function scrollSpeedMinus() {
+  let newSpeed = $scrollspeed - 1
+
+  scrollspeed.set(Math.max(0, newSpeed))
+
+}
+
 function scroll(event)  {
   if(!$autoplay) {
     scrollPos = window.pageYOffset
@@ -475,6 +489,18 @@ function toggleOver18() {
 }
 
 function keydown(event) {
+
+  // up
+  if (event.keyCode == 38) {
+    event.preventDefault()
+    scrollSpeedPlus()
+  }
+
+  // down
+  if (event.keyCode == 40) {
+    event.preventDefault()
+    scrollSpeedMinus()
+  }
 
   // q, p, Space
   if (event.keyCode == 81 || event.keyCode == 80 || event.keyCode == 32) {

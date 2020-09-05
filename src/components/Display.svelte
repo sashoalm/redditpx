@@ -612,6 +612,7 @@ function keydown(event) {
     albumPrev()
   }
 
+  // down
   if (event.keyCode == 40) {
     albumNext()
   }
