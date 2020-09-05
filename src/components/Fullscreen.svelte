@@ -29,8 +29,11 @@ import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
 
-import { autoplay, scrollspeed, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit, muted } from "../_prefs";
+import { writable, throttle, debounce, startWith } from 'svelte-pipeable-store';
+
 import Display from "./Display.svelte";
+
+import { autoplay, scrollspeed, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit, muted } from "../_prefs";
 autoplay.useLocalStorage(true);
 scrollspeed.useLocalStorage(2);
 imageVideo.useLocalStorage(0);
@@ -67,13 +70,13 @@ let gridTemplateColsStyle
 let cols
 
 $: {
-  console.log('block 1: gotoElWidth', displayposts.length, gotoElWidth)
-  if (gotoElWidth > 2000) {
+  //console.log('block 1: gotoElWidth', displayposts.length, $gotoElWidth)
+  if ($gotoElWidth > 2000) {
     numCols = 4
   }
-  else if (gotoElWidth > 1000) {
+  else if ($gotoElWidth > 1000) {
     numCols = 3
-  } else if (gotoElWidth > 800) {
+  } else if ($gotoElWidth > 800) {
     numCols = 3
   } else {
     numCols = 1
@@ -83,7 +86,13 @@ $: {
   gridTemplateColsStyle = `grid-template-columns: ${Array(numCols).fill('1fr').join(' ')}`
 }
 
-let gotoElWidth;
+
+// 1440 is to set numCols to 3. Setting to `0` would mean we start with 1 col, and then quickly update to 3 on desktop.
+const _gotoElWidth = writable(1440)
+const gotoElWidth = _gotoElWidth.pipe(throttle(500), startWith(1440))
+
+const _scrollY = writable(0)
+const scrollY = _scrollY.pipe(throttle(500), startWith(0))
 
 $: loadError = res && !res.res.ok;
 
@@ -114,7 +123,6 @@ let showSettings = false;
 let nexturls = [];
 let index = 0;
 
-let scrollY
 let innerHeight
 let wallEl
 
@@ -532,7 +540,7 @@ function keydown(event) {
 $ : {
   //console.log('block 6: scroll')
   if(wallEl) {
-    let pctScrolled = (scrollY + innerHeight) / wallEl.scrollHeight
+    let pctScrolled = ($scrollY + innerHeight) / wallEl.scrollHeight
     if (pctScrolled >= 0.8) {
       console.log('[scroll] loading more ...')
       loadMore()
@@ -870,7 +878,7 @@ $isnotmulti-color: #34a853
         img.small
           display: none
 </style>
-<svelte:window on:scroll={scroll} on:keydown={keydown} bind:scrollY={scrollY} bind:innerHeight={innerHeight}/>
+<svelte:window on:scroll={scroll} on:keydown={keydown} bind:scrollY={$_scrollY} bind:innerHeight={innerHeight}/>
 <svelte:head>
   <title>redditpx - {slugstr ? `r/${subreddit}` : 'reddit.com'}</title>
 </svelte:head>
@@ -918,7 +926,7 @@ $isnotmulti-color: #34a853
                               +else()
                                 img.image(src="{currpost.preview.img.album[albumindex].default}")
     +if('displayposts.length || posts.length')
-      .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{gotoElWidth}')
+      .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{$_gotoElWidth}')
         .btnwrapper
           span.btn.playpause.tooltip(
             data-tooltip="{autoplaystr}",
