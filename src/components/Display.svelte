@@ -32,6 +32,8 @@ import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
 
+import { writable, throttle, debounce, startWith } from 'svelte-pipeable-store';
+
 import { autoplay, autoplayinterval, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit, muted } from "../_prefs";
 autoplay.useLocalStorage(true);
 autoplayinterval.useLocalStorage(3);
@@ -84,28 +86,30 @@ $ : {
   }
 
 $: {
-  if (gotoElWidth > 1000) {
+  if ($gotoElWidth > 1000) {
     // padding on both sides
-    let numGotoControlsInOneRow = (gotoElWidth - 154 * 2) / 32;
+    let numGotoControlsInOneRow = ($gotoElWidth - 154 * 2) / 32;
     let numGotoControlsRows =
       (displayposts.length + 5) / numGotoControlsInOneRow;
     tinygoto = numGotoControlsRows > 3;
-  } else if (gotoElWidth > 800) {
+  } else if ($gotoElWidth > 800) {
     // padding on right side
-    let numGotoControlsInOneRow = (gotoElWidth - (154 + 14)) / 32;
+    let numGotoControlsInOneRow = ($gotoElWidth - (154 + 14)) / 32;
     let numGotoControlsRows =
       (displayposts.length + 5) / numGotoControlsInOneRow;
     tinygoto = numGotoControlsRows > 3;
   } else {
     // no padding
-    let numGotoControlsInOneRow = (gotoElWidth - (14 + 14)) / 32;
+    let numGotoControlsInOneRow = ($gotoElWidth - (14 + 14)) / 32;
     let numGotoControlsRows =
       (displayposts.length + 5) / numGotoControlsInOneRow;
     tinygoto = numGotoControlsRows > 3;
   }
 }
 
-let gotoElWidth;
+// 1440 is to set numCols to 3. Setting to `0` would mean we start with 1 col, and then quickly update to 3 on desktop.
+const _gotoElWidth = writable(1440)
+const gotoElWidth = _gotoElWidth.pipe(throttle(500), startWith(1440))
 
 $: loadError = res && !res.res.ok;
 let loading = false;
@@ -847,6 +851,7 @@ $isnotmulti-color: #34a853
           display: grid
           grid-gap: 0.2rem
 
+
           .nums
             border-bottom: 3px solid rgba(white, 30%)
             height: 1rem
@@ -877,8 +882,20 @@ $isnotmulti-color: #34a853
         display: contents
 
       .btnwrapper
+
         .reload
           bottom: -1px
+
+      .numswrapper
+
+        .displayinfo
+          grid-column: span 1
+          font-size: 0.8rem
+          margin-top: 2px
+
+          p
+            margin: 0
+            text-align: center
 
       .btn
         text-align: center
@@ -996,8 +1013,8 @@ $isnotmulti-color: #34a853
             top: -2px
 
             input
-              width: 90%
-              margin-left: 9px
+              width: 85%
+              margin-left: 0px
               padding-left: 5px
               padding-right: 5px
               border: 1px solid rgba(white, 60%)
@@ -1237,7 +1254,7 @@ $isnotmulti-color: #34a853
                     .image(style="background-image: url('{currpost.preview.img.album[albumindex].default}')")
     .control.next(on:click="{next}")
     +if('displayposts.length || posts.length')
-      .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{gotoElWidth}')
+      .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{$_gotoElWidth}')
         .btnwrapper
           span.btn.playpause.tooltip(
             data-tooltip="{autoplaystr}",
@@ -1283,6 +1300,12 @@ $isnotmulti-color: #34a853
                 Icon(icon="{faSpinner}")
                 +else()
                   Icon(icon="{faSync}")
+          span.btn.over18wrapper.tooltip(
+            data-tooltip="{over18str}",
+            class:over18="{!$over18}",
+            on:click="{toggleOver18}"
+          )
+            p {over18str}
           span.btn.filter.tooltip(
             class:filterExpanded="{filterExpanded}",
             on:click="{toggleFilter}",
@@ -1294,12 +1317,9 @@ $isnotmulti-color: #34a853
               input(bind:value='{filterValue}', on:click|stopPropagation, on:keydown|stopPropagation, type="text")
               +else
                 Icon(icon="{faSearch}")
-          span.btn.over18wrapper.tooltip(
-            data-tooltip="{over18str}",
-            class:over18="{!$over18}",
-            on:click="{toggleOver18}"
-          )
-            p {over18str}
+          +if('filterValue')
+            span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
+              p deep search 🡒
         .numswrapper
           +each('displayposts as post, i')
             span.nums(
@@ -1312,10 +1332,9 @@ $isnotmulti-color: #34a853
               //img.small(alt="{displayposts[i].title}", src="{displayposts[i].preview.img.default}")
               img.small(alt="{displayposts[i].title}", src="{displayposts[i].thumbnail}")
               p.small(class:curr="{index === i}", class:album="{currpost.is_album}") {i+1}
-          +if('filterValue')
-            span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
-              p deep search 🡒
           +if('!tinygoto')
+            span.displayinfo(class:filterExpanded="{filterValue}")
+              p {displayposts.length}/{posts.length}
             span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
               +if('loading')
                 Icon(icon="{faSpinner}")

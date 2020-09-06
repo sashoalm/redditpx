@@ -55,7 +55,7 @@ let data;
 let displayposts = [];
 let uiVisible = true;
 let numFavorite;
-let tinygoto;
+let tinygoto = false;
 let title
 let albumindex = 0
 
@@ -73,13 +73,17 @@ $: {
   //console.log('block 1: gotoElWidth', displayposts.length, $gotoElWidth)
   if ($gotoElWidth > 2000) {
     numCols = 4
+    tinygoto = false
   }
   else if ($gotoElWidth > 1000) {
     numCols = 3
+    tinygoto = false
   } else if ($gotoElWidth > 800) {
     numCols = 3
+    tinygoto = false
   } else {
     numCols = 1
+    tinygoto = true
   }
 
   cols = Array(numCols).fill(0).map(Number.call, Number)
@@ -175,7 +179,7 @@ async function handleIntersection(events) {
     if(visible && (displayposts[_i].canplaythrough || displayposts[_i].playing)) {
       console.log('Force playing', _i)
       vidEl.play()
-    } else if (displayposts[_i].is_video){
+    } else if (displayposts[_i] && displayposts[_i].is_video){
       console.log('force pausing', _i)
       vidEl && vidEl.pause()
     }
@@ -661,42 +665,21 @@ $isnotmulti-color: #34a853
           grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
           display: grid
 
-        .numswrapper
-          grid-template-columns: repeat(auto-fit, minmax(1rem, auto))
-          grid-auto-columns: max-content
-          display: grid
-          grid-gap: 0.2rem
-
-          .nums
-            border-bottom: 3px solid rgba(white, 30%)
-            height: 1rem
-            cursor: pointer
-
-            @include hover()
-              border-bottom: 3px solid $accent-color !important
-
-            &.currnum
-              border-bottom: 3px solid $accent-color !important
-
-              &.album
-                border-bottom: 3px dotted $accent-color !important
-
-            &.favorite
-              border-bottom: 3px solid $favorite-color
-
-            &.over18
-              border-bottom: 3px solid $over18-color
-
-          p
-            display: none
-
-          .reload
-            grid-column: span 2
-
-      .btnwrapper, .numswrapper
+      .btnwrapper
         display: contents
 
       .btnwrapper
+
+        .displayinfo
+          grid-column: span 1
+          font-size: 0.9rem
+          font-family: "Roboto Condensed", sans-serif
+
+          p
+            margin: 0
+            text-align: center
+            margin-top: 2px
+
         .reload
           bottom: -1px
 
@@ -783,7 +766,7 @@ $isnotmulti-color: #34a853
 
         &.download
           cursor: default
-          font-size: 1.4rem
+          font-size: 1.48rem
           bottom: 2px
 
           &.dlready
@@ -816,8 +799,8 @@ $isnotmulti-color: #34a853
             top: -2px
 
             input
-              width: 90%
-              margin-left: 9px
+              width: 85%
+              margin-left: 0px
               padding-left: 5px
               padding-right: 5px
               border: 1px solid rgba(white, 60%)
@@ -989,14 +972,14 @@ $isnotmulti-color: #34a853
               input(bind:value='{filterValue}', on:click|stopPropagation, on:keydown|stopPropagation, type="text")
               +else
                 Icon(icon="{faSearch}")
-        .numswrapper
           +if('filterValue')
             span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
               p deep search 🡒
-          +if('!tinygoto')
-            span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
-              +if('loading')
-                Icon(icon="{faSpinner}")
-                +else()
-                  Icon(icon="{faSync}")
+          span.displayinfo(class:filterExpanded="{filterValue}")
+            p {displayposts.length}/{posts.length}
+          span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
+            +if('loading')
+              Icon(icon="{faSpinner}")
+              +else()
+                Icon(icon="{faSync}")
 </template>
