@@ -11,29 +11,31 @@ redditpx is a fast & fun way to make slideshows out of reddit.
 ## Features
 
 redditpx has the following new features
- - better mobile mode
- - hover preview
- - filtering
- - favorite
- - batch download
- - fast and modern code
- - user profile
- - /r/random and /r/randnsfw
- - filter images, videos or both
- - [ ] customizable keyboard shortcuts
+
+- [x] better mobile mode
+- [x] hover preview
+- [x] filtering
+- [x] favorite
+- [x] batch download
+- [x] fast and modern code
+- [x] user profile
+- [x] /r/random and /r/randnsfw
+- [x] filter images, videos or both
+- [ ] customizable keyboard shortcuts
 
 .. in addition to the features it shares with redditp
 
- - multireddit
- - autoplay on/off
- - nsfw on/off
- - direct open fullimage
- - keyboard shortcuts
- - open reddit post and comments
- - /new, /top, /hot support
- - /domain, /user, /u support
+- [x] multireddit
+- [x] autoplay on/off
+- [x] nsfw on/off
+- [x] direct open fullimage
+- [x] keyboard shortcuts
+- [x] open reddit post and comments
+- [x] /new, /top, /hot support
+- [x] /domain, /user, /u support
 
 ## Acknowledgements
- - svelte/sapper for framework
- - twemoji for images
- - favicon.io for favicons
+
+- svelte/sapper for framework
+- twemoji for images
+- favicon.io for favicons
