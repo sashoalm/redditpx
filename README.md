@@ -4,9 +4,9 @@
   </a>
 </p>
 
-# redditpx - A fast, modern alternative to redditp.com
+# [redditpx](redditpx.com) - A fast, modern alternative to redditp.com
 
-redditpx is a fast & fun way to make slideshows out of reddit.
+[redditpx](redditpx.com) is a fast & fun way to make slideshows out of reddit.
 
 ## Features
 
