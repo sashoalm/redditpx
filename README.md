@@ -1,6 +1,6 @@
 <p>
   <a href="https://redditpx.com">
-    <img alt="redditpx.com - A fast, modern alternative to redditp.com" src="https://rawcdn.githack.com/jeffjose/redditpx/6ea1e91c67531ee29bbe62086e257f2c1eeeed53/banner.png">
+    <img alt="redditpx.com - A fast, modern alternative to redditp.com" src="https://raw.github.com/jeffjose/redditpx/master/banner.png">
   </a>
 </p>
 
