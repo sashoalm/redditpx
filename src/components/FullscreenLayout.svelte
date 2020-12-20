@@ -21,6 +21,8 @@ import { faPlusCircle } from "@fortawesome/free-solid-svg-icons/faPlusCircle";
 import { faMinusCircle } from "@fortawesome/free-solid-svg-icons/faMinusCircle";
 import { faEye as faShow } from "@fortawesome/free-solid-svg-icons/faEye";
 import { faEyeSlash as faHide } from "@fortawesome/free-solid-svg-icons/faEyeSlash";
+import { faTh as faColumns } from "@fortawesome/free-solid-svg-icons/faTh";
+import { faSquareFull as faFullscreen } from "@fortawesome/free-solid-svg-icons/faSquareFull";
 
 import { faMobileAlt as faPortrait } from "@fortawesome/free-solid-svg-icons/faMobileAlt";
 import { faDesktop as faLandscape } from "@fortawesome/free-solid-svg-icons/faDesktop";
@@ -34,7 +36,7 @@ import { get_posts, queryp } from "../_utils";
 
 import { writable, throttle, debounce, startWith } from 'svelte-pipeable-store';
 
-import { autoplay, autoplayinterval, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit, muted } from "../_prefs";
+import { autoplay, autoplayinterval, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit, muted, layout } from "../_prefs";
 autoplay.useLocalStorage(true);
 autoplayinterval.useLocalStorage(3);
 imageVideo.useLocalStorage(0);
@@ -46,6 +48,7 @@ prefetch.useLocalStorage(true);
 hires.useLocalStorage(false);
 oldreddit.useLocalStorage(false);
 muted.useLocalStorage(true);
+layout.useLocalStorage(0);
 
 export let params, slugstr;
 export let posts;
@@ -125,6 +128,7 @@ let deepsearchstr = "";
 let multiredditstr = "";
 let showhidestr = "Hide (h)";
 let mutedstr = "Sound Off"
+let layoutstr = "Fullscreen"
 
 let autoplaytimer;
 
@@ -226,6 +230,14 @@ function toggleMuted() {
 
 }
 
+function toggleLayout() {
+  $layout = $layout + 1
+
+  if ($layout == 2 ) {
+    $layout = 0
+  }
+}
+
 function togglePortraitLandscape() {
   $portraitLandscape = $portraitLandscape + 1
 
@@ -264,6 +276,14 @@ $: {
   deepsearchstr = `Search for ${filterValue}`;
 
   mutedstr = `Sound ${$muted ? "off": "on"}`
+
+  if ($layout == 0) {
+    layoutstr = "Fullscreen mode"
+  }
+  else {
+    layoutstr = "Columns mode"
+
+  }
 
   if ($over18 == 0) {
     over18str = "nsfw off"
@@ -963,6 +983,12 @@ $isnotmulti-color: #34a853
           bottom: 2px
           color: white
 
+        &.layout
+          cursor: pointer
+          font-size: 1.4rem
+          bottom: 2px
+          color: white
+
         &.muted
           cursor: pointer
           font-size: 1.4rem
@@ -1279,6 +1305,11 @@ $isnotmulti-color: #34a853
                 Icon(icon="{faPortrait}")
               +elseif('$portraitLandscape == 2')
                 Icon(class="landscape", icon="{faPortrait}")
+          span.btn.layout.tooltip(
+            data-tooltip="{layoutstr}",
+            on:click="{toggleLayout}"
+          )
+            Icon(icon="{$layout == 0 ? faFullscreen : faColumns}")
           span.btn.imagevideo.tooltip(
             data-tooltip="{imageVideoStr}",
             on:click="{toggleImageVideo}"

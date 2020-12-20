@@ -12,7 +12,7 @@ export async function preload({ path, params, query }) {
 }
 </script>
 <script>
-import Display from "../../../components/Display.svelte";
+import FullscreenLayout from "../../../components/FullscreenLayout.svelte";
 
 import { get_posts, queryp } from "../../../_utils";
 
@@ -34,5 +34,5 @@ for (let p of posts) {
 </script>
 
 <template lang="pug">
-  Display({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
+  FullscreenLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
 </template>

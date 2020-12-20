@@ -20,7 +20,7 @@ const store = (key, initialValue) => {
       subscribe((current) => {
         localStorage.setItem(key, JSON.stringify(current));
       });
-    },
+    }
   };
 };
 
@@ -36,3 +36,4 @@ export const prefetch = store("prefetch");
 export const hires = store("hires");
 export const oldreddit = store("oldreddit");
 export const muted = store("muted");
+export const layout = store("layout");
