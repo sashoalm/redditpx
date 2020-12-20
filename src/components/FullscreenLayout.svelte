@@ -1356,7 +1356,6 @@ $isnotmulti-color: #34a853
            e  class:over18="{displayposts[i].over18}",
               on:click="{function(){goto(i)}}"
             )
-              //img.small(alt="{displayposts[i].title}", src="{displayposts[i].preview.img.default}")
               img.small(alt="{displayposts[i].title}", src="{displayposts[i].thumbnail}")
               p.small(class:curr="{index === i}", class:album="{currpost.is_album}") {i+1}
           +if('!tinygoto')

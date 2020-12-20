@@ -309,6 +309,8 @@ function thumbnail(item) {
   let thumbnail = item.data.thumbnail;
   if (thumbnail == "spoiler" || thumbnail == "nsfw") {
     return decode(item.data.preview.images[0].resolutions[0].url);
+  } else if (thumbnail == "default" && item.data.is_gallery == true) {
+    return decode(Object.values(item.data.media_metadata)[0].p[0].u);
   } else {
     return thumbnail;
   }
