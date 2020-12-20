@@ -24,7 +24,7 @@ export async function get_posts(url) {
       posts,
       subreddit,
       after: data.data.after,
-      res: { ok: true, res: res },
+      res: { ok: true, res: res }
     };
   } catch (error) {
     console.log("[get_posts]: error");
@@ -33,7 +33,7 @@ export async function get_posts(url) {
       posts: [],
       after: "",
       subreddit: "",
-      res: { ok: false, res: error },
+      res: { ok: false, res: error }
     };
   }
 }
@@ -46,7 +46,8 @@ function is_image(item) {
   return (
     url(item).endsWith(".jpg") ||
     url(item).endsWith(".png") ||
-    url(item).includes("imgur.com/a/")
+    url(item).includes("imgur.com/a/") ||
+    url(item).includes("reddit.com/gallery/")
   );
 }
 
@@ -77,7 +78,7 @@ export function get_dims(item) {
     try {
       dims = {
         height: item.data.preview.images[0].source.height,
-        width: item.data.preview.images[0].source.width,
+        width: item.data.preview.images[0].source.width
       };
     } catch {
       console.info(`No dims for ${url(item)}`, item);
@@ -86,13 +87,13 @@ export function get_dims(item) {
     try {
       dims = {
         height: item.data.preview.reddit_video_preview.height,
-        width: item.data.preview.reddit_video_preview.width,
+        width: item.data.preview.reddit_video_preview.width
       };
     } catch {
       // if you cant get the dims from the video, pick it up from the preview image
       dims = {
         height: item.data.preview.images[0].source.height,
-        width: item.data.preview.images[0].source.width,
+        width: item.data.preview.images[0].source.width
       };
     }
   }
@@ -105,13 +106,32 @@ async function imgsrc(u, item) {
   try {
     imgs = {
       default: decode(item.data.preview.images[0].resolutions.slice(-1)[0].url),
-      hires: decode(item.data.preview.images[0].source.url),
+      hires: decode(item.data.preview.images[0].source.url)
     };
   } catch {
     imgs = {
       default: url(item),
-      hires: url(item),
+      hires: url(item)
     };
+  }
+
+  if (u.includes("reddit.com/gallery/")) {
+    let media_items = Object.values(item.data.media_metadata);
+
+    imgs["album"] = [];
+
+    media_items.forEach((mi) => {
+      let i = {
+        hires: decode(mi.s.u),
+        default: decode(mi.p[mi.p.length - 1].u),
+
+        // TODO: assumption: reddit.com/gallery is always images
+        is_image: true,
+        is_video: false
+      };
+
+      imgs["album"].push(i);
+    });
   }
 
   //  if (u.includes("imgur.com/a/")) {
@@ -189,7 +209,7 @@ function extractAlbumInfoNode(html) {
         ".mp4"
       ),
       is_image: !_i.prefer_video,
-      is_video: _i.prefer_video,
+      is_video: _i.prefer_video
     };
 
     album.push(i);
@@ -203,7 +223,7 @@ async function vidsrc(url, item) {
     return {
       gif: `https://i.imgur.com/${name}.gif`,
       //webm: `https://i.imgur.com/${name}.webm`,
-      mp4: `https://i.imgur.com/${name}.mp4`,
+      mp4: `https://i.imgur.com/${name}.mp4`
     };
   } else if (url.includes("gfycat.com/")) {
     let name = url.match(/gfycat.com\/(.*)/)[1];
@@ -222,7 +242,7 @@ async function vidsrc(url, item) {
       return {
         webm: data.gfyItem.webmUrl,
         mp4: data.gfyItem.mp4Url,
-        gif: data.gfyItem.gifUrl,
+        gif: data.gfyItem.gifUrl
       };
     } catch {
       // If gfycat.com fails, try redgifs.com
@@ -235,7 +255,7 @@ async function vidsrc(url, item) {
         return {
           webm: data.gfyItem.webmUrl,
           mp4: data.gfyItem.mp4Url,
-          gif: data.gfyItem.gifUrl,
+          gif: data.gfyItem.gifUrl
         };
       } catch {
         return {};
@@ -244,11 +264,11 @@ async function vidsrc(url, item) {
     }
   } else if (url.includes("v.redd.it")) {
     return {
-      mp4: item.data.media.reddit_video.fallback_url,
+      mp4: item.data.media.reddit_video.fallback_url
     };
   } else if (url.includes("reddit.com/r/")) {
     return {
-      mp4: item.data.preview.reddit_video_preview.fallback_url,
+      mp4: item.data.preview.reddit_video_preview.fallback_url
     };
   } else if (url.includes("i.redd.it/")) {
     let gif, mp4;
@@ -265,7 +285,7 @@ async function vidsrc(url, item) {
     return { gif: decode(gif), mp4: decode(mp4) };
   } else {
     return {
-      mp4: item.data.preview.reddit_video_preview.fallback_url,
+      mp4: item.data.preview.reddit_video_preview.fallback_url
     };
   }
 }
@@ -327,8 +347,8 @@ export async function format(item) {
     orientation: orientation,
     preview: {
       vid: vids,
-      img: imgs,
-    },
+      img: imgs
+    }
   };
 
   return formatted;

@@ -1273,11 +1273,7 @@ $isnotmulti-color: #34a853
             +if('$hires')
               .image(style="background-image: url('{currpost.preview.img.album[albumindex].hires}')")
               +else()
-                // Use reddit's optimized image for index 0
-                +if('albumindex === 0')
-                  .image(style="background-image: url('{currpost.preview.img.default}')")
-                  +else()
-                    .image(style="background-image: url('{currpost.preview.img.album[albumindex].default}')")
+                .image(style="background-image: url('{currpost.preview.img.album[albumindex].default}')")
     .control.next(on:click="{next}")
     +if('displayposts.length || posts.length')
       .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{$_gotoElWidth}')
