@@ -9,6 +9,7 @@ WORKDIR /usr/src/app
 # A wildcard is used to ensure both package.json AND package-lock.json are copied.
 # Copying this separately prevents re-running npm install on every code change.
 COPY package*.json ./
+COPY yarn.lock ./
 
 # Install dev + production dependencies.
 RUN yarn
@@ -21,4 +22,3 @@ RUN yarn build
 
 # Run the web service on container startup.
 CMD [ "yarn", "start" ]
-
