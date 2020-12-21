@@ -929,11 +929,7 @@ $isnotmulti-color: #34a853
                         +if('$hires')
                           img.image(src="{currpost.preview.img.album[albumindex].hires}")
                           +else()
-                            // Use reddit's optimized image for index 0
-                            +if('albumindex === 0')
-                              img.image(src="{currpost.preview.img.default}")
-                              +else()
-                                img.image(src="{currpost.preview.img.album[albumindex].default}")
+                            img.image(src="{currpost.preview.img.album[albumindex].default}")
     +if('displayposts.length || posts.length')
       .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{$_gotoElWidth}')
         .btnwrapper
