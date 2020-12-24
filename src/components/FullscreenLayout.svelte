@@ -13,9 +13,7 @@ import { faVideo } from "@fortawesome/free-solid-svg-icons/faVideo";
 import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
-import { faTimes as faClose } from "@fortawesome/free-solid-svg-icons/faTimes";
 import { faSync } from "@fortawesome/free-solid-svg-icons/faSync";
-import { faExclamationTriangle as faLoadError } from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons/faSpinner";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons/faPlusCircle";
 import { faMinusCircle } from "@fortawesome/free-solid-svg-icons/faMinusCircle";
@@ -34,7 +32,7 @@ import { goto as ahref } from "@sapper/app";
 
 import { get_posts, queryp } from "../_utils";
 
-import { writable, throttle, debounce, startWith } from 'svelte-pipeable-store';
+import { writable, throttle, startWith } from 'svelte-pipeable-store';
 
 import { autoplay, autoplayinterval, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit, muted, layout } from "../_prefs";
 autoplay.useLocalStorage(true);
@@ -1370,9 +1368,15 @@ $isnotmulti-color: #34a853
     .prefetch
       +each('nexturls as nexturl')
         +if('$hires')
-          img(alt="prefetch", src="{nexturl.url}")
+          +if('nexturl.is_album')
+            img(alt="prefetch-hires", src="{nexturl.preview.img.album[0].hires}")
+            +else()
+              img(alt="prefetch-hires", src="{nexturl.url}")
           +else()
-            img(alt="prefetch", src="{nexturl.preview.img.default}")
+            +if('nexturl.is_album')
+              img(alt="prefetch-hires {nexturl.title}", src="{nexturl.preview.img.album[0].default}")
+              +else()
+                img(alt="prefetch", src="{nexturl.preview.img.default}")
         +if('nexturl.is_video')
           video
             +if('nexturl.preview.vid.webm')
