@@ -1121,6 +1121,18 @@ $isnotmulti-color: #34a853
         width: 85%
         //background-color: rgba(138, 255, 233, 0.38)
 
+      &.up
+        top: 0
+        height: 30%
+        width: 100%
+        //background-color: rgba(255, 0, 0, 0.38)
+
+      &.down
+        bottom: 0
+        height: 30%
+        width: 100%
+        //background-color: rgba(0, 255, 0, 0.38)
+
     .image
       height: 100%
       width: 100%
@@ -1273,6 +1285,8 @@ $isnotmulti-color: #34a853
               +else()
                 .image(style="background-image: url('{currpost.preview.img.album[albumindex].default}')")
     .control.next(on:click="{next}")
+    .control.up(on:click="{albumNext}")
+    .control.down(on:click="{albumPrev}")
     +if('displayposts.length || posts.length')
       .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{$_gotoElWidth}')
         .btnwrapper
