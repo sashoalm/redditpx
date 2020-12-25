@@ -1374,7 +1374,7 @@ $isnotmulti-color: #34a853
               img(alt="prefetch-hires", src="{nexturl.url}")
           +else()
             +if('nexturl.is_album')
-              img(alt="prefetch-hires {nexturl.title}", src="{nexturl.preview.img.album[0].default}")
+              img(alt="prefetch", src="{nexturl.preview.img.album[0].default}")
               +else()
                 img(alt="prefetch", src="{nexturl.preview.img.default}")
         +if('nexturl.is_video')
