@@ -115,7 +115,8 @@ async function imgsrc(u, item) {
     };
   }
 
-  if (u.includes("reddit.com/gallery/")) {
+  if (u.includes("reddit.com/gallery/") && item.data.media_metadata) {
+    console.log(item.data.media_metadata);
     let media_items = Object.values(item.data.media_metadata);
 
     imgs["album"] = [];
@@ -334,6 +335,8 @@ export async function format(item) {
 
   let formatted = {
     id: item.data.id,
+    author: item.data.author,
+    authorp: `u/${item.data.author}`,
     title: title(item),
     thumbnail: thumbnail(item),
     subreddit: item.data.subreddit,

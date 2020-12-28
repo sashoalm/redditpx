@@ -537,6 +537,10 @@ function openSubReddit() {
   }
 }
 
+function openUser() {
+    ahref(`/u/${currpost.author}`);
+}
+
 function openComments() {
   window.open(`https://reddit.com/${currpost.permalink}`, "_blank");
 }
@@ -807,8 +811,14 @@ $isnotmulti-color: #34a853
         &.ismulti
           color: $isnotmulti-color
 
-        @include hover()
-          color: $text-color
+
+        .user, .subredditp
+          line-height: 0
+          display: inline-block
+          margin-left: 5px
+        
+          @include hover()
+            color: $text-color
 
         .subredditwrapper
           display: inline-block
@@ -1251,7 +1261,9 @@ $isnotmulti-color: #34a853
         +else
           | {title}
       +if('currpost.subreddit')
-        .subreddit(on:click='{openSubReddit}', class:ismulti='{ismultireddit}') {currpost.subredditp}
+        .subreddit(class:ismulti='{ismultireddit}')
+          p.subredditp(on:click='{openSubReddit}') {currpost.subredditp}
+          p.user(on:click='{openUser}') {currpost.authorp}
           .subredditwrapper.tooltip.bottom(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
             Icon(icon="{ismultireddit ? faMinusCircle : faPlusCircle}")
     .settings
