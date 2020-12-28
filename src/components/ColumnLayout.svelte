@@ -33,8 +33,6 @@ import { get_posts, queryp } from "../_utils";
 
 import { writable, throttle, debounce, startWith } from 'svelte-pipeable-store';
 
-import FullscreenLayout from "./FullscreenLayout.svelte";
-
 import { autoplay, scrollspeed, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit, muted, layout } from "../_prefs";
 autoplay.useLocalStorage(true);
 scrollspeed.useLocalStorage(2);

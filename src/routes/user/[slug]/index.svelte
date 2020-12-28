@@ -13,6 +13,7 @@ export async function preload({ path, params, query }) {
 </script>
 <script>
 import ColumnLayout from "../../../components/ColumnLayout.svelte";
+import FullscreenLayout from "../../../components/FullscreenLayout.svelte";
 
 import { get_posts, queryp } from "../../../_utils";
 
