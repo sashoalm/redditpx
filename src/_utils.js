@@ -312,8 +312,10 @@ function thumbnail(item) {
     return decode(item.data.preview.images[0].resolutions[0].url);
   } else if (thumbnail == "default" && item.data.is_gallery == true) {
     return decode(Object.values(item.data.media_metadata)[0].p[0].u);
-  } else {
+  } else if (thumbnail != undefined) {
     return thumbnail;
+  } else {
+    return item.data.link_url;
   }
 }
 
