@@ -122,8 +122,15 @@ async function imgsrc(u, item) {
     imgs["album"] = [];
 
     media_items.forEach((mi) => {
+      let hires;
+      try {
+        hires = decode(mi.s.u);
+      } catch {
+        // TODO: Implement a proper fix, for now bail quickly
+        return;
+      }
       let i = {
-        hires: decode(mi.s.u),
+        hires: hires,
         default: decode(mi.p[mi.p.length - 1].u),
 
         // TODO: assumption: reddit.com/gallery is always images
