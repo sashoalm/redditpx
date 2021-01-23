@@ -1151,8 +1151,8 @@ $isnotmulti-color: #34a853
       background-position: center
 
     .video
-      height: 100%
-      width: 100%
+      height: 100vh
+      width: 100vw
 
   .prefetch
     display: none
