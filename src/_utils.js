@@ -315,13 +315,18 @@ function title(item) {
 
 function thumbnail(item) {
   let thumbnail = item.data.thumbnail;
-  if (thumbnail == "spoiler" || thumbnail == "nsfw") {
-    return decode(item.data.preview.images[0].resolutions[0].url);
-  } else if (thumbnail == "default" && item.data.is_gallery == true) {
-    return decode(Object.values(item.data.media_metadata)[0].p[0].u);
-  } else if (thumbnail != undefined) {
-    return thumbnail;
-  } else {
+
+  try {
+    if (thumbnail == "spoiler" || thumbnail == "nsfw") {
+      return decode(item.data.preview.images[0].resolutions[0].url);
+    } else if (thumbnail == "default" && item.data.is_gallery == true) {
+      return decode(Object.values(item.data.media_metadata)[0].p[0].u);
+    } else if (thumbnail != undefined) {
+      return thumbnail;
+    } else {
+      return item.data.link_url;
+    }
+  } catch (e) {
     return item.data.link_url;
   }
 }
@@ -341,13 +346,14 @@ export async function format(item) {
   } else if (dims.width / dims.height >= 1.7) {
     orientation = "landscape";
   }
+  let t = thumbnail(item);
 
   let formatted = {
     id: item.data.id,
     author: item.data.author,
     authorp: `u/${item.data.author}`,
     title: title(item),
-    thumbnail: thumbnail(item),
+    thumbnail: t,
     subreddit: item.data.subreddit,
     subredditp: item.data.subreddit_name_prefixed,
     permalink: item.data.permalink,
