@@ -76,11 +76,11 @@ $: {
     numCols = 4
     tinygoto = false
   }
-  else if ($gotoElWidth > 1000) {
+  else if ($gotoElWidth > 1440) {
     numCols = 3
     tinygoto = false
-  } else if ($gotoElWidth > 800) {
-    numCols = 3
+  } else if ($gotoElWidth > 500 && $gotoElWidth <= 1440) {
+    numCols = 2
     tinygoto = false
   } else {
     numCols = 1
