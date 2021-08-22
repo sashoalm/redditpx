@@ -9,6 +9,7 @@
     autoplayinterval,
     scrollspeed,
     prefetch,
+    prefetchNum,
     hires,
     oldreddit,
     imageVideo,
@@ -18,6 +19,7 @@
   autoplayinterval.useLocalStorage(3);
   scrollspeed.useLocalStorage(2);
   prefetch.useLocalStorage(true);
+  prefetchNum.useLocalStorage(3);
   hires.useLocalStorage(false);
   oldreddit.useLocalStorage(false);
   imageVideo.useLocalStorage(0);
@@ -35,6 +37,7 @@
   let _hires = $hires;
   let _oldreddit = $oldreddit;
   let _prefetch = $prefetch;
+  let _prefetchNum = $prefetchNum;
   let _muted = $muted;
   let _imageVideo = $imageVideo;
   let _portraitLandscape = $portraitLandscape;
@@ -61,6 +64,11 @@
       scrollspeed.set(10);
     } else {
       scrollspeed.set(j);
+    }
+
+    let k = Math.round(_prefetchNum);
+    if (k) {
+      prefetchNum.set(k);
     }
   }
 
@@ -142,6 +150,10 @@
           span.tooltip(data-tooltip="Preload media in the background") Prefetch media
           span
             span.button(on:click='{togglePrefetch}') {_prefetch ? "Prefetch is on" : "Prefetch is off"}
+        .item
+          span.text Prefetch items
+          span.input
+            input(type="number", bind:value='{_prefetchNum}')
         .item
           span.tooltip(data-tooltip="Sound on/off") Sound
           span

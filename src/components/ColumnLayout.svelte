@@ -47,6 +47,7 @@
     over18,
     multireddit,
     prefetch,
+    prefetchNum,
     hires,
     oldreddit,
     muted,
@@ -60,6 +61,7 @@
   over18.useLocalStorage(1);
   multireddit.useLocalStorage({});
   prefetch.useLocalStorage(true);
+  prefetchNum.useLocalStorage(3);
   hires.useLocalStorage(false);
   oldreddit.useLocalStorage(false);
   muted.useLocalStorage(true);

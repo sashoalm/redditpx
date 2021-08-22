@@ -43,6 +43,7 @@
     over18,
     multireddit,
     prefetch,
+    prefetchNum,
     hires,
     oldreddit,
     muted,
@@ -56,6 +57,7 @@
   over18.useLocalStorage(1);
   multireddit.useLocalStorage({});
   prefetch.useLocalStorage(true);
+  prefetchNum.useLocalStorage(3);
   hires.useLocalStorage(false);
   oldreddit.useLocalStorage(false);
   muted.useLocalStorage(true);
@@ -337,7 +339,26 @@
     if (displayposts[index]) {
       currpost = JSON.parse(JSON.stringify(displayposts[index]));
 
-      nexturls = displayposts.slice(index + 1, index + 4);
+      let _nexturls = [];
+
+      _nexturls = [
+        currpost,
+        ...displayposts.slice(index + 1, index + $prefetchNum + 1)
+      ];
+
+      nexturls = _nexturls
+        .map(function (item) {
+          if (item.is_album) {
+            return item.preview.img.album.slice(
+              albumindex,
+              albumindex + $prefetchNum + 1
+            );
+          } else {
+            return item;
+          }
+        })
+        .flat()
+        .slice(0, $prefetchNum);
     } else if (filterValue) {
       // We're here because user filtered the list
 
@@ -903,8 +924,10 @@
           +else()
             +if('nexturl.is_album')
               img(alt="prefetch", src="{nexturl.preview.img.album[0].default}")
-              +else()
+              +elseif('nexturl.preview')
                 img(alt="prefetch", src="{nexturl.preview.img.default}")
+              +else()
+                img(alt="prefetch", src="{nexturl.default}")
         +if('nexturl.is_video')
           video
             +if('nexturl.preview.vid.webm')
