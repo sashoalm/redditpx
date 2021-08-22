@@ -201,10 +201,10 @@
       // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
       if ($autoplay && currpost.is_image) {
         //console.log('---- iNEXT')
-        next();
+        itemNext();
       } else if (!$autoplay && currpost.is_video) {
         //console.log('---- vNEXT')
-        next();
+        itemNext();
       }
     }, $autoplayinterval * 1000);
 
@@ -419,10 +419,10 @@
   }
 
   function videoended() {
-    next();
+    itemNext();
   }
 
-  function next() {
+  function itemNext() {
     albumindex = 0;
     let itemNum = displayposts.length - 1 - index;
 
@@ -458,7 +458,7 @@
     if ($autoplay) stopAndStartAutoPlay();
   }
 
-  function prev() {
+  function itemPrev() {
     albumindex = 0;
 
     if (index === 0) return;
@@ -714,7 +714,7 @@
       event.keyCode == 75 ||
       event.keyCode == 33
     ) {
-      prev();
+      itemPrev();
     }
     // Right Arrow, d, j, Space, Page-down
     else if (
@@ -724,7 +724,7 @@
       event.keyCode == 32 ||
       event.keyCode == 34
     ) {
-      next();
+      itemNext();
     }
   }
 </script>
@@ -737,7 +737,7 @@
 <template lang="pug">
 .wrapper
   .hero
-    .control.prev(on:click="{prev}")
+    .control.prev(on:click="{itemPrev}")
     .title(class:hide="{uiVisible == false}", class:favorite="{currpost.favorite}")
       +if('displayposts.length')
         span.fav(on:click|stopPropagation|preventDefault="{toggleFavorite}")
@@ -782,7 +782,7 @@
               .image(style="background-image: url('{currpost.preview.img.album[albumindex].hires}')")
               +else()
                 .image(style="background-image: url('{currpost.preview.img.album[albumindex].default}')")
-    .control.next(on:click="{next}")
+    .control.next(on:click="{itemNext}")
     .control.up(on:click="{albumNext}")
     .control.down(on:click="{albumPrev}")
     +if('displayposts.length || posts.length')
