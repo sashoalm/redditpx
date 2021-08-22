@@ -1,47 +1,48 @@
 <script context="module">
-export async function preload({ path, params, query }) {
-  if (typeof window === "undefined") return;
+  export async function preload({ path, params, query }) {
+    if (typeof window === "undefined") return;
 
-  let slugstr = path.substring(1).replace(/\/$/, '').replace(/%20/g, ''); // remove the leading and trailing slash, and %20 (spaces)
+    let slugstr = path.substring(1).replace(/\/$/, "").replace(/%20/g, ""); // remove the leading and trailing slash, and %20 (spaces)
 
-  // If the user has r/user/username, they probably wanted
-  // /user/username
+    // If the user has r/user/username, they probably wanted
+    // /user/username
 
-  // The case of r/user/username/m/multi is handled inside _error.svelte
-  if (slugstr.startsWith("r/user/") || slugstr.startsWith("r/u/")) {
-    let newPath = slugstr.replace("r/", "");
-    this.redirect(302, newPath);
+    // The case of r/user/username/m/multi is handled inside _error.svelte
+    if (slugstr.startsWith("r/user/") || slugstr.startsWith("r/u/")) {
+      let newPath = slugstr.replace("r/", "");
+      this.redirect(302, newPath);
+    }
+
+    let { posts, res, after } = await get_posts(
+      `https://reddit.com/${slugstr}.json?${queryp(query)}`
+    );
+
+    return { posts, after, res, slugstr };
   }
-
-  let { posts, res, after } = await get_posts(
-    `https://reddit.com/${slugstr}.json?${queryp(query)}`
-  );
-
-  return { posts, after, res, slugstr };
-}
 </script>
+
 <script>
-import FullscreenLayout from "../../../components/FullscreenLayout.svelte";
-import ColumnLayout from "../../../components/ColumnLayout.svelte";
+  import FullscreenLayout from "../../../components/FullscreenLayout.svelte";
+  import ColumnLayout from "../../../components/ColumnLayout.svelte";
 
-import { get_posts, queryp } from "../../../_utils";
+  import { get_posts, queryp } from "../../../_utils";
 
-import { stores } from "@sapper/app";
-const { page } = stores();
+  import { stores } from "@sapper/app";
+  const { page } = stores();
 
-import { favorite, layout } from "../../../_prefs";
-favorite.useLocalStorage({});
-layout.useLocalStorage(0);
+  import { favorite, layout } from "../../../_prefs";
+  favorite.useLocalStorage({});
+  layout.useLocalStorage(0);
 
-export let posts = [];
-export let res;
-export let after;
-export let slugstr;
+  export let posts = [];
+  export let res;
+  export let after;
+  export let slugstr;
 
-// Load `favorite` from localstorage
-for (let p of posts) {
-  p["favorite"] = !!$favorite[p.url];
-}
+  // Load `favorite` from localstorage
+  for (let p of posts) {
+    p["favorite"] = !!$favorite[p.url];
+  }
 </script>
 
 <template lang="pug">

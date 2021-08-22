@@ -1,729 +1,901 @@
 <script>
-import Icon from "fa-svelte";
-import { faVolumeUp as faSoundOn } from "@fortawesome/free-solid-svg-icons/faVolumeUp";
-import { faVolumeMute as faSoundOff } from "@fortawesome/free-solid-svg-icons/faVolumeMute";
-import { faPlay } from "@fortawesome/free-solid-svg-icons/faPlay";
-import { faPause } from "@fortawesome/free-solid-svg-icons/faPause";
-import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
-import { faHome } from "@fortawesome/free-solid-svg-icons/faHome";
-import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
-import { faPhotoVideo as faImageVideo} from "@fortawesome/free-solid-svg-icons/faPhotoVideo";
-import { faImage } from "@fortawesome/free-solid-svg-icons/faImage";
-import { faVideo } from "@fortawesome/free-solid-svg-icons/faVideo";
-import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
-import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
-import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
-import { faSync } from "@fortawesome/free-solid-svg-icons/faSync";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons/faSpinner";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons/faPlusCircle";
-import { faMinusCircle } from "@fortawesome/free-solid-svg-icons/faMinusCircle";
-import { faEye as faShow } from "@fortawesome/free-solid-svg-icons/faEye";
-import { faEyeSlash as faHide } from "@fortawesome/free-solid-svg-icons/faEyeSlash";
-import { faTh as faColumns } from "@fortawesome/free-solid-svg-icons/faTh";
-import { faSquareFull as faFullscreen } from "@fortawesome/free-solid-svg-icons/faSquareFull";
+  import Icon from "fa-svelte";
+  import { faVolumeUp as faSoundOn } from "@fortawesome/free-solid-svg-icons/faVolumeUp";
+  import { faVolumeMute as faSoundOff } from "@fortawesome/free-solid-svg-icons/faVolumeMute";
+  import { faPlay } from "@fortawesome/free-solid-svg-icons/faPlay";
+  import { faPause } from "@fortawesome/free-solid-svg-icons/faPause";
+  import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
+  import { faHome } from "@fortawesome/free-solid-svg-icons/faHome";
+  import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
+  import { faPhotoVideo as faImageVideo } from "@fortawesome/free-solid-svg-icons/faPhotoVideo";
+  import { faImage } from "@fortawesome/free-solid-svg-icons/faImage";
+  import { faVideo } from "@fortawesome/free-solid-svg-icons/faVideo";
+  import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
+  import { faStar as faUnFav } from "@fortawesome/free-regular-svg-icons/faStar";
+  import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
+  import { faSync } from "@fortawesome/free-solid-svg-icons/faSync";
+  import { faSpinner } from "@fortawesome/free-solid-svg-icons/faSpinner";
+  import { faPlusCircle } from "@fortawesome/free-solid-svg-icons/faPlusCircle";
+  import { faMinusCircle } from "@fortawesome/free-solid-svg-icons/faMinusCircle";
+  import { faEye as faShow } from "@fortawesome/free-solid-svg-icons/faEye";
+  import { faEyeSlash as faHide } from "@fortawesome/free-solid-svg-icons/faEyeSlash";
+  import { faTh as faColumns } from "@fortawesome/free-solid-svg-icons/faTh";
+  import { faSquareFull as faFullscreen } from "@fortawesome/free-solid-svg-icons/faSquareFull";
 
-import { faMobileAlt as faPortrait } from "@fortawesome/free-solid-svg-icons/faMobileAlt";
-import { faDesktop as faLandscape } from "@fortawesome/free-solid-svg-icons/faDesktop";
+  import { faMobileAlt as faPortrait } from "@fortawesome/free-solid-svg-icons/faMobileAlt";
+  import { faDesktop as faLandscape } from "@fortawesome/free-solid-svg-icons/faDesktop";
 
-import Settings from './Settings.svelte'
+  import Settings from "./Settings.svelte";
 
-import { onMount, tick } from "svelte";
-import { goto as ahref } from "@sapper/app";
+  import { onMount, tick } from "svelte";
+  import { goto as ahref } from "@sapper/app";
 
-import { get_posts, queryp } from "../_utils";
+  import { get_posts, queryp } from "../_utils";
 
-import { writable, throttle, startWith } from 'svelte-pipeable-store';
+  import { writable, throttle, startWith } from "svelte-pipeable-store";
 
-import { autoplay, autoplayinterval, imageVideo, portraitLandscape, favorite, over18, multireddit, prefetch, hires, oldreddit, muted, layout } from "../_prefs";
-autoplay.useLocalStorage(true);
-autoplayinterval.useLocalStorage(3);
-imageVideo.useLocalStorage(0);
-portraitLandscape.useLocalStorage(0);
-favorite.useLocalStorage({});
-over18.useLocalStorage(1);
-multireddit.useLocalStorage({});
-prefetch.useLocalStorage(true);
-hires.useLocalStorage(false);
-oldreddit.useLocalStorage(false);
-muted.useLocalStorage(true);
-layout.useLocalStorage(0);
+  import {
+    autoplay,
+    autoplayinterval,
+    imageVideo,
+    portraitLandscape,
+    favorite,
+    over18,
+    multireddit,
+    prefetch,
+    hires,
+    oldreddit,
+    muted,
+    layout
+  } from "../_prefs";
+  autoplay.useLocalStorage(true);
+  autoplayinterval.useLocalStorage(3);
+  imageVideo.useLocalStorage(0);
+  portraitLandscape.useLocalStorage(0);
+  favorite.useLocalStorage({});
+  over18.useLocalStorage(1);
+  multireddit.useLocalStorage({});
+  prefetch.useLocalStorage(true);
+  hires.useLocalStorage(false);
+  oldreddit.useLocalStorage(false);
+  muted.useLocalStorage(true);
+  layout.useLocalStorage(0);
 
-export let params, slugstr;
-export let posts;
-export let after;
-export let res;
+  export let params, slugstr;
+  export let posts;
+  export let after;
+  export let res;
 
-let data;
-let displayposts = [];
-let uiVisible = true;
-let numFavorite;
-let tinygoto;
-let title
-let albumindex = 0
+  let data;
+  let displayposts = [];
+  let uiVisible = true;
+  let numFavorite;
+  let tinygoto;
+  let title;
+  let albumindex = 0;
 
-  $ : {
+  $: {
     if (currpost.is_album) {
-      title = `(${albumindex + 1}/${currpost.preview.img.album.length}) ${currpost.title}`
+      title = `(${albumindex + 1}/${currpost.preview.img.album.length}) ${
+        currpost.title
+      }`;
+    } else {
+      title = currpost.title;
     }
-    else {
-      title = currpost.title
+  }
+
+  let subreddit;
+
+  $: subreddit = slugstr ? slugstr.split("/")[1] : "";
+
+  let ismultireddit;
+
+  $: {
+    // This tends to run on the server, where there is no localstorage
+    if ($multireddit) {
+      ismultireddit = $multireddit[currpost.subreddit];
+      multiredditstr = ismultireddit
+        ? "Remove from multi (m)"
+        : "Add to multi (m)";
+    }
+  }
+
+  $: {
+    if ($gotoElWidth > 1000) {
+      // padding on both sides
+      let numGotoControlsInOneRow = ($gotoElWidth - 154 * 2) / 32;
+      let numGotoControlsRows =
+        (displayposts.length + 5) / numGotoControlsInOneRow;
+      tinygoto = numGotoControlsRows > 3;
+    } else if ($gotoElWidth > 800) {
+      // padding on right side
+      let numGotoControlsInOneRow = ($gotoElWidth - (154 + 14)) / 32;
+      let numGotoControlsRows =
+        (displayposts.length + 5) / numGotoControlsInOneRow;
+      tinygoto = numGotoControlsRows > 3;
+    } else {
+      // no padding
+      let numGotoControlsInOneRow = ($gotoElWidth - (14 + 14)) / 32;
+      let numGotoControlsRows =
+        (displayposts.length + 5) / numGotoControlsInOneRow;
+      tinygoto = numGotoControlsRows > 3;
+    }
+  }
+
+  // 1440 is to set numCols to 3. Setting to `0` would mean we start with 1 col, and then quickly update to 3 on desktop.
+  const _gotoElWidth = writable(1440);
+  const gotoElWidth = _gotoElWidth.pipe(throttle(500), startWith(1440));
+
+  $: loadError = res && !res.res.ok;
+  let loading = false;
+  let reloadstr = "Load more";
+  let navigation = false;
+
+  let imageVideoStr = "";
+  let portraitLandscapeStr = "";
+  let downloadstr = "";
+  let autoplaystr = "";
+  let over18str = "";
+  let deepsearchstr = "";
+  let multiredditstr = "";
+  let showhidestr = "Hide (h)";
+  let mutedstr = "Sound Off";
+  let layoutstr = "Fullscreen";
+
+  let autoplaytimer;
+
+  let filterRef;
+  let filterExpanded = false;
+  let filterValue = "";
+
+  let showSettings = false;
+
+  let currpost = { title: "Loading .." };
+  let nexturls = [];
+
+  let index = 0;
+
+  async function loadMore() {
+    if (!after) return;
+
+    loading = true;
+    reloadstr = "Loading ..";
+
+    let newposts;
+
+    ({
+      posts: newposts,
+      after,
+      ...res
+    } = await get_posts(
+      `https://reddit.com/${slugstr}.json?after=${after}&${queryp(params)}`
+    ));
+
+    // load `favorite` from localstorage
+    for (let p of newposts) {
+      p["favorite"] = !!$favorite[p.url];
     }
 
+    // Combine `posts` and `newposts` and remove duplicates from multiple network requests
+    posts = [...posts, ...newposts].reduce(
+      (r, i) => (!r.some((j) => i.id === j.id) ? [...r, i] : r),
+      []
+    );
+
+    console.log("Total loaded: ", posts.length);
+
+    loading = false;
+    reloadstr = "Load more";
   }
 
-let subreddit
-
-$ : subreddit = slugstr ? slugstr.split('/')[1] : ""
-
-let ismultireddit
-
-$ : {
-  // This tends to run on the server, where there is no localstorage
-  if ($multireddit) {
-  ismultireddit = $multireddit[currpost.subreddit]
-  multiredditstr = ismultireddit ? "Remove from multi (m)" : "Add to multi (m)"
-  }
-
-  }
-
-$: {
-  if ($gotoElWidth > 1000) {
-    // padding on both sides
-    let numGotoControlsInOneRow = ($gotoElWidth - 154 * 2) / 32;
-    let numGotoControlsRows =
-      (displayposts.length + 5) / numGotoControlsInOneRow;
-    tinygoto = numGotoControlsRows > 3;
-  } else if ($gotoElWidth > 800) {
-    // padding on right side
-    let numGotoControlsInOneRow = ($gotoElWidth - (154 + 14)) / 32;
-    let numGotoControlsRows =
-      (displayposts.length + 5) / numGotoControlsInOneRow;
-    tinygoto = numGotoControlsRows > 3;
-  } else {
-    // no padding
-    let numGotoControlsInOneRow = ($gotoElWidth - (14 + 14)) / 32;
-    let numGotoControlsRows =
-      (displayposts.length + 5) / numGotoControlsInOneRow;
-    tinygoto = numGotoControlsRows > 3;
-  }
-}
-
-// 1440 is to set numCols to 3. Setting to `0` would mean we start with 1 col, and then quickly update to 3 on desktop.
-const _gotoElWidth = writable(1440)
-const gotoElWidth = _gotoElWidth.pipe(throttle(500), startWith(1440))
-
-$: loadError = res && !res.res.ok;
-let loading = false;
-let reloadstr = "Load more";
-let navigation = false;
-
-let imageVideoStr = "";
-let portraitLandscapeStr = "";
-let downloadstr = "";
-let autoplaystr = "";
-let over18str = "";
-let deepsearchstr = "";
-let multiredditstr = "";
-let showhidestr = "Hide (h)";
-let mutedstr = "Sound Off"
-let layoutstr = "Fullscreen"
-
-let autoplaytimer;
-
-let filterRef;
-let filterExpanded = false;
-let filterValue = "";
-
-let showSettings = false;
-
-let currpost = { title: "Loading .." };
-let nexturls = [];
-
-let index = 0;
-
-async function loadMore() {
-  if (!after) return;
-
-  loading = true;
-  reloadstr = "Loading ..";
-
-  let newposts;
-
-  ({ posts: newposts, after, ...res } = await get_posts(
-    `https://reddit.com/${slugstr}.json?after=${after}&${queryp(params)}`
-  ));
-
-  // load `favorite` from localstorage
-  for (let p of newposts) {
-    p["favorite"] = !!$favorite[p.url];
-  }
-
-  // Combine `posts` and `newposts` and remove duplicates from multiple network requests
-  posts = [...posts, ...newposts].reduce(
-    (r, i) => (!r.some(j => i.id === j.id) ? [...r, i] : r),
-    []
-  );
-
-  console.log("Total loaded: ", posts.length)
-
-  loading = false;
-  reloadstr = "Load more";
-}
-
-onMount(async () => {
-  // Start autoplay by default
-  if ($autoplay) {
-    startAutoPlay();
-  }
-});
-
-function startAutoPlay() {
-  //console.log('START')
-  autoplaytimer = setInterval(() => {
-    // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
-    if ($autoplay && currpost.is_image) {
-      //console.log('---- iNEXT')
-      next();
-    } else if (!$autoplay && currpost.is_video) {
-      //console.log('---- vNEXT')
-      next();
+  onMount(async () => {
+    // Start autoplay by default
+    if ($autoplay) {
+      startAutoPlay();
     }
-  }, $autoplayinterval * 1000);
+  });
 
-  autoplay.set(true);
-}
+  function startAutoPlay() {
+    //console.log('START')
+    autoplaytimer = setInterval(() => {
+      // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
+      if ($autoplay && currpost.is_image) {
+        //console.log('---- iNEXT')
+        next();
+      } else if (!$autoplay && currpost.is_video) {
+        //console.log('---- vNEXT')
+        next();
+      }
+    }, $autoplayinterval * 1000);
 
-function stopAutoPlay() {
-  //console.log('STOP')
-  clearInterval(autoplaytimer);
-  autoplay.set(false);
-}
+    autoplay.set(true);
+  }
 
-function stopAndStartAutoPlay() {
-  stopAutoPlay();
+  function stopAutoPlay() {
+    //console.log('STOP')
+    clearInterval(autoplaytimer);
+    autoplay.set(false);
+  }
 
-  startAutoPlay();
-}
-
-function toggleAutoPlay() {
-  if ($autoplay) {
+  function stopAndStartAutoPlay() {
     stopAutoPlay();
-  } else {
+
     startAutoPlay();
   }
-}
 
-function toggleImageVideo() {
-
-  $imageVideo = $imageVideo + 1
-
-  if ($imageVideo == 3) {
-    $imageVideo = 0
-  }
-}
-
-function toggleMuted() {
-
-  $muted = !$muted
-
-}
-
-function toggleLayout() {
-  $layout = $layout + 1
-
-  if ($layout == 2 ) {
-    $layout = 0
-  }
-}
-
-function togglePortraitLandscape() {
-  $portraitLandscape = $portraitLandscape + 1
-
-  if ($portraitLandscape == 3) {
-    $portraitLandscape = 0
-  }
-}
-
-let renderVideo = true;
-
-// Some operations like fav/unfav causes video to re-render
-// since we're changing post.favorite. This should help skip it
-let skipRenderVideo = false;
-
-$: {
-  if (!skipRenderVideo) reMountVideo(currpost.preview);
-  skipRenderVideo = false;
-}
-
-function reMountVideo() {
-  renderVideo = false;
-  setTimeout(() => (renderVideo = true), 0);
-}
-
-$: {
-  numFavorite = displayposts.filter(item => item.favorite == true).length;
-
-  if (!numFavorite) {
-    downloadstr = `Nothing to download`;
-  } else if (numFavorite == 1) {
-    downloadstr = `Download ${numFavorite} file`;
-  } else {
-    downloadstr = `Download ${numFavorite} files`;
-  }
-  autoplaystr = `Autoplay is ${$autoplay ? "on" : "off"}`;
-  deepsearchstr = `Search for ${filterValue}`;
-
-  mutedstr = `Sound ${$muted ? "off": "on"}`
-
-  if ($layout == 0) {
-    layoutstr = "Fullscreen mode"
-  }
-  else {
-    layoutstr = "Columns mode"
-
+  function toggleAutoPlay() {
+    if ($autoplay) {
+      stopAutoPlay();
+    } else {
+      startAutoPlay();
+    }
   }
 
-  if ($over18 == 0) {
-    over18str = "nsfw off"
-  } else if ($over18 == 1) {
-    over18str = "nsfw on"
-  } else if ($over18 == 2) {
-    over18str = "nsfw only"
+  function toggleImageVideo() {
+    $imageVideo = $imageVideo + 1;
+
+    if ($imageVideo == 3) {
+      $imageVideo = 0;
+    }
   }
 
-  if ($imageVideo == 0) {
-    imageVideoStr = "Show both image and video"
-  }
-  else if ($imageVideo == 1) {
-    imageVideoStr = "Show videos only"
-  }
-  else if ($imageVideo == 2) {
-    imageVideoStr = "Show images only"
+  function toggleMuted() {
+    $muted = !$muted;
   }
 
-  if ($portraitLandscape == 0) {
-    portraitLandscapeStr = "Show all media"
-  }
-  else if ($portraitLandscape == 1) {
-    portraitLandscapeStr = "Show only portrait media"
-  }
-  else if ($portraitLandscape == 2) {
-    portraitLandscapeStr = "Show only landscape media"
+  function toggleLayout() {
+    $layout = $layout + 1;
+
+    if ($layout == 2) {
+      $layout = 0;
+    }
   }
 
-}
+  function togglePortraitLandscape() {
+    $portraitLandscape = $portraitLandscape + 1;
 
-$: {
-  if (displayposts[index]) {
-    currpost = JSON.parse(JSON.stringify(displayposts[index]));
+    if ($portraitLandscape == 3) {
+      $portraitLandscape = 0;
+    }
+  }
 
-    nexturls = displayposts.slice(index + 1, index + 4);
-  } else if (filterValue) {
-    // We're here because user filtered the list
+  let renderVideo = true;
 
-    // Unfortunately the filtered list is smaller than the current index
-    // set index to last item
-    if (displayposts.length > 0) {
-      console.log("setting index from ", index, " to ", displayposts.length);
-      index = displayposts.length - 1;
-      console.log("loading more ..");
+  // Some operations like fav/unfav causes video to re-render
+  // since we're changing post.favorite. This should help skip it
+  let skipRenderVideo = false;
+
+  $: {
+    if (!skipRenderVideo) reMountVideo(currpost.preview);
+    skipRenderVideo = false;
+  }
+
+  function reMountVideo() {
+    renderVideo = false;
+    setTimeout(() => (renderVideo = true), 0);
+  }
+
+  $: {
+    numFavorite = displayposts.filter((item) => item.favorite == true).length;
+
+    if (!numFavorite) {
+      downloadstr = `Nothing to download`;
+    } else if (numFavorite == 1) {
+      downloadstr = `Download ${numFavorite} file`;
+    } else {
+      downloadstr = `Download ${numFavorite} files`;
+    }
+    autoplaystr = `Autoplay is ${$autoplay ? "on" : "off"}`;
+    deepsearchstr = `Search for ${filterValue}`;
+
+    mutedstr = `Sound ${$muted ? "off" : "on"}`;
+
+    if ($layout == 0) {
+      layoutstr = "Fullscreen mode";
+    } else {
+      layoutstr = "Columns mode";
+    }
+
+    if ($over18 == 0) {
+      over18str = "nsfw off";
+    } else if ($over18 == 1) {
+      over18str = "nsfw on";
+    } else if ($over18 == 2) {
+      over18str = "nsfw only";
+    }
+
+    if ($imageVideo == 0) {
+      imageVideoStr = "Show both image and video";
+    } else if ($imageVideo == 1) {
+      imageVideoStr = "Show videos only";
+    } else if ($imageVideo == 2) {
+      imageVideoStr = "Show images only";
+    }
+
+    if ($portraitLandscape == 0) {
+      portraitLandscapeStr = "Show all media";
+    } else if ($portraitLandscape == 1) {
+      portraitLandscapeStr = "Show only portrait media";
+    } else if ($portraitLandscape == 2) {
+      portraitLandscapeStr = "Show only landscape media";
+    }
+  }
+
+  $: {
+    if (displayposts[index]) {
+      currpost = JSON.parse(JSON.stringify(displayposts[index]));
+
+      nexturls = displayposts.slice(index + 1, index + 4);
+    } else if (filterValue) {
+      // We're here because user filtered the list
+
+      // Unfortunately the filtered list is smaller than the current index
+      // set index to last item
+      if (displayposts.length > 0) {
+        console.log("setting index from ", index, " to ", displayposts.length);
+        index = displayposts.length - 1;
+        console.log("loading more ..");
+        loadMore();
+      } else {
+        // nothing was filtered
+        index = 0;
+        currpost = {
+          title: "Nothing to show. Try changing filters or tweak/update URL."
+        };
+      }
+    } else {
+      if (res && res.res.ok) {
+        // No media found
+        currpost = {
+          title: "Nothing to show. Try changing filters or tweak/update URL."
+        };
+      } else if (res && !res.res.ok) {
+        // Invalid subreddit
+        currpost = { title: "Error" };
+      } else {
+        // Default
+        currpost = { title: "Loading .." };
+      }
+
+      nexturls = [];
+    }
+  }
+
+  $: {
+    let tmp = [];
+
+    if ($over18 == 0) {
+      tmp = posts.filter((item) => item.over18 == false);
+    } else if ($over18 == 1) {
+      tmp = posts;
+    } else if ($over18 == 2) {
+      tmp = posts.filter((item) => item.over18 == true);
+    }
+
+    if (filterValue) {
+      skipRenderVideo = true;
+      tmp = tmp.filter((item) =>
+        item.title.toLowerCase().includes(filterValue.toLowerCase())
+      );
+    }
+
+    // Filter only videos
+    if ($imageVideo == 1) {
+      tmp = tmp.filter((item) => item.is_video);
+    }
+    // Filter only images
+    else if ($imageVideo == 2) {
+      tmp = tmp.filter((item) => item.is_image);
+    }
+
+    if ($portraitLandscape == 1) {
+      tmp = tmp.filter((item) => item.dims.width / item.dims.height <= 1.2);
+    } else if ($portraitLandscape == 2) {
+      tmp = tmp.filter((item) => item.dims.width / item.dims.height > 1.2);
+    }
+
+    displayposts = tmp;
+  }
+
+  function goto(i) {
+    albumindex = 0;
+    index = i;
+
+    let itemNum = displayposts.length - index;
+
+    // If autoplay is on and we're jumping to 2 or 3, we must load
+    if ((itemNum == 2 || itemNum == 3) && $autoplay) {
+      console.log("[goto-to-2/3]: loading ..");
       loadMore();
-    } else {
-      // nothing was filtered
-      index = 0;
-      currpost = { title: "Nothing to show. Try changing filters or tweak/update URL." };
-    }
-  } else {
-    if (res && res.res.ok) {
-      // No media found
-      currpost = { title: "Nothing to show. Try changing filters or tweak/update URL." };
-    } else if (res && !res.res.ok) {
-      // Invalid subreddit
-      currpost = { title: "Error" };
-    } else {
-      // Default
-      currpost = { title: "Loading .." };
     }
 
-    nexturls = [];
-  }
-}
+    // Last item
+    if (itemNum === 1) {
+      console.log("[goto-to-lastitem]: loading ..");
+      loadMore();
+    }
 
-$: {
-  let tmp = [];
-
-  if ($over18 == 0) {
-    tmp = posts.filter(item => item.over18 == false);
-  }
-  else if ($over18 == 1) {
-    tmp = posts
-  }
-  else if ($over18 == 2) {
-    tmp = posts.filter(item => item.over18 == true);
+    if ($autoplay) stopAndStartAutoPlay();
   }
 
-  if (filterValue) {
-    skipRenderVideo = true;
-    tmp = tmp.filter(item =>
-      item.title.toLowerCase().includes(filterValue.toLowerCase())
+  function videoended() {
+    next();
+  }
+
+  function next() {
+    albumindex = 0;
+    let itemNum = displayposts.length - 1 - index;
+
+    // Last item, dont go past the last item
+    if (itemNum <= 1) {
+      index = displayposts.length - 1;
+
+      console.log("[lastitem, autoplay+filter?]: loading more ..");
+      // Reached last item, possibly by autoplay + filter
+      loadMore();
+
+      return;
+    }
+
+    // Auto trigger on the last 4th item
+    if (itemNum === 4 || itemNum === 3) {
+      console.log("[4th last item, normal]: loading more ..");
+      loadMore();
+    }
+
+    // If we're at 3rd/2nd last item with a filter, the user
+    // possibly just filtered the list and ended up here.
+    // trigger a load more. We dont want to do it always since
+    // we normally trigger loadmore @3rd last item. Always doing it
+    // Would end up with 2 requests to reddit.com
+    if (itemNum === 2 && filterValue) {
+      console.log("[2nd last item, filtering?]: loading more ..");
+      loadMore();
+    }
+
+    index += 1;
+
+    if ($autoplay) stopAndStartAutoPlay();
+  }
+
+  function prev() {
+    albumindex = 0;
+
+    if (index === 0) return;
+    index -= 1;
+
+    if (displayposts.length - index === 3) {
+      loadMore();
+    }
+    if ($autoplay) stopAndStartAutoPlay();
+  }
+
+  function toggleUIVisiblity() {
+    uiVisible = !uiVisible;
+
+    showhidestr = uiVisible ? "Hide (h)" : "Show (h)";
+  }
+
+  function toggleSettings() {
+    showSettings = !showSettings;
+  }
+
+  function gotoDeepSearch() {
+    let prefix = "";
+    if (slugstr) {
+      prefix = `/r/${subreddit}`;
+    } else {
+      prefix = ``;
+    }
+
+    navigation = true;
+    ahref(
+      `${prefix}/search?q=${filterValue}&restrict_sr=on&include_over_18=on&sort=relevant&t=all`
     );
   }
 
-  // Filter only videos
-  if ($imageVideo == 1) {
-    tmp = tmp.filter(item => item.is_video);
-  }
-  // Filter only images
-  else if ($imageVideo == 2) {
-    tmp = tmp.filter(item => item.is_image);
+  function hideSettings() {
+    showSettings = false;
   }
 
-  if ($portraitLandscape == 1) {
-    tmp = tmp.filter(item => (item.dims.width / item.dims.height) <= 1.2)
-  }
-  else if ($portraitLandscape == 2) {
-    tmp = tmp.filter(item => (item.dims.width / item.dims.height) > 1.2)
-  }
+  async function expandFilter() {
+    filterExpanded = true;
 
-  displayposts = tmp;
-}
-
-function goto(i) {
-  albumindex = 0
-  index = i;
-
-  let itemNum = displayposts.length - index;
-
-  // If autoplay is on and we're jumping to 2 or 3, we must load
-  if ((itemNum == 2 || itemNum == 3) && $autoplay) {
-    console.log("[goto-to-2/3]: loading ..");
-    loadMore();
+    await tick();
+    // Focus the input if we just opened it
+    if (filterExpanded) filterRef.querySelector("input").focus();
   }
 
-  // Last item
-  if (itemNum === 1) {
-    console.log("[goto-to-lastitem]: loading ..");
-    loadMore();
+  async function toggleFilter() {
+    filterExpanded = !filterExpanded;
+
+    await tick();
+    // Focus the input if we just opened it
+    if (filterExpanded) filterRef.querySelector("input").focus();
   }
 
-  if ($autoplay) stopAndStartAutoPlay();
-}
-
-function videoended() {
-  next();
-}
-
-function next() {
-  albumindex = 0
-  let itemNum = displayposts.length - 1 - index;
-
-  // Last item, dont go past the last item
-  if (itemNum <= 1) {
-    index = displayposts.length - 1;
-
-    console.log("[lastitem, autoplay+filter?]: loading more ..");
-    // Reached last item, possibly by autoplay + filter
-    loadMore();
-
-    return;
+  async function downloadFiles() {
+    window.open("/download", "_blank");
   }
 
-  // Auto trigger on the last 4th item
-  if (itemNum === 4 || itemNum === 3) {
-    console.log("[4th last item, normal]: loading more ..");
-    loadMore();
+  function openMedia() {
+    window.open(currpost.url, "_blank");
   }
 
-  // If we're at 3rd/2nd last item with a filter, the user
-  // possibly just filtered the list and ended up here.
-  // trigger a load more. We dont want to do it always since
-  // we normally trigger loadmore @3rd last item. Always doing it
-  // Would end up with 2 requests to reddit.com
-  if (itemNum === 2 && filterValue) {
-    console.log("[2nd last item, filtering?]: loading more ..");
-    loadMore();
+  function toggleMultireddit() {
+    if ($multireddit.hasOwnProperty(currpost.subreddit)) {
+      $multireddit[currpost.subreddit] = undefined;
+      $multireddit = JSON.parse(JSON.stringify($multireddit));
+    } else {
+      $multireddit[currpost.subreddit] = {
+        preview: currpost.preview.img.default
+      };
+    }
+    multireddit.set($multireddit);
   }
 
-  index += 1;
-
-  if ($autoplay) stopAndStartAutoPlay();
-}
-
-function prev() {
-  albumindex = 0
-
-  if (index === 0) return;
-  index -= 1;
-
-  if (displayposts.length - index === 3) {
-    loadMore();
-  }
-  if ($autoplay) stopAndStartAutoPlay();
-}
-
-function toggleUIVisiblity() {
-  uiVisible = !uiVisible;
-
-  showhidestr = uiVisible ? "Hide (h)" : "Show (h)"
-}
-
-function toggleSettings() {
-  showSettings = !showSettings;
-}
-
-function gotoDeepSearch() {
-
-  let prefix = "";
-  if (slugstr) {
-    prefix = `/r/${subreddit}`;
-  } else {
-    prefix = ``;
-  }
-
-  navigation = true;
-  ahref(
-    `${prefix}/search?q=${filterValue}&restrict_sr=on&include_over_18=on&sort=relevant&t=all`
-  );
-}
-
-function hideSettings() {
-  showSettings = false;
-}
-
-async function expandFilter() {
-  filterExpanded = true;
-
-  await tick();
-  // Focus the input if we just opened it
-  if (filterExpanded) filterRef.querySelector("input").focus();
-}
-
-async function toggleFilter() {
-  filterExpanded = !filterExpanded;
-
-  await tick();
-  // Focus the input if we just opened it
-  if (filterExpanded) filterRef.querySelector("input").focus();
-}
-
-async function downloadFiles() {
-  window.open("/download", "_blank");
-}
-
-function openMedia() {
-  window.open(currpost.url, "_blank");
-}
-
-function toggleMultireddit() {
-
-  if ($multireddit.hasOwnProperty(currpost.subreddit)) {
-
-    $multireddit[currpost.subreddit] = undefined;
-    $multireddit = JSON.parse(JSON.stringify($multireddit));
-
-
-  }
-  else {
-    $multireddit[currpost.subreddit] = {
-      preview: currpost.preview.img.default
+  function openSubReddit() {
+    if (slugstr != currpost.subredditp) {
+      ahref(`/r/${currpost.subreddit}`);
     }
   }
-    multireddit.set($multireddit)
-}
 
-function openSubReddit() {
-  if (slugstr != currpost.subredditp) {
-    ahref(`/r/${currpost.subreddit}`);
-  }
-}
-
-function openUser() {
+  function openUser() {
     ahref(`/u/${currpost.author}`);
-}
-
-function openComments() {
-  window.open(`https://reddit.com/${currpost.permalink}`, "_blank");
-}
-
-function openCommentsOld() {
-  window.open(`https://old.reddit.com/${currpost.permalink}`, "_blank");
-}
-
-function openDuplicates() {
-  window.open(`https://old.reddit.com/${currpost.subredditp}/duplicates/${currpost.id}`, "_blank");
-}
-
-
-function toggleOver18() {
-  $over18 = $over18 + 1
-
-  if ($over18 == 3) {
-    $over18 = 0
   }
-  over18.set($over18);
-}
 
-function removeAllFavorite(removeAllFromLocalStorage) {
-  skipRenderVideo = true;
+  function openComments() {
+    window.open(`https://reddit.com/${currpost.permalink}`, "_blank");
+  }
 
-  for (const [i, post] of displayposts.entries()) {
-    // For reactivity
-    displayposts[i].favorite = false;
+  function openCommentsOld() {
+    window.open(`https://old.reddit.com/${currpost.permalink}`, "_blank");
+  }
 
-    // If removeAllFromLocalStorage is true, then we'll remove everythign in one shot
-    // no need to do it one by one
-    if (removeAllFromLocalStorage == false) {
-      // Localstorage
-      $favorite[post.url] = undefined;
+  function openDuplicates() {
+    window.open(
+      `https://old.reddit.com/${currpost.subredditp}/duplicates/${currpost.id}`,
+      "_blank"
+    );
+  }
+
+  function toggleOver18() {
+    $over18 = $over18 + 1;
+
+    if ($over18 == 3) {
+      $over18 = 0;
+    }
+    over18.set($over18);
+  }
+
+  function removeAllFavorite(removeAllFromLocalStorage) {
+    skipRenderVideo = true;
+
+    for (const [i, post] of displayposts.entries()) {
+      // For reactivity
+      displayposts[i].favorite = false;
+
+      // If removeAllFromLocalStorage is true, then we'll remove everythign in one shot
+      // no need to do it one by one
+      if (removeAllFromLocalStorage == false) {
+        // Localstorage
+        $favorite[post.url] = undefined;
+        $favorite = JSON.parse(JSON.stringify($favorite));
+
+        favorite.set($favorite);
+      }
+    }
+
+    if (removeAllFromLocalStorage) {
+      favorite.set({});
+    }
+  }
+  function toggleFavorite() {
+    skipRenderVideo = true;
+    displayposts[index].favorite = !displayposts[index].favorite;
+
+    let url = displayposts[index].url;
+    if (displayposts[index].favorite) {
+      // Set into localStorage
+      $favorite[url] = displayposts[index];
+      favorite.set($favorite);
+    } else {
+      // setting a value in js which after JSON.parse(JSON.stringify(d)) removes it
+
+      $favorite[url] = undefined;
       $favorite = JSON.parse(JSON.stringify($favorite));
 
       favorite.set($favorite);
     }
   }
 
-  if (removeAllFromLocalStorage) {
-    favorite.set({});
-  }
-}
-function toggleFavorite() {
-  skipRenderVideo = true;
-  displayposts[index].favorite = !displayposts[index].favorite;
+  function albumPrev() {
+    if (!currpost.is_album) return;
 
-  let url = displayposts[index].url;
-  if (displayposts[index].favorite) {
-    // Set into localStorage
-    $favorite[url] = displayposts[index];
-    favorite.set($favorite);
-  } else {
-    // setting a value in js which after JSON.parse(JSON.stringify(d)) removes it
-
-    $favorite[url] = undefined;
-    $favorite = JSON.parse(JSON.stringify($favorite));
-
-    favorite.set($favorite);
-  }
-}
-
-function albumPrev() {
-  if (!currpost.is_album) return
-
-  if (albumindex == 0) {
-    albumindex = currpost.preview.img.album.length - 1
-  }
-  else {
-    albumindex -= 1
-  }
-  if ($autoplay) stopAndStartAutoPlay();
-
-}
-
-function albumNext() {
-  if (!currpost.is_album) return
-
-  if (albumindex == (currpost.preview.img.album.length -1)) {
-    albumindex = 0
-  }
-  else {
-    albumindex += 1
-  }
-
-  if ($autoplay) stopAndStartAutoPlay();
-
-}
-
-function keydown(event) {
-
-  // up
-  if (event.keyCode == 38) {
-    albumPrev()
-  }
-
-  // down
-  if (event.keyCode == 40) {
-    albumNext()
-  }
-
-  // m
-  if (event.keyCode == 77) {
-    toggleMultireddit()
-  }
-
-  // s
-  if (event.keyCode == 83) {
-    toggleMuted()
-  }
-
-  // q, p
-  if (event.keyCode == 81 || event.keyCode == 80) {
-    toggleAutoPlay();
-  }
-
-  // slash, f
-  if (event.keyCode == 191 || event.keyCode == 70) {
-    expandFilter();
-    // We need this, otherwise filter box will have '/' because of autofocus
-    event.preventDefault();
-  }
-
-  // x
-  if (event.keyCode == 88) {
-    if (event.shiftKey) {
-      removeAllFavorite(event.ctrlKey); // if ctrl+shift+x is remove everything from localstorage
+    if (albumindex == 0) {
+      albumindex = currpost.preview.img.album.length - 1;
     } else {
-      toggleFavorite();
+      albumindex -= 1;
     }
+    if ($autoplay) stopAndStartAutoPlay();
   }
 
-  if (event.ctrlKey) {
-    return;
+  function albumNext() {
+    if (!currpost.is_album) return;
+
+    if (albumindex == currpost.preview.img.album.length - 1) {
+      albumindex = 0;
+    } else {
+      albumindex += 1;
+    }
+
+    if ($autoplay) stopAndStartAutoPlay();
   }
 
-  // r
-  if (event.keyCode == 82) {
-    if ($oldreddit) {
+  function keydown(event) {
+    // up
+    if (event.keyCode == 38) {
+      albumPrev();
+    }
+
+    // down
+    if (event.keyCode == 40) {
+      albumNext();
+    }
+
+    // m
+    if (event.keyCode == 77) {
+      toggleMultireddit();
+    }
+
+    // s
+    if (event.keyCode == 83) {
+      toggleMuted();
+    }
+
+    // q, p
+    if (event.keyCode == 81 || event.keyCode == 80) {
+      toggleAutoPlay();
+    }
+
+    // slash, f
+    if (event.keyCode == 191 || event.keyCode == 70) {
+      expandFilter();
+      // We need this, otherwise filter box will have '/' because of autofocus
+      event.preventDefault();
+    }
+
+    // x
+    if (event.keyCode == 88) {
+      if (event.shiftKey) {
+        removeAllFavorite(event.ctrlKey); // if ctrl+shift+x is remove everything from localstorage
+      } else {
+        toggleFavorite();
+      }
+    }
+
+    if (event.ctrlKey) {
+      return;
+    }
+
+    // r
+    if (event.keyCode == 82) {
+      if ($oldreddit) {
+        openCommentsOld();
+      } else {
+        openComments();
+      }
+    }
+
+    // o
+    if (event.keyCode == 79) {
       openCommentsOld();
     }
-    else {
-      openComments();
+
+    // i
+    if (event.keyCode == 73) {
+      openMedia();
+    }
+
+    // l
+    if (event.keyCode == 76) {
+      openDuplicates();
+    }
+
+    // h
+    if (event.keyCode == 72) {
+      toggleUIVisiblity();
+    }
+
+    // Left Arrow, a, k, Page-up
+    if (
+      event.keyCode == 37 ||
+      event.keyCode == 65 ||
+      event.keyCode == 75 ||
+      event.keyCode == 33
+    ) {
+      prev();
+    }
+    // Right Arrow, d, j, Space, Page-down
+    else if (
+      event.keyCode == 39 ||
+      event.keyCode == 68 ||
+      event.keyCode == 74 ||
+      event.keyCode == 32 ||
+      event.keyCode == 34
+    ) {
+      next();
     }
   }
-
-  // o
-  if (event.keyCode == 79) {
-    openCommentsOld();
-  }
-
-  // i
-  if (event.keyCode == 73) {
-    openMedia();
-  }
-
-  // l
-  if (event.keyCode == 76) {
-    openDuplicates();
-  }
-
-  // h
-  if (event.keyCode == 72) {
-    toggleUIVisiblity();
-  }
-
-  // Left Arrow, a, k, Page-up
-  if (event.keyCode == 37 || event.keyCode == 65 || event.keyCode == 75 || event.keyCode == 33) {
-    prev();
-  }
-  // Right Arrow, d, j, Space, Page-down
-  else if (
-    event.keyCode == 39 ||
-    event.keyCode == 68 ||
-    event.keyCode == 74 ||
-    event.keyCode == 32 ||
-    event.keyCode == 34
-  ) {
-    next();
-  }
-}
 </script>
+
+<svelte:window on:keydown={keydown} />
+<svelte:head>
+  <title>redditpx - {slugstr ? `r/${subreddit}` : "reddit.com"}</title>
+</svelte:head>
+
+<template lang="pug">
+.wrapper
+  .hero
+    .control.prev(on:click="{prev}")
+    .title(class:hide="{uiVisible == false}", class:favorite="{currpost.favorite}")
+      +if('displayposts.length')
+        span.fav(on:click|stopPropagation|preventDefault="{toggleFavorite}")
+          Icon(icon="{currpost.favorite ? faFav : faUnFav}")
+      +if('currpost.dims')
+        | {title} ({currpost.dims.width}x{currpost.dims.height})
+        +else
+          | {title}
+      +if('currpost.subreddit')
+        .subreddit(class:ismulti='{ismultireddit}')
+          p.subredditp(on:click='{openSubReddit}') {currpost.subredditp}
+          p.user(on:click='{openUser}') {currpost.authorp}
+          .subredditwrapper.tooltip.bottom(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
+            Icon(icon="{ismultireddit ? faMinusCircle : faPlusCircle}")
+    .settings
+      a.home(rel="prefetch", href="/home", class:hide='{uiVisible == false}')
+        span.btn.tooltip.bottom(data-tooltip="Home")
+          Icon(icon="{faHome}")
+      span.btn.cog(on:click='{toggleSettings}', class:showSettings='{showSettings}', class:hide='{uiVisible == false}')
+        Icon(icon="{faSettings}")
+      span.btn.tooltip.bottom.showhide(data-tooltip="{showhidestr}", on:click="{toggleUIVisiblity}")
+        Icon(icon="{uiVisible ? faHide : faShow }")
+      .div(class:hide='{uiVisible == false}')
+        Settings(bind:showSettings)
+    +if('currpost.is_image && !currpost.is_album')
+      +if('$hires')
+        .image(style="background-image: url('{currpost.url}')")
+        +else()
+          .image(style="background-image: url('{currpost.preview.img.default}')")
+      +elseif('currpost.is_video && renderVideo')
+        video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}")
+          +if('currpost.preview.vid.webm')
+            source(src="{currpost.preview.vid.webm}")
+          +if('currpost.preview.vid.mp4')
+            source(src="{currpost.preview.vid.mp4}")
+      +elseif('currpost.is_album')
+        +if('currpost.preview.img.album[albumindex].is_video')
+          video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}")
+            source(src="{currpost.preview.img.album[albumindex].hires}")
+          +else()
+            +if('$hires')
+              .image(style="background-image: url('{currpost.preview.img.album[albumindex].hires}')")
+              +else()
+                .image(style="background-image: url('{currpost.preview.img.album[albumindex].default}')")
+    .control.next(on:click="{next}")
+    .control.up(on:click="{albumNext}")
+    .control.down(on:click="{albumPrev}")
+    +if('displayposts.length || posts.length')
+      .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{$_gotoElWidth}')
+        .btnwrapper
+          span.btn.playpause.tooltip(
+            data-tooltip="{autoplaystr}",
+            class:play="{$autoplay}",
+            on:click="{toggleAutoPlay}"
+          )
+            Icon(icon="{$autoplay ? faPause : faPlay}")
+          span.btn.download.tooltip(
+            on:click="{downloadFiles}",
+            data-tooltip="{downloadstr}",
+            class:dlready="{numFavorite}"
+          )
+            Icon(icon="{faDownload}")
+          span.btn.portraitlandscape.tooltip(
+            on:click="{togglePortraitLandscape}",
+            data-tooltip="{portraitLandscapeStr}",
+            class:active="{$portraitLandscape}"
+          )
+            +if('$portraitLandscape == 0')
+              Icon(icon="{faLandscape}")
+              +elseif('$portraitLandscape == 1')
+                Icon(icon="{faPortrait}")
+              +elseif('$portraitLandscape == 2')
+                Icon(class="landscape", icon="{faPortrait}")
+          span.btn.layout.tooltip(
+            data-tooltip="{layoutstr}",
+            on:click="{toggleLayout}"
+          )
+            Icon(icon="{$layout == 0 ? faFullscreen : faColumns}")
+          span.btn.imagevideo.tooltip(
+            data-tooltip="{imageVideoStr}",
+            on:click="{toggleImageVideo}"
+          )
+            +if('$imageVideo == 0')
+              Icon(icon="{faImageVideo}")
+              +elseif('$imageVideo == 1')
+                Icon(icon="{faVideo}")
+              +elseif('$imageVideo == 2')
+                Icon(icon="{faImage}")
+          span.btn.muted.tooltip(
+            data-tooltip="{mutedstr}",
+            on:click="{toggleMuted}"
+          )
+            Icon(icon="{$muted ? faSoundOff : faSoundOn}")
+          +if('tinygoto')
+            span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
+              +if('loading')
+                Icon(icon="{faSpinner}")
+                +else()
+                  Icon(icon="{faSync}")
+          span.btn.over18wrapper.tooltip(
+            data-tooltip="{over18str}",
+            class:over18="{!$over18}",
+            on:click="{toggleOver18}"
+          )
+            p {over18str}
+          span.btn.filter.tooltip(
+            class:filterExpanded="{filterExpanded}",
+            on:click="{toggleFilter}",
+            data-tooltip="Filter ( / )",
+            bind:this='{filterRef}'
+            class:dlready="{numFavorite}"
+          )
+            +if('filterExpanded')
+              input(bind:value='{filterValue}', on:click|stopPropagation, on:keydown|stopPropagation, type="text")
+              +else
+                Icon(icon="{faSearch}")
+          +if('filterValue')
+            span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
+              p deep search 🡒
+        .numswrapper
+          +each('displayposts as post, i')
+            span.nums(
+              class:currnum="{index === i}",
+              class:album="{currpost.is_album}",
+              class:favorite="{displayposts[i].favorite}",
+           e  class:over18="{displayposts[i].over18}",
+              on:click="{function(){goto(i)}}"
+            )
+              img.small(alt="{displayposts[i].title}", src="{displayposts[i].thumbnail}")
+              p.small(class:curr="{index === i}", class:album="{currpost.is_album}") {i+1}
+          +if('!tinygoto')
+            span.displayinfo(class:filterExpanded="{filterValue}")
+              p {displayposts.length}/{posts.length}
+            span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
+              +if('loading')
+                Icon(icon="{faSpinner}")
+                +else()
+                  Icon(icon="{faSync}")
+  +if('$prefetch')
+    .prefetch
+      +each('nexturls as nexturl')
+        +if('$hires')
+          +if('nexturl.is_album')
+            img(alt="prefetch-hires", src="{nexturl.preview.img.album[0].hires}")
+            +else()
+              img(alt="prefetch-hires", src="{nexturl.url}")
+          +else()
+            +if('nexturl.is_album')
+              img(alt="prefetch", src="{nexturl.preview.img.album[0].default}")
+              +else()
+                img(alt="prefetch", src="{nexturl.preview.img.default}")
+        +if('nexturl.is_video')
+          video
+            +if('nexturl.preview.vid.webm')
+              source(src="{nexturl.preview.vid.webm}")
+            +if('nexturl.preview.vid.mp4')
+              source(src="{nexturl.preview.vid.mp4}")
+</template>
 
 <style lang="sass">
 @mixin hover()
@@ -1242,171 +1414,3 @@ $isnotmulti-color: #34a853
       opacity: 1
 
 </style>
-
-<svelte:window on:keydown={keydown} />
-<svelte:head>
-  <title>redditpx - {slugstr ? `r/${subreddit}` : 'reddit.com'}</title>
-</svelte:head>
-
-<template lang="pug">
-.wrapper
-  .hero
-    .control.prev(on:click="{prev}")
-    .title(class:hide="{uiVisible == false}", class:favorite="{currpost.favorite}")
-      +if('displayposts.length')
-        span.fav(on:click|stopPropagation|preventDefault="{toggleFavorite}")
-          Icon(icon="{currpost.favorite ? faFav : faUnFav}")
-      +if('currpost.dims')
-        | {title} ({currpost.dims.width}x{currpost.dims.height})
-        +else
-          | {title}
-      +if('currpost.subreddit')
-        .subreddit(class:ismulti='{ismultireddit}')
-          p.subredditp(on:click='{openSubReddit}') {currpost.subredditp}
-          p.user(on:click='{openUser}') {currpost.authorp}
-          .subredditwrapper.tooltip.bottom(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
-            Icon(icon="{ismultireddit ? faMinusCircle : faPlusCircle}")
-    .settings
-      a.home(rel="prefetch", href="/home", class:hide='{uiVisible == false}')
-        span.btn.tooltip.bottom(data-tooltip="Home")
-          Icon(icon="{faHome}")
-      span.btn.cog(on:click='{toggleSettings}', class:showSettings='{showSettings}', class:hide='{uiVisible == false}')
-        Icon(icon="{faSettings}")
-      span.btn.tooltip.bottom.showhide(data-tooltip="{showhidestr}", on:click="{toggleUIVisiblity}")
-        Icon(icon="{uiVisible ? faHide : faShow }")
-      .div(class:hide='{uiVisible == false}')
-        Settings(bind:showSettings)
-    +if('currpost.is_image && !currpost.is_album')
-      +if('$hires')
-        .image(style="background-image: url('{currpost.url}')")
-        +else()
-          .image(style="background-image: url('{currpost.preview.img.default}')")
-      +elseif('currpost.is_video && renderVideo')
-        video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}")
-          +if('currpost.preview.vid.webm')
-            source(src="{currpost.preview.vid.webm}")
-          +if('currpost.preview.vid.mp4')
-            source(src="{currpost.preview.vid.mp4}")
-      +elseif('currpost.is_album')
-        +if('currpost.preview.img.album[albumindex].is_video')
-          video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}")
-            source(src="{currpost.preview.img.album[albumindex].hires}")
-          +else()
-            +if('$hires')
-              .image(style="background-image: url('{currpost.preview.img.album[albumindex].hires}')")
-              +else()
-                .image(style="background-image: url('{currpost.preview.img.album[albumindex].default}')")
-    .control.next(on:click="{next}")
-    .control.up(on:click="{albumNext}")
-    .control.down(on:click="{albumPrev}")
-    +if('displayposts.length || posts.length')
-      .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{$_gotoElWidth}')
-        .btnwrapper
-          span.btn.playpause.tooltip(
-            data-tooltip="{autoplaystr}",
-            class:play="{$autoplay}",
-            on:click="{toggleAutoPlay}"
-          )
-            Icon(icon="{$autoplay ? faPause : faPlay}")
-          span.btn.download.tooltip(
-            on:click="{downloadFiles}",
-            data-tooltip="{downloadstr}",
-            class:dlready="{numFavorite}"
-          )
-            Icon(icon="{faDownload}")
-          span.btn.portraitlandscape.tooltip(
-            on:click="{togglePortraitLandscape}",
-            data-tooltip="{portraitLandscapeStr}",
-            class:active="{$portraitLandscape}"
-          )
-            +if('$portraitLandscape == 0')
-              Icon(icon="{faLandscape}")
-              +elseif('$portraitLandscape == 1')
-                Icon(icon="{faPortrait}")
-              +elseif('$portraitLandscape == 2')
-                Icon(class="landscape", icon="{faPortrait}")
-          span.btn.layout.tooltip(
-            data-tooltip="{layoutstr}",
-            on:click="{toggleLayout}"
-          )
-            Icon(icon="{$layout == 0 ? faFullscreen : faColumns}")
-          span.btn.imagevideo.tooltip(
-            data-tooltip="{imageVideoStr}",
-            on:click="{toggleImageVideo}"
-          )
-            +if('$imageVideo == 0')
-              Icon(icon="{faImageVideo}")
-              +elseif('$imageVideo == 1')
-                Icon(icon="{faVideo}")
-              +elseif('$imageVideo == 2')
-                Icon(icon="{faImage}")
-          span.btn.muted.tooltip(
-            data-tooltip="{mutedstr}",
-            on:click="{toggleMuted}"
-          )
-            Icon(icon="{$muted ? faSoundOff : faSoundOn}")
-          +if('tinygoto')
-            span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
-              +if('loading')
-                Icon(icon="{faSpinner}")
-                +else()
-                  Icon(icon="{faSync}")
-          span.btn.over18wrapper.tooltip(
-            data-tooltip="{over18str}",
-            class:over18="{!$over18}",
-            on:click="{toggleOver18}"
-          )
-            p {over18str}
-          span.btn.filter.tooltip(
-            class:filterExpanded="{filterExpanded}",
-            on:click="{toggleFilter}",
-            data-tooltip="Filter ( / )",
-            bind:this='{filterRef}'
-            class:dlready="{numFavorite}"
-          )
-            +if('filterExpanded')
-              input(bind:value='{filterValue}', on:click|stopPropagation, on:keydown|stopPropagation, type="text")
-              +else
-                Icon(icon="{faSearch}")
-          +if('filterValue')
-            span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
-              p deep search 🡒
-        .numswrapper
-          +each('displayposts as post, i')
-            span.nums(
-              class:currnum="{index === i}",
-              class:album="{currpost.is_album}",
-              class:favorite="{displayposts[i].favorite}",
-           e  class:over18="{displayposts[i].over18}",
-              on:click="{function(){goto(i)}}"
-            )
-              img.small(alt="{displayposts[i].title}", src="{displayposts[i].thumbnail}")
-              p.small(class:curr="{index === i}", class:album="{currpost.is_album}") {i+1}
-          +if('!tinygoto')
-            span.displayinfo(class:filterExpanded="{filterValue}")
-              p {displayposts.length}/{posts.length}
-            span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
-              +if('loading')
-                Icon(icon="{faSpinner}")
-                +else()
-                  Icon(icon="{faSync}")
-  +if('$prefetch')
-    .prefetch
-      +each('nexturls as nexturl')
-        +if('$hires')
-          +if('nexturl.is_album')
-            img(alt="prefetch-hires", src="{nexturl.preview.img.album[0].hires}")
-            +else()
-              img(alt="prefetch-hires", src="{nexturl.url}")
-          +else()
-            +if('nexturl.is_album')
-              img(alt="prefetch", src="{nexturl.preview.img.album[0].default}")
-              +else()
-                img(alt="prefetch", src="{nexturl.preview.img.default}")
-        +if('nexturl.is_video')
-          video
-            +if('nexturl.preview.vid.webm')
-              source(src="{nexturl.preview.vid.webm}")
-            +if('nexturl.preview.vid.mp4')
-              source(src="{nexturl.preview.vid.mp4}")
-</template>

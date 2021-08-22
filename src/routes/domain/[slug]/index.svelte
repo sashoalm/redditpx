@@ -1,36 +1,37 @@
 <script context="module">
-export async function preload({ path, params, query }) {
-  if (typeof window === "undefined") return;
+  export async function preload({ path, params, query }) {
+    if (typeof window === "undefined") return;
 
-  let slugstr = path.substring(1).replace(/\/$/, ''); // remove the leading and trailing slash
+    let slugstr = path.substring(1).replace(/\/$/, ""); // remove the leading and trailing slash
 
-  let { posts, res, after } = await get_posts(
-    `https://reddit.com/${slugstr}.json?${queryp(query)}`
-  );
+    let { posts, res, after } = await get_posts(
+      `https://reddit.com/${slugstr}.json?${queryp(query)}`
+    );
 
-  return { posts, after, res, slugstr };
-}
+    return { posts, after, res, slugstr };
+  }
 </script>
+
 <script>
-import FullscreenLayout from "../../../components/FullscreenLayout.svelte";
+  import FullscreenLayout from "../../../components/FullscreenLayout.svelte";
 
-import { get_posts, queryp } from "../../../_utils";
+  import { get_posts, queryp } from "../../../_utils";
 
-import { stores } from "@sapper/app";
-const { page } = stores();
+  import { stores } from "@sapper/app";
+  const { page } = stores();
 
-import { favorite } from "../../../_prefs";
-favorite.useLocalStorage({});
+  import { favorite } from "../../../_prefs";
+  favorite.useLocalStorage({});
 
-export let posts = [];
-export let res;
-export let after;
-export let slugstr;
+  export let posts = [];
+  export let res;
+  export let after;
+  export let slugstr;
 
-// Load `favorite` from localstorage
-for (let p of posts) {
-  p["favorite"] = !!$favorite[p.url];
-}
+  // Load `favorite` from localstorage
+  for (let p of posts) {
+    p["favorite"] = !!$favorite[p.url];
+  }
 </script>
 
 <template lang="pug">

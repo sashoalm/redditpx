@@ -11,7 +11,7 @@
       let newPath = $page.path.replace("/r", "");
       ahref(newPath, { replaceState: false });
     } else {
-      console.log($page.path)
+      console.log($page.path);
       ahref("/home", { replaceState: false });
     }
   }

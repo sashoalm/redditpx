@@ -1,63 +1,129 @@
 <script>
-import Icon from "fa-svelte";
-import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
+  import Icon from "fa-svelte";
+  import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
 
-import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
-import { faEye as faSlideshow } from "@fortawesome/free-solid-svg-icons/faEye";
-import { faTimesCircle as faClose } from "@fortawesome/free-solid-svg-icons/faTimesCircle";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons/faPlusCircle";
-import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
+  import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
+  import { faEye as faSlideshow } from "@fortawesome/free-solid-svg-icons/faEye";
+  import { faTimesCircle as faClose } from "@fortawesome/free-solid-svg-icons/faTimesCircle";
+  import { faPlusCircle } from "@fortawesome/free-solid-svg-icons/faPlusCircle";
+  import { faStar as faFav } from "@fortawesome/free-solid-svg-icons/faStar";
 
-import Settings from "../components/Settings.svelte";
+  import Settings from "../components/Settings.svelte";
 
-import { goto as ahref } from "@sapper/app";
+  import { goto as ahref } from "@sapper/app";
 
-import { favorite, multireddit } from "../_prefs";
-favorite.useLocalStorage({});
-multireddit.useLocalStorage({});
+  import { favorite, multireddit } from "../_prefs";
+  favorite.useLocalStorage({});
+  multireddit.useLocalStorage({});
 
-let showSettings = false;
+  let showSettings = false;
 
-let exploreSubreddits = [
-  { color: "lightpink", url: "r/pics" },
-  { color: "lightsalmon", url: "r/aww" },
-  { color: "peachpuff", url: "r/wallpapers" },
-  { color: "lavender", url: "r/earthporn" },
-  { color: "palegreen", url: "r/dataisbeautiful" },
-  { color: "turquoise", url: "r/oldschoolcool" },
-  { color: "wheat", url: "r/reactiongifs"},
-  { color: "lightskyblue", url: "r/foodporn"},
-  { color: "tomato", url: "r/itookapicture"},
-];
+  let exploreSubreddits = [
+    { color: "lightpink", url: "r/pics" },
+    { color: "lightsalmon", url: "r/aww" },
+    { color: "peachpuff", url: "r/wallpapers" },
+    { color: "lavender", url: "r/earthporn" },
+    { color: "palegreen", url: "r/dataisbeautiful" },
+    { color: "turquoise", url: "r/oldschoolcool" },
+    { color: "wheat", url: "r/reactiongifs" },
+    { color: "lightskyblue", url: "r/foodporn" },
+    { color: "tomato", url: "r/itookapicture" }
+  ];
 
-function toggleSettings() {
-  showSettings = !showSettings;
-}
+  function toggleSettings() {
+    showSettings = !showSettings;
+  }
 
-let displayposts = [];
-let mreddits = [];
+  let displayposts = [];
+  let mreddits = [];
 
-$: displayposts = $favorite ? Object.entries($favorite) : [];
-$: mreddits = $multireddit ? Object.entries($multireddit) : [];
-$: slideshowurl = $multireddit
-  ? `/r/${Object.keys($multireddit).join("+")}`
-  : "";
+  $: displayposts = $favorite ? Object.entries($favorite) : [];
+  $: mreddits = $multireddit ? Object.entries($multireddit) : [];
+  $: slideshowurl = $multireddit
+    ? `/r/${Object.keys($multireddit).join("+")}`
+    : "";
 
-async function downloadFiles() {
-  window.open("/download", "_blank");
-}
+  async function downloadFiles() {
+    window.open("/download", "_blank");
+  }
 
-function openSlideshow() {
-  ahref(slideshowurl);
-}
+  function openSlideshow() {
+    ahref(slideshowurl);
+  }
 
-function removeFav(url) {
-  $favorite[url] = undefined;
-  $favorite = JSON.parse(JSON.stringify($favorite));
+  function removeFav(url) {
+    $favorite[url] = undefined;
+    $favorite = JSON.parse(JSON.stringify($favorite));
 
-  favorite.set($favorite);
-}
+    favorite.set($favorite);
+  }
 </script>
+
+<svelte:head>
+  <title>redditpx - home</title>
+</svelte:head>
+
+<template lang="pug">
+.wrapper
+  .hero
+    .title
+      span.logo
+        img(alt="redditpx logo", src="logo-192.png")
+      | redditpx
+    .settings
+      span.btn(on:click='{toggleSettings}', class:showSettings='{showSettings}')
+        Icon(icon="{faSettings}")
+      Settings('{showSettings}')
+    .block.multireddit
+      .heading Multireddit {"(" + mreddits.length + ")"}
+        +if('mreddits.length')
+          span.icon.tooltip(on:click="{openSlideshow}", data-tooltip="start slideshow", class:favorite='{mreddits.length}')
+            Icon(icon="{faSlideshow}")
+      .items
+        +each('mreddits as [mreddit, mrdetails]')
+          .itemwrapper
+            a(href='{`/r/${mreddit}`}', rel="prefetch")
+              .item(style='background-image: url("{mrdetails.preview}")' )
+                span {"r/" + mreddit}
+          +else()
+            .itemwrapper.noitems
+              .item
+                span Add to multireddit using
+                span.inlineicon
+                  Icon(icon="{faPlusCircle}")
+                span or using shortcut
+                span.key m
+    .block.favs
+      .heading Favorites {"(" + displayposts.length + ")"}
+        +if('displayposts.length')
+          span.icon.tooltip(on:click="{downloadFiles}", data-tooltip="download all", class:favorite='{displayposts.length}')
+            Icon(icon="{faDownload}")
+      .items
+        +each('displayposts as [url, post]')
+          .itemwrapper
+            span.icon.tooltip(on:click|stopPropagation|preventDefault="{function() {removeFav(url)}}", data-tooltip="remove")
+              Icon(icon="{faClose}")
+            a(href='{post.url}', target='_blank')
+              .item(style='background-image: url("{post.preview.img.default}")' )
+                a.subreddit(href='{`/r/${post.subreddit}`}')
+                  span {"r/" + post.subreddit}
+          +else()
+            .itemwrapper.noitems
+              .item
+                span Add to favorites using
+                span.inlineicon
+                  Icon(icon="{faFav}")
+                span or using shortcut
+                span.key x
+    .block.explore
+      .heading Explore
+      .items
+        +each('exploreSubreddits as subreddit')
+          .itemwrapper.explore
+            a(href='{`/${subreddit.url}`}', rel="prefetch")
+              .item(style='background-color: {subreddit.color}' )
+                span {subreddit.url}
+</template>
 
 <style lang="sass">
 
@@ -280,69 +346,3 @@ $over18-border-color: #ea4335
       opacity: 1
 
 </style>
-
-<svelte:head>
-  <title>redditpx - home</title>
-</svelte:head>
-
-<template lang="pug">
-.wrapper
-  .hero
-    .title
-      span.logo
-        img(alt="redditpx logo", src="logo-192.png")
-      | redditpx
-    .settings
-      span.btn(on:click='{toggleSettings}', class:showSettings='{showSettings}')
-        Icon(icon="{faSettings}")
-      Settings('{showSettings}')
-    .block.multireddit
-      .heading Multireddit {"(" + mreddits.length + ")"}
-        +if('mreddits.length')
-          span.icon.tooltip(on:click="{openSlideshow}", data-tooltip="start slideshow", class:favorite='{mreddits.length}')
-            Icon(icon="{faSlideshow}")
-      .items
-        +each('mreddits as [mreddit, mrdetails]')
-          .itemwrapper
-            a(href='{`/r/${mreddit}`}', rel="prefetch")
-              .item(style='background-image: url("{mrdetails.preview}")' )
-                span {"r/" + mreddit}
-          +else()
-            .itemwrapper.noitems
-              .item
-                span Add to multireddit using
-                span.inlineicon
-                  Icon(icon="{faPlusCircle}")
-                span or using shortcut
-                span.key m
-    .block.favs
-      .heading Favorites {"(" + displayposts.length + ")"}
-        +if('displayposts.length')
-          span.icon.tooltip(on:click="{downloadFiles}", data-tooltip="download all", class:favorite='{displayposts.length}')
-            Icon(icon="{faDownload}")
-      .items
-        +each('displayposts as [url, post]')
-          .itemwrapper
-            span.icon.tooltip(on:click|stopPropagation|preventDefault="{function() {removeFav(url)}}", data-tooltip="remove")
-              Icon(icon="{faClose}")
-            a(href='{post.url}', target='_blank')
-              .item(style='background-image: url("{post.preview.img.default}")' )
-                a.subreddit(href='{`/r/${post.subreddit}`}')
-                  span {"r/" + post.subreddit}
-          +else()
-            .itemwrapper.noitems
-              .item
-                span Add to favorites using
-                span.inlineicon
-                  Icon(icon="{faFav}")
-                span or using shortcut
-                span.key x
-    .block.explore
-      .heading Explore
-      .items
-        +each('exploreSubreddits as subreddit')
-          .itemwrapper.explore
-            a(href='{`/${subreddit.url}`}', rel="prefetch")
-              .item(style='background-color: {subreddit.color}' )
-                span {subreddit.url}
-</template>
