@@ -672,12 +672,12 @@
   function keydown(event) {
     // up
     if (event.keyCode == 38) {
-      albumPrev();
+      albumNext();
     }
 
     // down
     if (event.keyCode == 40) {
-      albumNext();
+      albumPrev();
     }
 
     // m
