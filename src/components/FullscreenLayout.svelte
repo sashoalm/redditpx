@@ -1305,7 +1305,6 @@ $isnotmulti-color: #34a853
         img.small
           z-index: 10
           width: 0px
-          height: 0px
           opacity: 0
           position: absolute
           bottom: 35px
