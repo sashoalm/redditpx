@@ -338,6 +338,7 @@
   $: {
     if (displayposts[index]) {
       currpost = JSON.parse(JSON.stringify(displayposts[index]));
+      console.log(currpost);
 
       let _nexturls = [];
 

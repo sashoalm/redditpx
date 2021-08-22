@@ -101,6 +101,34 @@ export function get_dims(item) {
   return dims;
 }
 
+function extract_reddit_gallery(data, imgs) {
+
+      let media_items = Object.values(data.media_metadata);
+
+      imgs["album"] = [];
+
+      media_items.forEach((mi) => {
+        let hires;
+        try {
+          hires = decode(mi.s.u);
+        } catch {
+          // TODO: Implement a proper fix, for now bail quickly
+          return;
+        }
+        let i = {
+          hires: hires,
+          default: decode(mi.p[mi.p.length - 1].u),
+
+          // TODO: assumption: reddit.com/gallery is always images
+          is_image: true,
+          is_video: false
+        };
+
+        imgs["album"].push(i);
+      });
+
+}
+
 async function imgsrc(u, item) {
   let imgs;
   try {
@@ -115,31 +143,20 @@ async function imgsrc(u, item) {
     };
   }
 
-  if (u.includes("reddit.com/gallery/") && item.data.media_metadata) {
-    console.log(item.data.media_metadata);
-    let media_items = Object.values(item.data.media_metadata);
+  if (u.includes("reddit.com/gallery/")) {
 
-    imgs["album"] = [];
+    // This is an original post (and not a cross post)
+    if (item.data.media_metadata) {
+      extract_reddit_gallery(item.data, imgs);
+    }
+    else if ( item.data.crosspost_parent_list.length > 0 ) {
 
-    media_items.forEach((mi) => {
-      let hires;
-      try {
-        hires = decode(mi.s.u);
-      } catch {
-        // TODO: Implement a proper fix, for now bail quickly
-        return;
-      }
-      let i = {
-        hires: hires,
-        default: decode(mi.p[mi.p.length - 1].u),
+      // FIXME: Assume the first one is the only cross-post available. 
+      let origpost = item.data.crosspost_parent_list[0];
 
-        // TODO: assumption: reddit.com/gallery is always images
-        is_image: true,
-        is_video: false
-      };
+      extract_reddit_gallery(origpost, imgs);
 
-      imgs["album"].push(i);
-    });
+    }
   }
 
   //  if (u.includes("imgur.com/a/")) {
