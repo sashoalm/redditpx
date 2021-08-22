@@ -201,14 +201,26 @@
       // If `autoplay` is off and it is a video, the video will progress by itself via on:ended
       if ($autoplay && currpost.is_image) {
         //console.log('---- iNEXT')
-        itemNext();
+        next();
       } else if (!$autoplay && currpost.is_video) {
         //console.log('---- vNEXT')
-        itemNext();
+        next();
       }
     }, $autoplayinterval * 1000);
 
     autoplay.set(true);
+  }
+
+  function next() {
+    if (currpost.is_album) {
+      if (isEndOfAlbum()) {
+        itemNext();
+      } else {
+        albumNext();
+      }
+    } else {
+      itemNext();
+    }
   }
 
   function stopAutoPlay() {
@@ -620,10 +632,14 @@
     if ($autoplay) stopAndStartAutoPlay();
   }
 
+  function isEndOfAlbum() {
+    return albumindex == currpost.preview.img.album.length - 1;
+  }
+
   function albumNext() {
     if (!currpost.is_album) return;
 
-    if (albumindex == currpost.preview.img.album.length - 1) {
+    if (isEndOfAlbum()) {
       albumindex = 0;
     } else {
       albumindex += 1;
