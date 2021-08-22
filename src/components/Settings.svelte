@@ -59,8 +59,7 @@
     let j = Math.round(_scrollspeed);
     if (j >= 20) {
       scrollspeed.set(10);
-    }
-    else  {
+    } else {
       scrollspeed.set(j);
     }
   }
@@ -108,6 +107,120 @@
     muted.set(_muted);
   }
 </script>
+
+<template lang="pug">
+.settingspanel(class:showSettings='{showSettings}')
+  .head
+    Icon(icon="{faSettings}")
+    | Settings
+  .close(on:click='{hideSettings}')
+    Icon(icon="{faClose}")
+  .contents
+    .nav
+      div(class:active='{activeTab == 1}', on:click='{function(){activeTab = 1}}') General
+      div(class:active='{activeTab == 2}', on:click='{function(){activeTab = 2}}') Keybindings
+    .options
+      div.option(class:active='{activeTab == 1}')
+        //p autoplay on/off
+        //p download files
+        //p nsfw on/off
+        .item
+          span.text Autoplay time (seconds)
+          span.input
+            input(type="number", bind:value='{_autoplayinterval}')
+        .item
+          span.text Scroll speed (0-20)
+          span.input
+            input(type="number", bind:value='{_scrollspeed}')
+        //.item
+        //  span Favorite
+        //    span
+        //      span.button Mark all
+        //      span.button Unmark all
+        //      span.button Unmark all (all subreddits)
+        .item
+          span.tooltip(data-tooltip="Preload media in the background") Prefetch media
+          span
+            span.button(on:click='{togglePrefetch}') {_prefetch ? "Prefetch is on" : "Prefetch is off"}
+        .item
+          span.tooltip(data-tooltip="Sound on/off") Sound
+          span
+            span.button(on:click='{toggleMuted}') {_muted ? "Sound is off" : "Sound is on"}
+        .item
+          span.text.tooltip(data-tooltip="Choose what type of image to display") Display image resolution
+          span
+            span.button(on:click='{toggleHiRes}') {_hires ? "Original (slow)" : "Optimized (fast)"}
+        .item
+          span.text.tooltip(data-tooltip="Choose whether to go to reddit.com or old.reddit.com") reddit.com link handling
+          span
+            span.button(on:click='{toggleOldReddit}') {_oldreddit ? "old.reddit.com" : "reddit.com (New)"}
+        .item
+          span.text.tooltip(data-tooltip="Choose whether to show videos only, images only or both") Display images/videos/both
+          span
+            span.button(on:click='{toggleImageVideo}') {imagesVideoStates[_imageVideo]}
+        .item
+          span.text.tooltip(data-tooltip="Choose whether to show portrait only, landscape only or both") Display portrait/landscape/both
+          span
+            span.button(on:click='{togglePortraitLandscape}') {portraitLandscapeStates[_portraitLandscape]}
+        //p remove duplicates
+        //p aggressive caching (thumb vs preview)
+      div.option(class:active='{activeTab == 2}')
+        .item
+          span.text Play / Pause
+          span.key q
+          span.key p
+        .item
+          span.text Next item
+          span.key Space
+          span.key Right
+          span.key d
+          span.key j
+          span.key Page-down
+        .item
+          span.text Previous item
+          span.key Left
+          span.key a
+          span.key k
+          span.key Page-up
+        .item
+          span.text Next item in the album
+          span.key Up
+        .item
+          span.text Previous item in the album
+          span.key Down
+        .item
+          span.text Hide UI / Controls
+          span.key h
+        .item
+          span.text Toggle favorite
+          span.key x
+        .item
+          span.text Toggle Sound
+          span.key s
+        .item
+          span.text Remove all favorites
+          span.key Shift + x
+        .item
+          span.text Remove all favorites (across all subreddits)
+          span.key Ctrl + Shift + x
+        .item
+          span.text Filter
+          span.key /
+          span.key f
+        .item
+          span.text Open reddit (old.reddit.com)
+          span.key o
+        .item
+          span.text Open reddit
+          span.key r
+        .item
+          span.text Open high-res
+          span.key i
+        .item
+          span.text Add to multireddit
+          span.key m
+</template>
+
 <style lang="sass">
 @mixin hover()
   @media not all and (pointer:coarse)
@@ -333,110 +446,3 @@ $over18-border-color: #ea4335
       opacity: 1
 
 </style>
-
-<template lang="pug">
-.settingspanel(class:showSettings='{showSettings}')
-  .head
-    Icon(icon="{faSettings}")
-    | Settings
-  .close(on:click='{hideSettings}')
-    Icon(icon="{faClose}")
-  .contents
-    .nav
-      div(class:active='{activeTab == 1}', on:click='{function(){activeTab = 1}}') General
-      div(class:active='{activeTab == 2}', on:click='{function(){activeTab = 2}}') Keybindings
-    .options
-      div.option(class:active='{activeTab == 1}')
-        //p autoplay on/off
-        //p download files
-        //p nsfw on/off
-        .item
-          span.text Autoplay time (seconds)
-          span.input
-            input(type="number", bind:value='{_autoplayinterval}')
-        .item
-          span.text Scroll speed (0-20)
-          span.input
-            input(type="number", bind:value='{_scrollspeed}')
-        //.item
-        //  span Favorite
-        //    span
-        //      span.button Mark all
-        //      span.button Unmark all
-        //      span.button Unmark all (all subreddits)
-        .item
-          span.tooltip(data-tooltip="Preload media in the background") Prefetch media
-          span
-            span.button(on:click='{togglePrefetch}') {_prefetch ? "Prefetch is on" : "Prefetch is off"}
-        .item
-          span.tooltip(data-tooltip="Sound on/off") Sound
-          span
-            span.button(on:click='{toggleMuted}') {_muted ? "Sound is off" : "Sound is on"}
-        .item
-          span.text.tooltip(data-tooltip="Choose what type of image to display") Display image resolution
-          span
-            span.button(on:click='{toggleHiRes}') {_hires ? "Original (slow)" : "Optimized (fast)"}
-        .item
-          span.text.tooltip(data-tooltip="Choose whether to go to reddit.com or old.reddit.com") reddit.com link handling
-          span
-            span.button(on:click='{toggleOldReddit}') {_oldreddit ? "old.reddit.com" : "reddit.com (New)"}
-        .item
-          span.text.tooltip(data-tooltip="Choose whether to show videos only, images only or both") Display images/videos/both
-          span
-            span.button(on:click='{toggleImageVideo}') {imagesVideoStates[_imageVideo]}
-        .item
-          span.text.tooltip(data-tooltip="Choose whether to show portrait only, landscape only or both") Display portrait/landscape/both
-          span
-            span.button(on:click='{togglePortraitLandscape}') {portraitLandscapeStates[_portraitLandscape]}
-        //p remove duplicates
-        //p aggressive caching (thumb vs preview)
-      div.option(class:active='{activeTab == 2}')
-        .item
-          span.text Play / Pause
-          span.key q
-          span.key p
-        .item
-          span.text Next item
-          span.key Space
-          span.key Right
-          span.key d
-          span.key j
-          span.key Page-down
-        .item
-          span.text Previous item
-          span.key Left
-          span.key a
-          span.key k
-          span.key Page-up
-        .item
-          span.text Hide UI / Controls
-          span.key h
-        .item
-          span.text Toggle favorite
-          span.key x
-        .item
-          span.text Toggle Sound
-          span.key s
-        .item
-          span.text Remove all favorites
-          span.key Shift + x
-        .item
-          span.text Remove all favorites (across all subreddits)
-          span.key Ctrl + Shift + x
-        .item
-          span.text Filter
-          span.key /
-          span.key f
-        .item
-          span.text Open reddit (old.reddit.com)
-          span.key o
-        .item
-          span.text Open reddit
-          span.key r
-        .item
-          span.text Open high-res
-          span.key i
-        .item
-          span.text Add to multireddit
-          span.key m
-</template>
