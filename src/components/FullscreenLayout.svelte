@@ -358,8 +358,7 @@
             return item;
           }
         })
-        .flat()
-        .slice(0, $prefetchNum);
+        .flat();
     } else if (filterValue) {
       // We're here because user filtered the list
 
