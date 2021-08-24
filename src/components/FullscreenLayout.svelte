@@ -26,12 +26,16 @@
   import { faMobileAlt as faPortrait } from "@fortawesome/free-solid-svg-icons/faMobileAlt";
   import { faDesktop as faLandscape } from "@fortawesome/free-solid-svg-icons/faDesktop";
 
+  import AutoComplete from "simple-svelte-autocomplete";
+
   import Settings from "./Settings.svelte";
 
   import { onMount, tick } from "svelte";
   import { goto as ahref } from "@sapper/app";
 
   import { get_posts, queryp } from "../_utils";
+
+  import { subreddits } from "../_subreddits";
 
   import { writable, throttle, startWith } from "svelte-pipeable-store";
 
@@ -150,6 +154,9 @@
   let filterRef;
   let filterExpanded = false;
   let filterValue = "";
+
+  let subredditSearchVisible = false;
+  let subredditSearchValue = "";
 
   let showSettings = false;
 
@@ -531,6 +538,13 @@
     showSettings = false;
   }
 
+  async function showSubredditSearch() {
+    subredditSearchVisible = !subredditSearchVisible;
+
+    await tick();
+    console.log(subredditSearchVisible);
+  }
+
   async function expandFilter() {
     filterExpanded = true;
 
@@ -670,6 +684,7 @@
   }
 
   function keydown(event) {
+    if (subredditSearchVisible) return;
     // up
     if (event.keyCode == 38) {
       albumNext();
@@ -695,8 +710,14 @@
       toggleAutoPlay();
     }
 
+    // f
+    if (event.keyCode == 70) {
+      showSubredditSearch();
+      event.preventDefault();
+    }
+
     // slash, f
-    if (event.keyCode == 191 || event.keyCode == 70) {
+    if (event.keyCode == 191) {
       expandFilter();
       // We need this, otherwise filter box will have '/' because of autofocus
       event.preventDefault();
@@ -825,6 +846,9 @@
     .control.next(on:click="{itemNext}")
     .control.up(on:click="{albumNext}")
     .control.down(on:click="{albumPrev}")
+    .subredditsearchwrapper(class:hide='{subredditSearchVisible == false}')
+      .subredditsearch
+        AutoComplete(items='{subreddits}', bind:selectedItem='{subredditSearchValue}', delay=140, maxItemsToShowInList="0", minCharactersToSearch="3", hideArrow=true)
     +if('displayposts.length || posts.length')
       .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{$_gotoElWidth}')
         .btnwrapper
@@ -1328,6 +1352,43 @@ $isnotmulti-color: #34a853
           width: auto
           height: 100px
           opacity: 1
+
+    .subredditsearchwrapper
+
+      height: 100vh
+      width: 100vw
+      position: absolute
+      background-color: rgba(0,0,0,0.7)
+      z-index:15
+
+      .subredditsearch
+        position: absolute
+        left: 50%
+        top: 50%
+        transform: translate(-50%, -50%)
+
+      :global(.input-container)
+        height: 40px
+
+      :global(.input-container input)
+        padding-left: 5px
+        padding-right: 5px
+        border: 2px solid rgba(white, 60%)
+        background-color: rgba(0, 0, 0, 0)
+        color: white
+        border-radius: 3px
+      
+      :global(.autocomplete-list)
+        max-height: calc(15 * (1rem + 10px) + 0px) !important
+        background-color: black
+        border: none
+
+      :global(.autocomplete-list .autocomplete-list-item)
+        color: white
+        background-color: black
+
+      :global(.autocomplete-list .autocomplete-list-item b)
+        color: $yellow
 
     .control
       position: absolute
