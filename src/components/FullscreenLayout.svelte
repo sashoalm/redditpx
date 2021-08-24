@@ -6,6 +6,7 @@
   import { faPause } from "@fortawesome/free-solid-svg-icons/faPause";
   import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
   import { faHome } from "@fortawesome/free-solid-svg-icons/faHome";
+  import { faDonate } from "@fortawesome/free-solid-svg-icons/faDonate";
   import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
   import { faPhotoVideo as faImageVideo } from "@fortawesome/free-solid-svg-icons/faPhotoVideo";
   import { faImage } from "@fortawesome/free-solid-svg-icons/faImage";
@@ -789,6 +790,9 @@
           .subredditwrapper.tooltip.bottom(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
             Icon(icon="{ismultireddit ? faMinusCircle : faPlusCircle}")
     .settings
+      a.donate(href="https://ko-fi.com/redditpx")
+        span.btn.tooltip.bottom.donate(data-tooltip="Donate")
+          Icon(icon="{faDonate}")
       a.home(rel="prefetch", href="/home", class:hide='{uiVisible == false}')
         span.btn.tooltip.bottom(data-tooltip="Home")
           Icon(icon="{faHome}")
@@ -980,13 +984,16 @@ $isnotmulti-color: #34a853
       font-size: 1rem
       padding: 1.5rem 2rem
 
-
       .btn
         user-select: none
         cursor: pointer
         color: rgba(white, 80%)
         margin-left: 10px
         font-size: 1.2rem
+
+
+        &.donate
+          color: $yellow
 
         &.cog
           font-size: 1.1rem
