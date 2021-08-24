@@ -716,7 +716,7 @@
                 Icon(icon="{faSearch}")
           +if('filterValue')
             span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
-              p deep search 🡒
+              p deep search 🠒
           span.displayinfo(class:filterExpanded="{filterValue}")
             p {displayposts.length}/{posts.length}
           span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')

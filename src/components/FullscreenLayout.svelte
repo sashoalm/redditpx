@@ -896,7 +896,7 @@
                 Icon(icon="{faSearch}")
           +if('filterValue')
             span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
-              p deep search 🡒
+              p deep search 🠒
         .numswrapper
           +each('displayposts as post, i')
             span.nums(
