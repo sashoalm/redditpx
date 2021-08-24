@@ -9,7 +9,13 @@ const store = (key, initialValue) => {
     useLocalStorage: (defaultValue) => {
       if (!process.browser) return;
 
-      const json = localStorage.getItem(key);
+      let json = {};
+      try {
+        json = localStorage.getItem(key);
+      } catch (e) {
+        console.log(e);
+        return;
+      }
 
       if (json) {
         set(JSON.parse(json));
@@ -18,7 +24,12 @@ const store = (key, initialValue) => {
       }
 
       subscribe((current) => {
-        localStorage.setItem(key, JSON.stringify(current));
+        try {
+          localStorage.setItem(key, JSON.stringify(current));
+        } catch (e) {
+          console.log(e);
+          return;
+        }
       });
     }
   };
