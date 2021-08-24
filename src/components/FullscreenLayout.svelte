@@ -790,7 +790,7 @@
           .subredditwrapper.tooltip.bottom(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
             Icon(icon="{ismultireddit ? faMinusCircle : faPlusCircle}")
     .settings
-      a.donate(href="https://ko-fi.com/redditpx")
+      a.donate(href="https://ko-fi.com/redditpx" target="_blank")
         span.btn.tooltip.bottom.donate(data-tooltip="Donate")
           Icon(icon="{faDonate}")
       a.home(rel="prefetch", href="/home", class:hide='{uiVisible == false}')
