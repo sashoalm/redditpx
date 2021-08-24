@@ -9,12 +9,11 @@ const store = (key, initialValue) => {
     useLocalStorage: (defaultValue) => {
       if (!process.browser) return;
 
-      let json = {};
+      let json;
       try {
         json = localStorage.getItem(key);
       } catch (e) {
         console.log(e);
-        return;
       }
 
       if (json) {
