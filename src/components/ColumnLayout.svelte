@@ -442,7 +442,6 @@
       tmp = tmp.filter((item) => item.dims.width / item.dims.height > 1.2);
     }
 
-    console.log("final filtered:", tmp.length);
     displayposts = tmp;
   }
 

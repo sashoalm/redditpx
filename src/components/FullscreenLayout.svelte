@@ -158,6 +158,7 @@
   let subredditSearchRef;
   let subredditSearchVisible = false;
   let subredditSearchValue = "";
+  let subredditSearchValueRaw = "";
 
   let showSettings = false;
 
@@ -296,6 +297,16 @@
   function reMountVideo() {
     renderVideo = false;
     setTimeout(() => (renderVideo = true), 0);
+  }
+
+  $: {
+    // Subreddit search
+    if (subredditSearchValue) {
+      subredditSearchVisible = false;
+      ahref(`/r/${subredditSearchValue}`);
+      subredditSearchValue = "";
+      subredditSearchValueRaw = "";
+    }
   }
 
   $: {
@@ -537,6 +548,13 @@
 
   function hideSettings() {
     showSettings = false;
+  }
+
+  function handleUnknownSubreddit(subreddit) {
+    subredditSearchVisible = false;
+    subredditSearchValue = "";
+    subredditSearchValueRaw = "";
+    ahref(`/r/${subreddit}`);
   }
 
   function hideSubredditSearch() {
@@ -859,7 +877,9 @@
     .subredditsearchwrapper(class:hide='{subredditSearchVisible == false}', on:click="{hideSubredditSearch}")
       .subredditsearch(bind:this='{subredditSearchRef}' on:click|stopPropagation, on:keydown|stopPropagation)
         span.header Jump to subreddit
-        AutoComplete(items='{subreddits}', bind:selectedItem='{subredditSearchValue}', delay=140, maxItemsToShowInList="0", minCharactersToSearch="3", hideArrow=true)
+        AutoComplete(items='{subreddits}', bind:selectedItem='{subredditSearchValue}', delay=140, 
+          maxItemsToShowInList="0", minCharactersToSearch="3", hideArrow=true, bind:text="{subredditSearchValueRaw}", 
+          create="{true}", createText="{'Hit enter to go to /r/' + subredditSearchValueRaw}", onCreate="{handleUnknownSubreddit}")
     +if('displayposts.length || posts.length')
       .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{$_gotoElWidth}')
         .btnwrapper
@@ -1407,6 +1427,10 @@ $isnotmulti-color: #34a853
         border: none
 
       :global(.autocomplete-list .autocomplete-list-item)
+        color: white
+        background-color: black
+
+      :global(.autocomplete-list .autocomplete-list-item-create)
         color: white
         background-color: black
 
