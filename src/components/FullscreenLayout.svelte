@@ -302,10 +302,11 @@
   $: {
     // Subreddit search
     if (subredditSearchValue) {
-      subredditSearchVisible = false;
-      ahref(`/r/${subredditSearchValue}`);
-      subredditSearchValue = "";
-      subredditSearchValueRaw = "";
+      //subredditSearchVisible = false;
+      //ahref(`/r/${subredditSearchValue}`);
+      //subredditSearchValue = "";
+      //subredditSearchValueRaw = "";
+      jumpToSubReddit(subredditSearchValue);
     }
   }
 
@@ -550,11 +551,13 @@
     showSettings = false;
   }
 
-  function handleUnknownSubreddit(subreddit) {
+  function jumpToSubReddit(subreddit) {
     subredditSearchVisible = false;
     subredditSearchValue = "";
     subredditSearchValueRaw = "";
     ahref(`/r/${subreddit}`);
+    index = 0;
+    albumindex = 0;
   }
 
   function hideSubredditSearch() {
@@ -879,7 +882,7 @@
         span.header Jump to subreddit
         AutoComplete(items='{subreddits}', bind:selectedItem='{subredditSearchValue}', delay=140, 
           maxItemsToShowInList="0", minCharactersToSearch="3", hideArrow=true, bind:text="{subredditSearchValueRaw}", 
-          create="{true}", createText="{'Hit enter to go to /r/' + subredditSearchValueRaw}", onCreate="{handleUnknownSubreddit}")
+          create="{true}", createText="{'Hit enter to go to /r/' + subredditSearchValueRaw}", onCreate="{jumpToSubReddit}")
     +if('displayposts.length || posts.length')
       .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{$_gotoElWidth}')
         .btnwrapper
