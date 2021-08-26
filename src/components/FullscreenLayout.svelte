@@ -155,6 +155,7 @@
   let filterExpanded = false;
   let filterValue = "";
 
+  let subredditSearchRef;
   let subredditSearchVisible = false;
   let subredditSearchValue = "";
 
@@ -538,17 +539,26 @@
     showSettings = false;
   }
 
+  function hideSubredditSearch() {
+    subredditSearchVisible = false;
+  }
+
   async function showSubredditSearch() {
     subredditSearchVisible = !subredditSearchVisible;
 
+    console.log("before");
     await tick();
-    console.log(subredditSearchVisible);
+    console.log("after");
+
+    if (subredditSearchVisible)
+      subredditSearchRef.querySelector("input").focus();
   }
 
   async function expandFilter() {
     filterExpanded = true;
 
     await tick();
+
     // Focus the input if we just opened it
     if (filterExpanded) filterRef.querySelector("input").focus();
   }
@@ -684,7 +694,7 @@
   }
 
   function keydown(event) {
-    if (subredditSearchVisible) return;
+    console.log(event);
     // up
     if (event.keyCode == 38) {
       albumNext();
@@ -846,8 +856,9 @@
     .control.next(on:click="{itemNext}")
     .control.up(on:click="{albumNext}")
     .control.down(on:click="{albumPrev}")
-    .subredditsearchwrapper(class:hide='{subredditSearchVisible == false}')
-      .subredditsearch
+    .subredditsearchwrapper(class:hide='{subredditSearchVisible == false}', on:click="{hideSubredditSearch}")
+      .subredditsearch(bind:this='{subredditSearchRef}' on:click|stopPropagation, on:keydown|stopPropagation)
+        span.header Jump to subreddit
         AutoComplete(items='{subreddits}', bind:selectedItem='{subredditSearchValue}', delay=140, maxItemsToShowInList="0", minCharactersToSearch="3", hideArrow=true)
     +if('displayposts.length || posts.length')
       .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{$_gotoElWidth}')
@@ -1366,6 +1377,15 @@ $isnotmulti-color: #34a853
         left: 50%
         top: 50%
         transform: translate(-50%, -50%)
+        display: grid
+
+
+        .header 
+          font-size: 20px
+          margin-bottom: 12px
+          text-align: center
+          color: white
+
 
       :global(.input-container)
         height: 40px
@@ -1377,15 +1397,21 @@ $isnotmulti-color: #34a853
         background-color: rgba(0, 0, 0, 0)
         color: white
         border-radius: 3px
+
+      :global(.input-container input:focus-visible)
+        outline: none
       
       :global(.autocomplete-list)
-        max-height: calc(15 * (1rem + 10px) + 0px) !important
+        max-height: calc(15 * (1rem + 10px) - 15px) !important
         background-color: black
         border: none
 
       :global(.autocomplete-list .autocomplete-list-item)
         color: white
         background-color: black
+
+      :global(.autocomplete-list .autocomplete-list-item.selected)
+        background-color: #f9ab0038
 
       :global(.autocomplete-list .autocomplete-list-item b)
         color: $yellow
