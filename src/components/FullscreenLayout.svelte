@@ -159,6 +159,7 @@
   let subredditSearchVisible = false;
   let subredditSearchValue = "";
   let subredditSearchValueRaw = "";
+  let subredditSearchHasStoppedAutoplay = false;
 
   let showSettings = false;
 
@@ -558,21 +559,34 @@
     ahref(`/r/${subreddit}`);
     index = 0;
     albumindex = 0;
+
+    restartAutoplayIfSubredditSearchHasPaused();
   }
 
+  function restartAutoplayIfSubredditSearchHasPaused() {
+    if (subredditSearchHasStoppedAutoplay) {
+      console.log("starting back up");
+      startAutoPlay();
+    }
+  }
   function hideSubredditSearch() {
     subredditSearchVisible = false;
+
+    restartAutoplayIfSubredditSearchHasPaused();
   }
 
   async function showSubredditSearch() {
-    subredditSearchVisible = !subredditSearchVisible;
+    subredditSearchVisible = true;
 
-    console.log("before");
     await tick();
-    console.log("after");
 
-    if (subredditSearchVisible)
+    if (subredditSearchVisible) {
       subredditSearchRef.querySelector("input").focus();
+      if ($autoplay) {
+        stopAutoPlay();
+        subredditSearchHasStoppedAutoplay = true;
+      }
+    }
   }
 
   async function expandFilter() {
