@@ -224,6 +224,18 @@
     autoplay.set(true);
   }
 
+  function prev() {
+    if (currpost.is_album) {
+      if (isStartOfAlbum()) {
+        itemPrev();
+      } else {
+        albumPrev();
+      }
+    } else {
+      itemPrev();
+    }
+  }
+
   function next() {
     if (currpost.is_album) {
       if (isEndOfAlbum()) {
@@ -716,6 +728,10 @@
     return albumindex == currpost.preview.img.album.length - 1;
   }
 
+  function isStartOfAlbum() {
+    return albumindex == 0;
+  }
+
   function albumNext() {
     if (!currpost.is_album) return;
 
@@ -889,8 +905,8 @@
               +else()
                 .image(style="background-image: url('{currpost.preview.img.album[albumindex].default}')")
     .control.next(on:click="{itemNext}")
-    .control.up(on:click="{albumNext}")
-    .control.down(on:click="{albumPrev}")
+    .control.up(on:click="{next}")
+    .control.down(on:click="{prev}")
     .subredditsearchwrapper(class:hide='{subredditSearchVisible == false}', on:click="{hideSubredditSearch}")
       .subredditsearch(bind:this='{subredditSearchRef}' on:click|stopPropagation, on:keydown|stopPropagation)
         span.header Jump to subreddit
