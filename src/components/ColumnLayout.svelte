@@ -7,6 +7,7 @@
   import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
   import { faHome } from "@fortawesome/free-solid-svg-icons/faHome";
   import { faDonate } from "@fortawesome/free-solid-svg-icons/faDonate";
+  import { faExpandAlt as faExpand } from "@fortawesome/free-solid-svg-icons/faExpandAlt";
   import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
   import { faPhotoVideo as faImageVideo } from "@fortawesome/free-solid-svg-icons/faPhotoVideo";
   import { faImage } from "@fortawesome/free-solid-svg-icons/faImage";
@@ -609,12 +610,14 @@
       a.donate(href="https://ko-fi.com/redditpx" target="_blank")
         span.btn.tooltip.bottom.donate(data-tooltip="Donate")
           Icon(icon="{faDonate}")
+      span.btn.tooltip.bottom.expand(on:click="{toggleFullscreen}" data-tooltip="Fullscreen")
+          Icon(icon="{faExpand}")
       a.home(rel="prefetch", href="/home", class:hide='{uiVisible == false}')
         span.btn.tooltip.bottom(data-tooltip="Home")
           Icon(icon="{faHome}")
       span.btn.cog(on:click='{toggleSettings}', class:showSettings='{showSettings}', class:hide='{uiVisible == false}')
         Icon(icon="{faSettings}")
-      span.btn.tooltip.bottom.showhide(data-tooltip="{showhidestr}", on:click="{toggleUIVisiblity}")
+      span.btn.tooltip.bottom(data-tooltip="{showhidestr}", on:click="{toggleUIVisiblity}")
         Icon(icon="{uiVisible ? faHide : faShow }")
       .div(class:hide='{uiVisible == false}')
         Settings(bind:showSettings)
@@ -776,16 +779,13 @@ $isnotmulti-color: #34a853
         cursor: pointer
         color: rgba(white, 80%)
         margin-left: 10px
-        font-size: 1.2rem
+        font-size: 1.1rem
 
         &.donate
           color: $yellow
 
-        &.cog
+        &.cog, &.expand
           font-size: 1.1rem
-
-        &.showhide
-          top: 1px
 
         &.showSettings
           color: white
