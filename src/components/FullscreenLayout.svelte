@@ -1098,6 +1098,7 @@ $isnotmulti-color: #34a853
     .title
       z-index: 10
       position: absolute
+      left: 1rem
       top: 0
       background-color: rgba(0, 0, 0, 0.4)
       color: $text-color
