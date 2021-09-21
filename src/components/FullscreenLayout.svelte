@@ -777,7 +777,6 @@
   }
 
   function keydown(event) {
-    console.log(event);
     // up
     if (event.keyCode == 38) {
       albumNext();
