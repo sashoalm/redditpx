@@ -16,9 +16,14 @@ export async function get_posts(url) {
     let filtered = data.data.children.filter((item) => filter(item));
     console.log("Filtered: ", filtered.length, filtered);
 
-    let posts = await Promise.all(filtered.map((post) => format(post)));
+    let formatted = await Promise.all(filtered.map((post) => format(post)));
 
-    console.log("Formatted: ", posts.length, posts);
+    console.log("Formatted: ", formatted.length, formatted);
+    let posts = formatted.filter(
+      (v, i, a) => a.findIndex((t) => t.url == v.url) === i
+    );
+
+    console.log("Deduped: ", posts.length, posts);
 
     return {
       posts,
