@@ -182,7 +182,12 @@
       []
     );
 
-    console.log("Total loaded: ", posts.length);
+    console.log("Before dedupe: ", posts.length);
+
+    // Remove duplicates, based on `url`
+    posts = posts.filter((v, i, a) => a.findIndex((t) => t.url == v.url) === i);
+
+    console.log("After dedupe/Total loaded: ", posts.length);
 
     loading = false;
     reloadstr = "Load more";
