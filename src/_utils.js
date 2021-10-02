@@ -296,6 +296,28 @@ async function vidsrc(url, item) {
       }
       return {};
     }
+  } else if (url.includes("redgifs.com/")) {
+    let name = url.match(/redgifs.com\/(.*)/)[1];
+
+    // Sometimes gfycat urls are of the format "gfycat.com/videoid-extra-stuff". Remove anything after the first "-"
+    name = name.split("-")[0].replace(".gif", "");
+
+    // Sometimes gfycat urls are of the format "redgifs.com/watch/videoid".
+    name = name.replace("watch/", "");
+
+    let res = await fetch(`https://api.redgifs.com/v1/gfycats/${name}`, {
+      //mode: "no-cors"
+    });
+    try {
+      let data = await res.json();
+      return {
+        webm: data.gfyItem.webmUrl,
+        mp4: data.gfyItem.mp4Url,
+        gif: data.gfyItem.gifUrl
+      };
+    } catch {
+      return {};
+    }
   } else if (url.includes("v.redd.it")) {
     return {
       mp4: item.data.media.reddit_video.fallback_url
