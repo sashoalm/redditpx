@@ -271,6 +271,22 @@ async function vidsrc(url, item) {
     let res = await fetch(`https://api.gfycat.com/v1/gfycats/${name}`, {
       //mode: "no-cors"
     });
+
+    if (res.status == 404) {
+      let res = await fetch(
+        `https://api.redgifs.com/v1/gfycats/${name.toLowerCase()}`,
+        {
+          //mode: "no-cors"
+        }
+      );
+      let data = await res.json();
+      return {
+        webm: data.gfyItem.webmUrl,
+        mp4: data.gfyItem.mp4Url,
+        gif: data.gfyItem.gifUrl
+      };
+    }
+
     try {
       let data = await res.json();
       return {
