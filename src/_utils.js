@@ -107,11 +107,13 @@ export function get_dims(item) {
 }
 
 function extract_reddit_gallery(data, imgs) {
-  let media_items = Object.values(data.media_metadata);
+  let media_ids = data.gallery_data.items.map((x) => x.media_id);
 
   imgs["album"] = [];
 
-  media_items.forEach((mi) => {
+  media_ids.forEach((id) => {
+    let mi = data.media_metadata[id];
+
     let hires;
     try {
       hires = decode(mi.s.u);
