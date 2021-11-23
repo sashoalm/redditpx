@@ -11,6 +11,7 @@
     prefetch,
     prefetchNum,
     hires,
+    lores,
     oldreddit,
     imageVideo,
     portraitLandscape,
@@ -21,6 +22,7 @@
   prefetch.useLocalStorage(true);
   prefetchNum.useLocalStorage(3);
   hires.useLocalStorage(false);
+  lores.useLocalStorage(false);
   oldreddit.useLocalStorage(false);
   imageVideo.useLocalStorage(0);
   portraitLandscape.useLocalStorage(0);
@@ -35,6 +37,7 @@
   let _autoplayinterval = $autoplayinterval;
   let _scrollspeed = $scrollspeed;
   let _hires = $hires;
+  let _lores = $lores;
   let _oldreddit = $oldreddit;
   let _prefetch = $prefetch;
   let _prefetchNum = $prefetchNum;
@@ -103,6 +106,12 @@
     hires.set(_hires);
   }
 
+  function toggleLoRes() {
+    _lores = !_lores;
+
+    lores.set(_lores);
+  }
+
   function togglePrefetch() {
     _prefetch = !_prefetch;
 
@@ -162,6 +171,10 @@
           span.text.tooltip(data-tooltip="Choose what type of image to display") Display image resolution
           span
             span.button(on:click='{toggleHiRes}') {_hires ? "Original (slow)" : "Optimized (fast)"}
+        .item
+          span.text.tooltip(data-tooltip="Choose what type of video to display") Display video resolution
+          span
+            span.button(on:click='{toggleLoRes}') {_lores ? "Prefer lo-res (fast)": "Original (slow)"}
         .item
           span.text.tooltip(data-tooltip="Choose whether to go to reddit.com or old.reddit.com") reddit.com link handling
           span

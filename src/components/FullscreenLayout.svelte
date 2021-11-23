@@ -51,6 +51,7 @@
     prefetch,
     prefetchNum,
     hires,
+    lores,
     oldreddit,
     muted,
     layout
@@ -65,6 +66,7 @@
   prefetch.useLocalStorage(true);
   prefetchNum.useLocalStorage(3);
   hires.useLocalStorage(false);
+  lores.useLocalStorage(true);
   oldreddit.useLocalStorage(false);
   muted.useLocalStorage(true);
   layout.useLocalStorage(0);
@@ -928,10 +930,13 @@
           .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
         video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}")
-          +if('currpost.preview.vid.webm')
-            source(src="{currpost.preview.vid.webm}")
-          +if('currpost.preview.vid.mp4')
-            source(src="{currpost.preview.vid.mp4}")
+          +if('$lores')
+            source(src="{currpost.preview.vid.lores}")
+            +else()
+              +if('currpost.preview.vid.webm')
+                source(src="{currpost.preview.vid.webm}")
+              +if('currpost.preview.vid.mp4')
+                source(src="{currpost.preview.vid.mp4}")
       +elseif('currpost.is_album')
         +if('currpost.preview.img.album[albumindex].is_video')
           video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}")

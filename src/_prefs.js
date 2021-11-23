@@ -45,6 +45,7 @@ export const multireddit = store("multireddit");
 export const prefetch = store("prefetch");
 export const prefetchNum = store("prefetchNum");
 export const hires = store("hires");
+export const lores = store("lores");
 export const oldreddit = store("oldreddit");
 export const muted = store("muted");
 export const layout = store("layout");

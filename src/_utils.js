@@ -259,7 +259,8 @@ async function vidsrc(url, item) {
     return {
       gif: `https://i.imgur.com/${name}.gif`,
       //webm: `https://i.imgur.com/${name}.webm`,
-      mp4: `https://i.imgur.com/${name}.mp4`
+      mp4: `https://i.imgur.com/${name}.mp4`,
+      lores: `https://i.imgur.com/${name}.mp4`
     };
   } else if (url.includes("gfycat.com/")) {
     let name = url.match(/gfycat.com\/(.*)/)[1];
@@ -285,7 +286,8 @@ async function vidsrc(url, item) {
       return {
         webm: data.gfyItem.webmUrl,
         mp4: data.gfyItem.mp4Url,
-        gif: data.gfyItem.gifUrl
+        gif: data.gfyItem.gifUrl,
+        lores: data.gfyItem.mp4Url.replace(".mp4", "-mobile.mp4")
       };
     }
 
@@ -294,7 +296,8 @@ async function vidsrc(url, item) {
       return {
         webm: data.gfyItem.webmUrl,
         mp4: data.gfyItem.mp4Url,
-        gif: data.gfyItem.gifUrl
+        gif: data.gfyItem.gifUrl,
+        lores: data.gfyItem.mp4Url.replace(".mp4", "-mobile.mp4")
       };
     } catch {
       // If gfycat.com fails, try redgifs.com
@@ -307,7 +310,8 @@ async function vidsrc(url, item) {
         return {
           webm: data.gfyItem.webmUrl,
           mp4: data.gfyItem.mp4Url,
-          gif: data.gfyItem.gifUrl
+          gif: data.gfyItem.gifUrl,
+          lores: data.gfyItem.mp4Url.replace(".mp4", "-mobile.mp4")
         };
       } catch {
         return {};
@@ -331,18 +335,21 @@ async function vidsrc(url, item) {
       return {
         webm: data.gfyItem.webmUrl,
         mp4: data.gfyItem.mp4Url,
-        gif: data.gfyItem.gifUrl
+        gif: data.gfyItem.gifUrl,
+        lores: data.gfyItem.mp4Url.replace(".mp4", "-mobile.mp4")
       };
     } catch {
       return {};
     }
   } else if (url.includes("v.redd.it")) {
     return {
-      mp4: item.data.media.reddit_video.fallback_url
+      mp4: item.data.media.reddit_video.fallback_url,
+      lores: item.data.media.reddit_video.fallback_url
     };
   } else if (url.includes("reddit.com/r/")) {
     return {
-      mp4: item.data.preview.reddit_video_preview.fallback_url
+      mp4: item.data.preview.reddit_video_preview.fallback_url,
+      lores: item.data.preview.reddit_video_preview.fallback_url
     };
   } else if (url.includes("i.redd.it/")) {
     let gif, mp4;
@@ -356,10 +363,11 @@ async function vidsrc(url, item) {
       mp4 = item.data.preview.images[0].variants.mp4.source.url;
     }
 
-    return { gif: decode(gif), mp4: decode(mp4) };
+    return { gif: decode(gif), mp4: decode(mp4), lores: decode(mp4) };
   } else {
     return {
-      mp4: item.data.preview.reddit_video_preview.fallback_url
+      mp4: item.data.preview.reddit_video_preview.fallback_url,
+      lores: item.data.preview.reddit_video_preview.fallback_url
     };
   }
 }
