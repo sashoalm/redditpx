@@ -97,16 +97,16 @@
   $: {
     //console.log('block 1: gotoElWidth', displayposts.length, $gotoElWidth)
     if ($gotoElWidth > 2000) {
-      numCols = 4;
+      numCols = 4 + 2;
       tinygoto = false;
     } else if ($gotoElWidth > 1440) {
-      numCols = 3;
+      numCols = 3 + 2;
       tinygoto = false;
     } else if ($gotoElWidth > 500 && $gotoElWidth <= 1440) {
-      numCols = 2;
+      numCols = 2 + 2;
       tinygoto = false;
     } else {
-      numCols = 1;
+      numCols = 1 + 1;
       tinygoto = true;
     }
 
@@ -1025,13 +1025,13 @@ $isnotmulti-color: #34a853
           border: 5px solid rbga(0, 0, 0, 0)
 
           &.playing
-            border: 5px solid $green !important
+            //border: 5px solid $green !important
 
           &.canplaythrough
-            border: 5px solid $yellow
+            //border: 5px solid $yellow
 
           &.paused
-            border: 5px solid $red !important
+            //border: 5px solid $red !important
 
           .image, .video
             width: 100%
