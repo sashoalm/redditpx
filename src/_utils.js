@@ -297,7 +297,7 @@ async function vidsrc(url, item) {
         webm: data.gfyItem.webmUrl,
         mp4: data.gfyItem.mp4Url,
         gif: data.gfyItem.gifUrl,
-        lores: data.gfyItem.mp4Url.replace(".mp4", "-mobile.mp4")
+        lores: data.gfyItem.mp4Url
       };
     } catch {
       // If gfycat.com fails, try redgifs.com
