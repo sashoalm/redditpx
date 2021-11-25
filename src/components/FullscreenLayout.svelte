@@ -22,7 +22,7 @@
   import { faEye as faShow } from "@fortawesome/free-solid-svg-icons/faEye";
   import { faEyeSlash as faHide } from "@fortawesome/free-solid-svg-icons/faEyeSlash";
   import { faTh as faColumns } from "@fortawesome/free-solid-svg-icons/faTh";
-  import { faSquareFull as faFullscreen } from "@fortawesome/free-solid-svg-icons/faSquareFull";
+  import { faExpandArrowsAlt as faFullscreen } from "@fortawesome/free-solid-svg-icons/faExpandArrowsAlt";
 
   import { faMobileAlt as faPortrait } from "@fortawesome/free-solid-svg-icons/faMobileAlt";
   import { faDesktop as faLandscape } from "@fortawesome/free-solid-svg-icons/faDesktop";
@@ -150,7 +150,6 @@
   let multiredditstr = "";
   let showhidestr = "Hide (h)";
   let mutedstr = "Sound Off";
-  let layoutstr = "Fullscreen";
 
   let autoplaytimer;
 
@@ -344,12 +343,6 @@
     deepsearchstr = `Search for ${filterValue}`;
 
     mutedstr = `Sound ${$muted ? "off" : "on"}`;
-
-    if ($layout == 0) {
-      layoutstr = "Fullscreen mode";
-    } else {
-      layoutstr = "Columns mode";
-    }
 
     if ($over18 == 0) {
       over18str = "nsfw off";
@@ -981,11 +974,16 @@
                 Icon(icon="{faPortrait}")
               +elseif('$portraitLandscape == 2')
                 Icon(class="landscape", icon="{faPortrait}")
-          span.btn.layout.tooltip(
-            data-tooltip="{layoutstr}",
+          span.btn.layout.active.tooltip(
+            data-tooltip="Solo mode",
             on:click="{toggleLayout}"
           )
-            Icon(icon="{$layout == 0 ? faFullscreen : faColumns}")
+            Icon(icon="{faFullscreen}")
+          span.btn.layout.disable.tooltip(
+            data-tooltip="Grid mode",
+            on:click="{toggleLayout}"
+          )
+            Icon(icon="{faColumns}")
           span.btn.imagevideo.tooltip(
             data-tooltip="{imageVideoStr}",
             on:click="{toggleImageVideo}"
@@ -1343,7 +1341,10 @@ $isnotmulti-color: #34a853
           cursor: pointer
           font-size: 1.4rem
           bottom: 2px
-          color: white
+
+          &.active
+            color: white
+            
 
         &.muted
           cursor: pointer

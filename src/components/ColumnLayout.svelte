@@ -21,8 +21,10 @@
   import { faMinusCircle } from "@fortawesome/free-solid-svg-icons/faMinusCircle";
   import { faEye as faShow } from "@fortawesome/free-solid-svg-icons/faEye";
   import { faEyeSlash as faHide } from "@fortawesome/free-solid-svg-icons/faEyeSlash";
-  import { faTh as faColumns } from "@fortawesome/free-solid-svg-icons/faTh";
-  import { faSquareFull as faFullscreen } from "@fortawesome/free-solid-svg-icons/faSquareFull";
+  import { faThLarge as faColumns } from "@fortawesome/free-solid-svg-icons/faThLarge";
+  import { faTh as faColumnsMore } from "@fortawesome/free-solid-svg-icons/faTh";
+  import { faExpandArrowsAlt as faFullscreen } from "@fortawesome/free-solid-svg-icons/faExpandArrowsAlt";
+  import { faArrowsAltH as faArrows } from "@fortawesome/free-solid-svg-icons/faArrowsAltH";
 
   import { faMobileAlt as faPortrait } from "@fortawesome/free-solid-svg-icons/faMobileAlt";
   import { faDesktop as faLandscape } from "@fortawesome/free-solid-svg-icons/faDesktop";
@@ -94,22 +96,22 @@
   let gridTemplateColsStyle;
   let cols;
 
-  $: {
-    //console.log('block 1: gotoElWidth', displayposts.length, $gotoElWidth)
-    if ($gotoElWidth > 2000) {
-      numCols = 4 + 2;
-      tinygoto = false;
-    } else if ($gotoElWidth > 1440) {
-      numCols = 3 + 2;
-      tinygoto = false;
-    } else if ($gotoElWidth > 500 && $gotoElWidth <= 1440) {
-      numCols = 2 + 2;
-      tinygoto = false;
-    } else {
-      numCols = 1 + 1;
-      tinygoto = true;
-    }
+  //console.log('block 1: gotoElWidth', displayposts.length, $gotoElWidth)
+  if ($gotoElWidth > 2000) {
+    numCols = 4 + 2;
+    tinygoto = false;
+  } else if ($gotoElWidth > 1440) {
+    numCols = 3 + 2;
+    tinygoto = false;
+  } else if ($gotoElWidth > 500 && $gotoElWidth <= 1440) {
+    numCols = 2 + 2;
+    tinygoto = false;
+  } else {
+    numCols = 1 + 1;
+    tinygoto = true;
+  }
 
+  $: {
     cols = Array(numCols).fill(0).map(Number.call, Number);
     gridTemplateColsStyle = `grid-template-columns: ${Array(numCols)
       .fill("1fr")
@@ -138,7 +140,6 @@
   let multiredditstr = "";
   let showhidestr = "Hide (h)";
   let mutedstr = "Sound Off";
-  let layoutstr = "Fullscreen";
 
   let autoplaytimer;
   let scrolldelaytimer;
@@ -249,6 +250,14 @@
       threshold: 0.25
     });
   });
+
+  function increaseCols() {
+    numCols = numCols + 1;
+  }
+
+  function decreaseCols() {
+    numCols = numCols - 1;
+  }
 
   function toggleImageVideo() {
     $imageVideo = $imageVideo + 1;
@@ -385,12 +394,6 @@
     deepsearchstr = `Search for ${filterValue}`;
 
     mutedstr = `Sound ${$muted ? "off" : "on"}`;
-
-    if ($layout == 0) {
-      layoutstr = "Fullscreen mode";
-    } else {
-      layoutstr = "Columns mode";
-    }
 
     if ($over18 == 0) {
       over18str = "nsfw off";
@@ -715,10 +718,20 @@
               +elseif('$portraitLandscape == 2')
                 Icon(class="landscape", icon="{faPortrait}")
           span.btn.layout.tooltip(
-            data-tooltip="{layoutstr}",
+            data-tooltip="Solo mode",
             on:click="{toggleLayout}"
           )
-            Icon(icon="{$layout == 0 ? faFullscreen : faColumns}")
+            Icon(icon="{faFullscreen}")
+          span.btn.layout.active.tooltip(
+            data-tooltip="Grid mode",
+            on:click="{decreaseCols}"
+          )
+            Icon(icon="{faColumns}")
+          span.btn.layout.active.tooltip(
+            data-tooltip="Grid mode",
+            on:click="{increaseCols}"
+          )
+            Icon(icon="{faColumnsMore}")
           span.btn.imagevideo.tooltip(
             data-tooltip="{imageVideoStr}",
             on:click="{toggleImageVideo}"
@@ -734,12 +747,6 @@
             on:click="{toggleMuted}"
           )
             Icon(icon="{$muted ? faSoundOff : faSoundOn}")
-          +if('tinygoto')
-            span.btn.reload.tooltip(data-tooltip="{reloadstr}", on:click='{loadMore}', class:loaderror='{loadError}')
-              +if('loading')
-                Icon(icon="{faSpinner}")
-                +else()
-                  Icon(icon="{faSync}")
           span.btn.over18wrapper.tooltip(
             data-tooltip="{over18str}",
             class:over18="{!$over18}",
@@ -873,6 +880,7 @@ $isnotmulti-color: #34a853
 
         .reload
           bottom: -1px
+          left: 10px
 
       .btn
         text-align: center
@@ -940,11 +948,17 @@ $isnotmulti-color: #34a853
           bottom: 2px
           color: white
 
+        &.arrows
+          color: white
+          top: 1px
+
         &.layout
           cursor: pointer
           font-size: 1.4rem
           bottom: 2px
-          color: white
+
+          &.active
+            color: white
 
         &.muted
           cursor: pointer
