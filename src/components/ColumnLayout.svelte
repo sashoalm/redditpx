@@ -246,9 +246,9 @@
       startAutoPlay();
     }
 
-    observer = new IntersectionObserver(handleIntersection, {
-      threshold: 0.25
-    });
+    //observer = new IntersectionObserver(handleIntersection, {
+    //  threshold: 0.25
+    //});
   });
 
   function increaseCols() {
@@ -674,7 +674,7 @@
                     +else()
                       img.image(src='{currpost.preview.img.default}')
                   +elseif('currpost.is_video')
-                    video.video(on:pause="{pausedHandler}", on:play="{playHandler}", on:canplaythrough="{canPlayThroughHandler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
+                    video.video(on:pause="{pausedHandler}", on:play="{playHandler}", on:canplaythrough="{canPlayThroughHandler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted)
                       +if('$lores')
                         source(src="{currpost.preview.vid.lores}")
                         +else()
@@ -684,7 +684,7 @@
                             source(src="{currpost.preview.vid.mp4}")
                   +elseif('currpost.is_album')
                     +if('currpost.preview.img.album[albumindex].is_video')
-                      video.video(on:pause="{pausedHandler}", on:play="{playHandler}", on:canplaythrough="{canPlayThroughHandler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted, preload="{currpost.visible ? 'auto' : 'none'}")
+                      video.video(on:pause="{pausedHandler}", on:play="{playHandler}", on:canplaythrough="{canPlayThroughHandler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted)
                         source(src="{currpost.preview.img.album[albumindex].hires}")
                       +else()
                         +if('$hires')
