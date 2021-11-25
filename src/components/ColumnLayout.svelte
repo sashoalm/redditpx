@@ -52,6 +52,7 @@
     multireddit,
     prefetch,
     prefetchNum,
+    numCols,
     hires,
     lores,
     oldreddit,
@@ -67,6 +68,7 @@
   multireddit.useLocalStorage({});
   prefetch.useLocalStorage(true);
   prefetchNum.useLocalStorage(3);
+  numCols.useLocalStorage(3);
   hires.useLocalStorage(false);
   lores.useLocalStorage(true);
   oldreddit.useLocalStorage(false);
@@ -92,28 +94,27 @@
 
   $: subreddit = slugstr ? slugstr.split("/")[1] : "";
 
-  let numCols = 3;
   let gridTemplateColsStyle;
   let cols;
 
   //console.log('block 1: gotoElWidth', displayposts.length, $gotoElWidth)
-  if ($gotoElWidth > 2000) {
-    numCols = 4 + 2;
-    tinygoto = false;
-  } else if ($gotoElWidth > 1440) {
-    numCols = 3 + 2;
-    tinygoto = false;
-  } else if ($gotoElWidth > 500 && $gotoElWidth <= 1440) {
-    numCols = 2 + 2;
-    tinygoto = false;
-  } else {
-    numCols = 1 + 1;
-    tinygoto = true;
-  }
+  //if ($gotoElWidth > 2000) {
+  //  numCols.set(4 + 2);
+  //  tinygoto = false;
+  //} else if ($gotoElWidth > 1440) {
+  //  numCols.set(3 + 2);
+  //  tinygoto = false;
+  //} else if ($gotoElWidth > 500 && $gotoElWidth <= 1440) {
+  //  numCols.set(2 + 2);
+  //  tinygoto = false;
+  //} else {
+  //  numCols.set(1 + 1);
+  //  tinygoto = true;
+  //}
 
   $: {
-    cols = Array(numCols).fill(0).map(Number.call, Number);
-    gridTemplateColsStyle = `grid-template-columns: ${Array(numCols)
+    cols = Array($numCols).fill(0).map(Number.call, Number);
+    gridTemplateColsStyle = `grid-template-columns: ${Array($numCols)
       .fill("1fr")
       .join(" ")}`;
   }
@@ -252,11 +253,11 @@
   });
 
   function increaseCols() {
-    numCols = numCols + 1;
+    numCols.set($numCols + 1);
   }
 
   function decreaseCols() {
-    numCols = numCols - 1;
+    numCols.set($numCols - 1);
   }
 
   function toggleImageVideo() {
@@ -666,7 +667,7 @@
       +each('cols as c')
         .col
           +each('displayposts as currpost, i')
-            +if('i%numCols === c')
+            +if('i%$numCols === c')
               .brick(id="{'brick-' + i}", i="{i}", on:click="{toggleAutoPlay}", class:paused="{currpost.paused}", class:canplaythrough="{currpost.canplaythrough}", class:playing="{currpost.playing}")
                 +if('currpost.is_image && !currpost.is_album')
                   +if('$hires')

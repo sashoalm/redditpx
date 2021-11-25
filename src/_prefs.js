@@ -44,6 +44,7 @@ export const over18 = store("over18");
 export const multireddit = store("multireddit");
 export const prefetch = store("prefetch");
 export const prefetchNum = store("prefetchNum");
+export const numCols = store("numCols");
 export const hires = store("hires");
 export const lores = store("lores");
 export const oldreddit = store("oldreddit");

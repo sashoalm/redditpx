@@ -10,6 +10,7 @@
     scrollspeed,
     prefetch,
     prefetchNum,
+    numCols,
     hires,
     lores,
     oldreddit,
@@ -21,6 +22,7 @@
   scrollspeed.useLocalStorage(2);
   prefetch.useLocalStorage(true);
   prefetchNum.useLocalStorage(3);
+  numCols.useLocalStorage(3);
   hires.useLocalStorage(false);
   lores.useLocalStorage(false);
   oldreddit.useLocalStorage(false);
@@ -41,6 +43,7 @@
   let _oldreddit = $oldreddit;
   let _prefetch = $prefetch;
   let _prefetchNum = $prefetchNum;
+  let _numCols = $numCols;
   let _muted = $muted;
   let _imageVideo = $imageVideo;
   let _portraitLandscape = $portraitLandscape;
@@ -72,6 +75,11 @@
     let k = Math.round(_prefetchNum);
     if (k) {
       prefetchNum.set(k);
+    }
+
+    let l = Math.round(_numCols);
+    if (l) {
+      numCols.set(l);
     }
   }
 
@@ -163,6 +171,10 @@
           span.text Prefetch items
           span.input
             input(type="number", bind:value='{_prefetchNum}')
+        .item
+          span.text Number of columns in grid mode
+          span.input
+            input(type="number", bind:value='{_numCols}')
         .item
           span.tooltip(data-tooltip="Sound on/off") Sound
           span
