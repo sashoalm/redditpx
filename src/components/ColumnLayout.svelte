@@ -193,8 +193,32 @@
 
     console.log("After dedupe/Total loaded: ", posts.length);
 
+    posts = unflatten(posts);
+    console.log("After unflatten ", posts.length);
+
     loading = false;
     reloadstr = "Load more";
+  }
+
+  function unflatten(posts) {
+    let unflattened = [];
+    let copy;
+
+    for (let post of posts) {
+      if (post.is_album) {
+        for (let item of post.preview.img.album) {
+          copy = JSON.parse(JSON.stringify(post));
+          copy.preview.img.album = [item];
+          copy.url = item.default;
+          unflattened.push(copy);
+          console.log("Pushing ", copy.url);
+        }
+      } else {
+        unflattened.push(post);
+      }
+    }
+
+    return unflattened;
   }
 
   let observer;
@@ -671,13 +695,13 @@
               .brick(id="{'brick-' + i}", i="{i}", on:click="{toggleAutoPlay}", class:paused="{currpost.paused}", class:canplaythrough="{currpost.canplaythrough}", class:playing="{currpost.playing}")
                 +if('currpost.is_image && !currpost.is_album')
                   +if('$hires')
-                    img.image(src='{currpost.url}')
+                    img.image.hires(src='{currpost.url}')
                     +else()
-                      img.image(src='{currpost.preview.img.default}')
+                      img.image.default(src='{currpost.preview.img.default}')
                   +elseif('currpost.is_video')
-                    video.video(on:pause="{pausedHandler}", on:play="{playHandler}", on:canplaythrough="{canPlayThroughHandler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted)
+                    video.video.is_video(on:pause="{pausedHandler}", on:play="{playHandler}", on:canplaythrough="{canPlayThroughHandler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted)
                       +if('$lores')
-                        source(src="{currpost.preview.vid.lores}")
+                        source.lores(src="{currpost.preview.vid.lores}")
                         +else()
                           +if('currpost.preview.vid.webm')
                             source(src="{currpost.preview.vid.webm}")
@@ -685,13 +709,13 @@
                             source(src="{currpost.preview.vid.mp4}")
                   +elseif('currpost.is_album')
                     +if('currpost.preview.img.album[albumindex].is_video')
-                      video.video(on:pause="{pausedHandler}", on:play="{playHandler}", on:canplaythrough="{canPlayThroughHandler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted)
-                        source(src="{currpost.preview.img.album[albumindex].hires}")
+                      video.video.is_album(on:pause="{pausedHandler}", on:play="{playHandler}", on:canplaythrough="{canPlayThroughHandler}", autoplay="{currpost.visible ? true: null}", playsinline, loop, muted)
+                        source.hires(src="{currpost.preview.img.album[albumindex].hires}")
                       +else()
                         +if('$hires')
-                          img.image(src="{currpost.preview.img.album[albumindex].hires}")
+                          img.image.is_album.hires(src="{currpost.preview.img.album[albumindex].hires}")
                           +else()
-                            img.image(src="{currpost.preview.img.album[albumindex].default}")
+                            img.image.is_album.default(src="{currpost.preview.img.album[albumindex].default}")
     +if('displayposts.length || posts.length')
       .goto(class:tinygoto='{tinygoto}', class:hide="{uiVisible == false}", bind:clientWidth='{$_gotoElWidth}')
         .btnwrapper
@@ -854,14 +878,14 @@ $isnotmulti-color: #34a853
       border-radius: 3px
       color: $text-color
       width: 100%
-      grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
+      grid-template-columns: repeat(auto-fill, minmax(40px, 1fr))
 
       &.tinygoto
         grid-template-rows: auto 1fr
         grid-template-columns: 1fr
 
         .btnwrapper
-          grid-template-columns: repeat(auto-fill, minmax(32px, 1fr))
+          grid-template-columns: repeat(auto-fill, minmax(40px, 1fr))
           display: grid
 
       .btnwrapper
