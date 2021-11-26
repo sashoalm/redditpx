@@ -244,7 +244,7 @@
     // Start autoplay by default
     if ($autoplay) {
       scrollPos = window.pageYOffset;
-      startAutoPlay();
+      stopAndStartAutoPlay();
     }
 
     //observer = new IntersectionObserver(handleIntersection, {
