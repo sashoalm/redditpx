@@ -211,7 +211,6 @@
           copy.preview.img.album = [item];
           copy.url = item.default;
           unflattened.push(copy);
-          console.log("Pushing ", copy.url);
         }
       } else {
         unflattened.push(post);
