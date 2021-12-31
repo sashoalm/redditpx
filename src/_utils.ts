@@ -1,4 +1,12 @@
 import fetchJsonp from "fetch-jsonp";
+import {
+  Dims,
+  Img,
+  FormattedItem,
+  Orientation,
+  RedditItem,
+  Vid
+} from "./_types";
 
 export function queryp(query) {
   return Object.entries(query)
@@ -6,20 +14,24 @@ export function queryp(query) {
     .join("&");
 }
 
-export async function get_posts(url) {
+export async function get_posts(url: string) {
   try {
     let res = await fetchJsonp(url, { jsonpCallback: "jsonp", timeout: 5000 });
     let data = await res.json();
     console.log("Fetched: ", data.data.children.length, data.data);
     let subreddit = data.data.children[0].data.subreddit;
 
-    let filtered = data.data.children.filter((item) => filter(item));
+    let filtered: RedditItem[] = data.data.children.filter((item) =>
+      filter(item)
+    );
     console.log("Filtered: ", filtered.length, filtered);
 
-    let formatted = await Promise.all(filtered.map((post) => format(post)));
+    let formatted: FormattedItem[] = await Promise.all(
+      filtered.map((post) => format(post))
+    );
 
     console.log("Formatted: ", formatted.length, formatted);
-    let posts = formatted.filter(
+    let posts: FormattedItem[] = formatted.filter(
       (v, i, a) => a.findIndex((t) => t.url == v.url) === i
     );
 
@@ -406,24 +418,24 @@ function thumbnail(item) {
   }
 }
 
-export async function format(item) {
+export async function format(item: RedditItem): Promise<FormattedItem> {
   if (Object.entries(item).length == 0) {
-    return { title: "Loading ..", vidpreview: {} };
+    return { title: "Loading ..", vidpreview: {}, url: undefined };
   }
 
-  let imgs = await imgsrc(url(item), item);
-  let vids = is_video(item) ? await vidsrc(url(item), item) : {};
-  let dims = get_dims(item);
+  let imgs: Img = await imgsrc(url(item), item);
+  let vids: Vid = is_video(item) ? await vidsrc(url(item), item) : {};
+  let dims: Dims = get_dims(item);
 
-  let orientation = "normal";
+  let orientation: Orientation = Orientation.Normal;
   if (dims.width / dims.height <= 0.7) {
-    orientation = "portrait";
+    orientation = Orientation.Portrait;
   } else if (dims.width / dims.height >= 1.7) {
-    orientation = "landscape";
+    orientation = Orientation.Landscape;
   }
   let t = thumbnail(item);
 
-  let formatted = {
+  let formatted: FormattedItem = {
     id: item.data.id,
     author: item.data.author,
     authorp: `u/${item.data.author}`,
