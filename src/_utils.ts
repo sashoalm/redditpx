@@ -77,7 +77,7 @@ export function is_video(item) {
 }
 
 export function get_dims(item) {
-  let dims = { height: "", width: "" };
+  let dims = { height: 0, width: 0 };
 
   if (is_image(item)) {
     try {
@@ -218,7 +218,7 @@ function extractAlbumInfoNode(html) {
     .querySelectorAll('script[type="text/javascript"]');
 
   let node = Array.from(scripts).filter((node) =>
-    node.text.includes("album.generalInit()")
+    node.outerHTML.includes("album.generalInit()")
   )[0];
 
   // Extract JSON embedded inside js code
@@ -229,7 +229,7 @@ function extractAlbumInfoNode(html) {
   // 4. Convert to JSON
   //
   let info = JSON.parse(
-    node.text
+    node.outerHTML
       .replace(/ /g, "")
       .replace(/\n/g, "")
       .match(/,album:(.*),images:/)[1]
@@ -394,6 +394,7 @@ function thumbnail(item) {
     if (thumbnail == "spoiler" || thumbnail == "nsfw") {
       return decode(item.data.preview.images[0].resolutions[0].url);
     } else if (thumbnail == "default" && item.data.is_gallery == true) {
+      /* @ts-ignore */
       return decode(Object.values(item.data.media_metadata)[0].p[0].u);
     } else if (thumbnail != undefined) {
       return thumbnail;
