@@ -37,7 +37,19 @@ interface Resolution {
   height: number;
 }
 
-interface Variants {}
+interface Variants {
+  mp4: VariantItem;
+  gif: VariantItem;
+}
+
+interface VariantItem {
+  resolutions: VariantItemData[];
+  source: VariantItemData;
+}
+
+interface VariantItemData {
+  url: string;
+}
 
 interface Image {
   source: Source;
@@ -48,7 +60,21 @@ interface Image {
 
 interface RedditPreview {
   images: Image[];
+  reddit_video_preview: VideoPreview;
   enabled: boolean;
+}
+
+export interface VideoPreview {
+  bitrate_kbps: number;
+  fallback_url: string;
+  height: number;
+  width: number;
+  scrubber_media_url: string;
+  dash_url: string;
+  duration: number;
+  hls_url: string;
+  is_gif: boolean;
+  transcoding_status: string;
 }
 
 interface ResizedIcon {
@@ -113,7 +139,7 @@ interface Media {
   reddit_video: RedditVideo2;
 }
 
-interface Data {
+export interface RedditItemData {
   approved_at_utc?: any;
   subreddit: string;
   selftext: string;
@@ -147,6 +173,7 @@ interface Data {
   secure_media: SecureMedia;
   is_reddit_media_domain: boolean;
   is_meta: boolean;
+  is_gallery: boolean;
   category?: any;
   secure_media_embed: SecureMediaEmbed;
   link_flair_text: string;
@@ -224,11 +251,63 @@ interface Data {
   num_crossposts: number;
   media: Media;
   is_video: boolean;
+  media_metadata: RedditMediaMetadata;
+  gallery_data: GalleryData;
+  crosspost_parent_list: RedditItemData[];
+}
+
+export interface RedditMediaMetadata {
+  [key: string]: MediaMetadataItem;
+}
+
+export interface MediaMetadataItem {
+  status: string;
+  e: string;
+  m: string;
+  p: P[];
+  s: S;
+  id: string;
+}
+export interface S {
+  y: number;
+  x: number;
+  j;
+  u: string;
+}
+
+export interface P {
+  y: number;
+  x: number;
+  u: string;
+}
+
+export interface GalleryData {
+  items: GalleryDataItem[];
+}
+export interface GalleryDataItem {
+  caption: string;
+  media_id: string;
+  id: number;
 }
 
 export interface RedditItem {
   kind: string;
-  data: Data;
+  data: RedditItemData;
+}
+
+export interface LinkFlairRichtext {
+  e: string;
+  t: string;
+}
+
+export interface AuthorFlairRichtext {
+  e: string;
+  t: string;
+}
+
+export interface Preview {
+  images: Image[];
+  enabled: boolean;
 }
 
 /* Formatted */
@@ -273,9 +352,17 @@ export type Vid =
 export interface Img {
   default: string;
   hires: string;
+  album: Album[];
 }
 
-export interface Preview {
+export interface Album {
+  default: string | undefined;
+  hires: string | undefined;
+  is_image: boolean;
+  is_video: boolean;
+}
+
+export interface FormattedItemPreview {
   vid: Vid;
   img: Img;
 }
@@ -298,7 +385,7 @@ export type FormattedItem =
       url: string;
       dims: Dims;
       orientation: Orientation;
-      preview: Preview;
+      preview: FormattedItemPreview;
     }
   | {
       url: undefined;
@@ -310,4 +397,109 @@ export enum Orientation {
   Normal = "normal",
   Portrait = "portrait",
   Landscape = "landscape"
+}
+
+/* Sapper */
+import type fetchType from "node-fetch";
+export type FetchResponse = Response | ReturnType<typeof fetchType>;
+
+export interface PreloadContext {
+  fetch: (url: string, options?: any) => Promise<FetchResponse>;
+  error: (statusCode: number, message: Error | string) => void;
+  redirect: (statusCode: number, location: string) => void;
+}
+
+export type PageParams = Record<string, string>;
+export type Query = Record<string, string | string[]>;
+
+export interface PageContext {
+  host: string;
+  path: string;
+  params: PageParams;
+  query: Query;
+  /** `error` is only set when the error page is being rendered. */
+  error?: Error;
+}
+
+/**
+ * @deprecated PageContext is the preferred name. Page might be removed in the future.
+ */
+export { PageContext as Page };
+
+export type PreloadResult = object | Promise<object>;
+export interface Preload {
+  (this: PreloadContext, page: PageContext, session: any): PreloadResult;
+}
+export interface Redirect {
+  statusCode: number;
+  location: string;
+}
+
+export interface DOMComponentModule {
+  default: DOMComponentConstructor;
+  preload?: Preload;
+}
+
+export interface DOMComponent {
+  $set: (data: any) => void;
+  $destroy: () => void;
+}
+
+export interface DOMComponentConstructor {
+  new (options: {
+    target: Element;
+    props: unknown;
+    hydrate: boolean;
+  }): DOMComponent;
+}
+
+export interface DOMComponentLoader {
+  js: () => Promise<DOMComponentModule>;
+}
+
+export interface Route {
+  pattern: RegExp;
+  parts: Array<{
+    i: number;
+    params?: (match: RegExpExecArray) => PageParams;
+  }>;
+}
+
+export interface HydratedTarget {
+  redirect?: Redirect;
+  preload_error?: any;
+  props: any;
+  branch: Branch;
+}
+
+export type Branch = Array<{
+  segment: string;
+  match?: RegExpExecArray;
+  component?: DOMComponentConstructor;
+  part?: number;
+}>;
+
+export type InitialData = {
+  session: any;
+  preloaded?: object[];
+  status: number;
+  error: Error;
+  baseUrl: string;
+};
+
+export interface ScrollPosition {
+  x: number;
+  y: number;
+}
+
+export interface Target {
+  href: string;
+  route: Route;
+  match: RegExpExecArray;
+  page: PageContext;
+}
+
+export interface Redirect {
+  statusCode: number;
+  location: string;
 }

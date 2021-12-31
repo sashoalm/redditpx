@@ -5,10 +5,13 @@ import {
   FormattedItem,
   Orientation,
   RedditItem,
-  Vid
+  Vid,
+  Query,
+  RedditItemData,
+  Album
 } from "./_types";
 
-export function queryp(query) {
+export function queryp(query: Query) {
   return Object.entries(query)
     .map(([key, val]) => `${key}=${val}`)
     .join("&");
@@ -19,9 +22,10 @@ export async function get_posts(url: string) {
     let res = await fetchJsonp(url, { jsonpCallback: "jsonp", timeout: 5000 });
     let data = await res.json();
     console.log("Fetched: ", data.data.children.length, data.data);
-    let subreddit = data.data.children[0].data.subreddit;
 
-    let filtered: RedditItem[] = data.data.children.filter((item) =>
+    let subreddit: string = data.data.children[0].data.subreddit;
+
+    let filtered: RedditItem[] = data.data.children.filter((item: RedditItem) =>
       filter(item)
     );
     console.log("Filtered: ", filtered.length, filtered);
@@ -55,11 +59,11 @@ export async function get_posts(url: string) {
   }
 }
 
-function is_album(imgs) {
+function is_album(imgs: Img) {
   return imgs.hasOwnProperty("album");
 }
 
-function is_image(item) {
+function is_image(item: RedditItem) {
   return (
     url(item).endsWith(".jpg") ||
     url(item).endsWith(".png") ||
@@ -68,17 +72,17 @@ function is_image(item) {
   );
 }
 
-function is_post(item) {
+function is_post(item: RedditItem) {
   // t3
   // t1 = to support /u/jeffjose
   return item.kind == "t3" || item.kind == "t1";
 }
 
-export function filter(item) {
+export function filter(item: RedditItem): boolean {
   return is_post(item) && (is_image(item) || is_video(item));
 }
 
-export function is_video(item) {
+export function is_video(item: RedditItem) {
   if (!item.data.hasOwnProperty("preview")) return false;
   return (
     item.data.is_video ||
@@ -88,8 +92,8 @@ export function is_video(item) {
   );
 }
 
-export function get_dims(item) {
-  let dims = { height: 0, width: 0 };
+export function get_dims(item: RedditItem) {
+  let dims: Dims = { height: 0, width: 0 };
 
   if (is_image(item)) {
     try {
@@ -118,7 +122,7 @@ export function get_dims(item) {
   return dims;
 }
 
-function extract_reddit_gallery(data, imgs) {
+function extract_reddit_gallery(data: RedditItemData, imgs: Img) {
   let media_ids = data.gallery_data.items.map((x) => x.media_id);
 
   imgs["album"] = [];
@@ -126,7 +130,7 @@ function extract_reddit_gallery(data, imgs) {
   media_ids.forEach((id) => {
     let mi = data.media_metadata[id];
 
-    let hires;
+    let hires: string | undefined;
     try {
       hires = decode(mi.s.u);
     } catch {
@@ -146,7 +150,7 @@ function extract_reddit_gallery(data, imgs) {
   });
 }
 
-async function imgsrc(u, item) {
+async function imgsrc(u: string, item: RedditItem) {
   let imgs;
   try {
     imgs = {
@@ -219,11 +223,11 @@ async function imgsrc(u, item) {
   return imgs;
 }
 
-function randint(min, max) {
+function randint(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function extractAlbumInfoNode(html) {
+function extractAlbumInfoNode(html): Album[] {
   let parser = new DOMParser();
   let scripts = parser
     .parseFromString(html, "text/html")
@@ -247,7 +251,7 @@ function extractAlbumInfoNode(html) {
       .match(/,album:(.*),images:/)[1]
   );
 
-  let album = [];
+  let album: Album[] = [];
   for (const _i of info.album_images.images) {
     let i = {
       // Force mp4 for imgur gifs
@@ -265,7 +269,7 @@ function extractAlbumInfoNode(html) {
   return album;
 }
 
-async function vidsrc(url, item) {
+async function vidsrc(url: string, item: RedditItem) {
   if (url.includes("imgur.com/")) {
     let name = url.match(/imgur.com\/(.*)\..*/)[1];
     return {
@@ -384,22 +388,24 @@ async function vidsrc(url, item) {
   }
 }
 
-function url(item) {
-  return item.data.url || item.data.link_url;
+function url(item: RedditItem) {
+  return item.data.url;
 }
 
-function decode(str) {
+function decode(str: string): string | undefined {
   if (str === undefined) return undefined;
   let parser = new DOMParser();
-  return parser.parseFromString(`<!doctype html><body>${str}`, "text/html").body
-    .textContent;
+  return (
+    parser.parseFromString(`<!doctype html><body>${str}`, "text/html").body
+      .textContent || undefined
+  );
 }
 
-function title(item) {
-  return decode(item.data.title) || decode(item.data.link_title);
+function title(item: RedditItem): string {
+  return decode(item.data.title) || "(no title)";
 }
 
-function thumbnail(item) {
+function thumbnail(item: RedditItem) {
   let thumbnail = item.data.thumbnail;
 
   try {
@@ -408,13 +414,11 @@ function thumbnail(item) {
     } else if (thumbnail == "default" && item.data.is_gallery == true) {
       /* @ts-ignore */
       return decode(Object.values(item.data.media_metadata)[0].p[0].u);
-    } else if (thumbnail != undefined) {
-      return thumbnail;
     } else {
-      return item.data.link_url;
+      return item.data.thumbnail;
     }
   } catch (e) {
-    return item.data.link_url;
+    return item.data.thumbnail;
   }
 }
 
