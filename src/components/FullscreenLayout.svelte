@@ -34,7 +34,7 @@
   import { onMount, tick } from "svelte";
   import { goto as ahref } from "@sapper/app";
 
-  import { get_posts, queryp } from "../_utils.ts";
+  import { get_posts, queryp } from "../_utils";
 
   import { subreddits } from "../_subreddits";
 
@@ -185,6 +185,8 @@
     } = await get_posts(
       `https://reddit.com/${slugstr}.json?after=${after}&${queryp(params)}`
     ));
+
+    console.log(posts);
 
     // load `favorite` from localstorage
     for (let p of newposts) {

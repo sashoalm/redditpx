@@ -33,7 +33,7 @@
   import { onMount, afterUpdate, tick } from "svelte";
   import { goto as ahref } from "@sapper/app";
 
-  import { get_posts, queryp } from "../_utils.ts";
+  import { get_posts, queryp } from "../_utils";
 
   import {
     writable,
