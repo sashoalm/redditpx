@@ -1,5 +1,5 @@
 <script>
-  import Icon from "fa-svelte";
+  import Icon from "fa-svelte/src/Icon.svelte";
   import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
   import { faCog as faSettings } from "@fortawesome/free-solid-svg-icons/faCog";
   import { faHome } from "@fortawesome/free-solid-svg-icons/faHome";
