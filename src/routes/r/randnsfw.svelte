@@ -21,7 +21,7 @@
   import FullscreenLayout from "../../components/FullscreenLayout.svelte";
   import ColumnLayout from "../../components/ColumnLayout.svelte";
 
-  import { get_posts, queryp } from "../../_utils";
+  import { get_posts, queryp } from "../../_utils.ts";
 
   import { stores } from "@sapper/app";
   const { page } = stores();

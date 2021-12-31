@@ -34,7 +34,7 @@
   import { onMount, tick } from "svelte";
   import { goto as ahref } from "@sapper/app";
 
-  import { get_posts, queryp } from "../_utils";
+  import { get_posts, queryp } from "../_utils.ts";
 
   import { subreddits } from "../_subreddits";
 
