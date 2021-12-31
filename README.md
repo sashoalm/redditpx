@@ -21,6 +21,7 @@ redditpx has the following new features
 - [x] user profile
 - [x] /r/random and /r/randnsfw
 - [x] filter images, videos or both
+- [x] search subreddits
 - [ ] customizable keyboard shortcuts
 
 .. in addition to the features it shares with redditp
