@@ -1063,13 +1063,16 @@
                 img(alt="prefetch", src="{nexturl.default}")
         +if('nexturl.is_video')
           video
-            +if('nexturl.preview')
-              +if('nexturl.preview.vid.webm')
-                source(src="{nexturl.preview.vid.webm}")
-              +if('nexturl.preview.vid.mp4')
-                source(src="{nexturl.preview.vid.mp4}")
+            +if('$lores')
+              source(src="{nexturl.preview.vid.lores}")
               +else()
-                source(src="{nexturl.default}")
+                +if('nexturl.preview')
+                  +if('nexturl.preview.vid.webm')
+                    source(src="{nexturl.preview.vid.webm}")
+                  +if('nexturl.preview.vid.mp4')
+                    source(src="{nexturl.preview.vid.mp4}")
+                  +else()
+                    source(src="{nexturl.default}")
 </template>
 
 <style lang="sass">
