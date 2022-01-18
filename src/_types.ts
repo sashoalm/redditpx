@@ -347,8 +347,8 @@ export interface Album {
 }
 
 export interface FormattedItemPreview {
-  vid: Vid;
-  img: Img;
+  vid?: Vid;
+  img?: Img;
 }
 
 export type FormattedItem =
@@ -374,7 +374,8 @@ export type FormattedItem =
   | {
       url: undefined;
       title: string;
-      vidpreview: Object;
+      preview: FormattedItemPreview;
+      is_video: boolean;
     };
 
 export enum Orientation {

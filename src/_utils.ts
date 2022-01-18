@@ -36,10 +36,13 @@ export async function get_posts(url: string) {
 
     console.log("Formatted: ", formatted.length, formatted);
     let posts: FormattedItem[] = formatted.filter(
-      (v, i, a) => a.findIndex((t) => t.url == v.url) === i
+      (v, i, a) =>
+        a.findIndex((t) => t.url == v.url) === i &&
+        // Negate .. something that is_video but have 0 vid preview data
+        !(v.is_video && Object.keys(v.preview.vid).length == 0)
     );
 
-    console.log("Deduped: ", posts.length, posts);
+    console.log("Deduped+Live: ", posts.length, posts);
 
     return {
       posts,
@@ -143,7 +146,16 @@ function extract_reddit_gallery(data: RedditItemData, imgs: Img) {
 
       // TODO: assumption: reddit.com/gallery is always images
       is_image: true,
-      is_video: false
+      is_video: false,
+
+      // Needed for prefetch to work
+      preview: {
+        vid: {
+          lores: decode(mi.p[mi.p.length - 1].u),
+          mp4: hires
+        },
+        img: { default: "", hires: "", album: [] }
+      }
     };
 
     imgs["album"].push(i);
@@ -253,15 +265,29 @@ function extractAlbumInfoNode(html): Album[] {
 
   let album: Album[] = [];
   for (const _i of info.album_images.images) {
+    let lores = `https://i.imgur.com/${_i.hash}h${_i.ext}`.replace(
+      ".gif",
+      ".mp4"
+    );
+    let hires = `https://i.imgur.com/${_i.hash}${_i.ext}`.replace(
+      ".gif",
+      ".mp4"
+    );
     let i = {
       // Force mp4 for imgur gifs
-      hires: `https://i.imgur.com/${_i.hash}${_i.ext}`.replace(".gif", ".mp4"),
-      default: `https://i.imgur.com/${_i.hash}h${_i.ext}`.replace(
-        ".gif",
-        ".mp4"
-      ),
+      hires: hires,
+      default: lores,
       is_image: !_i.prefer_video,
-      is_video: _i.prefer_video
+      is_video: _i.prefer_video,
+
+      // Needed for prefetch to work
+      preview: {
+        vid: {
+          lores: lores,
+          mp4: hires
+        },
+        img: { default: "", hires: "", album: [] }
+      }
     };
 
     album.push(i);
@@ -299,12 +325,18 @@ async function vidsrc(url: string, item: RedditItem) {
         }
       );
       let data = await res.json();
-      return {
-        webm: data.gfyItem.webmUrl,
-        mp4: data.gfyItem.mp4Url,
-        gif: data.gfyItem.gifUrl,
-        lores: data.gfyItem.mp4Url.replace(".mp4", "-mobile.mp4")
-      };
+      console.log(data);
+      if (data.errorMessage.code == "NotFound") {
+        console.log("early");
+        return {};
+      } else {
+        return {
+          webm: data.gfyItem.webmUrl,
+          mp4: data.gfyItem.mp4Url,
+          gif: data.gfyItem.gifUrl,
+          lores: data.gfyItem.mp4Url.replace(".mp4", "-mobile.mp4")
+        };
+      }
     }
 
     try {
@@ -426,7 +458,15 @@ function thumbnail(item: RedditItem) {
 
 export async function format(item: RedditItem): Promise<FormattedItem> {
   if (Object.entries(item).length == 0) {
-    return { title: "Loading ..", vidpreview: {}, url: undefined };
+    return {
+      title: "Loading ..",
+      url: undefined,
+
+      // These 2 are needed for filtering out dead items
+      // It is normally the video that goes dead, hence video related fields
+      preview: {},
+      is_video: false
+    };
   }
 
   let imgs: Img = await imgsrc(url(item), item);
