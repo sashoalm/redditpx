@@ -122,23 +122,6 @@ interface AllAwarding {
   static_icon_url: string;
 }
 
-interface RedditVideo2 {
-  bitrate_kbps: number;
-  fallback_url: string;
-  height: number;
-  width: number;
-  scrubber_media_url: string;
-  dash_url: string;
-  duration: number;
-  hls_url: string;
-  is_gif: boolean;
-  transcoding_status: string;
-}
-
-interface Media {
-  reddit_video: RedditVideo2;
-}
-
 export interface RedditItemData {
   approved_at_utc?: any;
   subreddit: string;
@@ -249,7 +232,7 @@ export interface RedditItemData {
   subreddit_subscribers: number;
   created_utc: number;
   num_crossposts: number;
-  media: Media;
+  media: SecureMedia;
   is_video: boolean;
   media_metadata: RedditMediaMetadata;
   gallery_data: GalleryData;
@@ -360,6 +343,7 @@ export interface Album {
   hires: string | undefined;
   is_image: boolean;
   is_video: boolean;
+  preview: FormattedItemPreview;
 }
 
 export interface FormattedItemPreview {
