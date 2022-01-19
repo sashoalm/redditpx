@@ -488,3 +488,73 @@ export interface Redirect {
   statusCode: number;
   location: string;
 }
+
+/// redgifs response
+
+export type Urls = {
+  sd: string;
+  hd: string;
+  poster: string;
+  thumbnail: string;
+  vthumbnail: string;
+};
+
+export type Gif = {
+  id: string;
+  createDate: number;
+  hasAudio: boolean;
+  width: number;
+  height: number;
+  likes: number;
+  tags: string[];
+  verified: boolean;
+  views: number;
+  duration: number;
+  published: boolean;
+  urls: Urls;
+  userName: string;
+  type: number;
+  avgColor: string;
+  gallery?: any;
+};
+
+export type User = {
+  creationtime: number;
+  description?: any;
+  followers: number;
+  following: number;
+  gifs: number;
+  name?: any;
+  profileImageUrl?: any;
+  profileUrl: string;
+  publishedCollections: number;
+  publishedGifs: number;
+  socialUrl1?: any;
+  socialUrl2?: any;
+  socialUrl3?: any;
+  socialUrl4?: any;
+  socialUrl5?: any;
+  socialUrl6?: any;
+  socialUrl7?: any;
+  socialUrl8?: any;
+  socialUrl9?: any;
+  socialUrl10?: any;
+  subscription: number;
+  url: string;
+  username: string;
+  verified: boolean;
+  views: number;
+  poster: string;
+  preview: string;
+  thumbnail: string;
+};
+
+export type ErrorMessage = {
+  code: string;
+  description: string;
+};
+export type RedgifsResponse = {
+  gif: Gif;
+  user: User;
+  errorMessage?: ErrorMessage;
+};

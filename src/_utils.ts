@@ -8,7 +8,8 @@ import {
   Vid,
   Query,
   RedditItemData,
-  Album
+  Album,
+  RedgifsResponse
 } from "./_types";
 
 export function queryp(query: Query) {
@@ -28,6 +29,10 @@ export async function get_posts(url: string) {
     let filtered: RedditItem[] = data.data.children.filter((item: RedditItem) =>
       filter(item)
     );
+
+    // Debug line
+    //filtered = filtered.slice(3, 4);
+
     console.log("Filtered: ", filtered.length, filtered);
 
     let formatted: FormattedItem[] = await Promise.all(
@@ -319,22 +324,18 @@ async function vidsrc(url: string, item: RedditItem) {
 
     if (res.status == 404) {
       let res = await fetch(
-        `https://api.redgifs.com/v1/gfycats/${name.toLowerCase()}`,
+        `https://api.redgifs.com/v2/gifs/${name.toLowerCase()}`,
         {
           //mode: "no-cors"
         }
       );
-      let data = await res.json();
-      console.log(data);
+      let data: RedgifsResponse = await res.json();
       if (data.errorMessage.code == "NotFound") {
-        console.log("early");
         return {};
       } else {
         return {
-          webm: data.gfyItem.webmUrl,
-          mp4: data.gfyItem.mp4Url,
-          gif: data.gfyItem.gifUrl,
-          lores: data.gfyItem.mp4Url.replace(".mp4", "-mobile.mp4")
+          mp4: data.gif.urls.hd,
+          lores: data.gif.urls.sd
         };
       }
     }
@@ -353,15 +354,13 @@ async function vidsrc(url: string, item: RedditItem) {
       // If gfycat.com fails, try redgifs.com
       // https://www.reddit.com/r/redditp/comments/gpwo5u/why_do_so_many_gifs_and_video_come_up_blank_black/
       try {
-        let res = await fetch(`https://api.redgifs.com/v1/gfycats/${name}`, {
+        let res = await fetch(`https://api.redgifs.com/v2/gifs/${name}`, {
           //mode: "no-cors"
         });
-        let data = await res.json();
+        let data: RedgifsResponse = await res.json();
         return {
-          webm: data.gfyItem.webmUrl,
-          mp4: data.gfyItem.mp4Url,
-          gif: data.gfyItem.gifUrl,
-          lores: data.gfyItem.mp4Url.replace(".mp4", "-mobile.mp4")
+          mp4: data.gif.urls.hd,
+          lores: data.gif.urls.sd
         };
       } catch {
         return {};
@@ -377,16 +376,14 @@ async function vidsrc(url: string, item: RedditItem) {
     // Sometimes gfycat urls are of the format "redgifs.com/watch/videoid".
     name = name.replace("watch/", "");
 
-    let res = await fetch(`https://api.redgifs.com/v1/gfycats/${name}`, {
+    let res = await fetch(`https://api.redgifs.com/v2/gfycats/${name}`, {
       //mode: "no-cors"
     });
     try {
-      let data = await res.json();
+      let data: RedgifsResponse = await res.json();
       return {
-        webm: data.gfyItem.webmUrl,
-        mp4: data.gfyItem.mp4Url,
-        gif: data.gfyItem.gifUrl,
-        lores: data.gfyItem.mp4Url.replace(".mp4", "-mobile.mp4")
+        mp4: data.gif.urls.hd,
+        lores: data.gif.urls.sd
       };
     } catch {
       return {};
