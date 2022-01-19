@@ -330,7 +330,7 @@ async function vidsrc(url: string, item: RedditItem) {
         }
       );
       let data: RedgifsResponse = await res.json();
-      if (data.errorMessage.code == "NotFound") {
+      if (data.errorMessage?.code == "NotFound") {
         return {};
       } else {
         return {
