@@ -13,6 +13,7 @@
 redditpx has the following new features
 
 - [x] better mobile mode
+- [x] scrolling grid view
 - [x] hover preview
 - [x] filtering
 - [x] favorite
