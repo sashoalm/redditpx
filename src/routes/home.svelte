@@ -16,8 +16,6 @@
   favorite.useLocalStorage({});
   multireddit.useLocalStorage({});
 
-  import { subreddits } from "../_subreddits";
-
   let showSettings = false;
 
   let exploreSubreddits = [
@@ -126,12 +124,11 @@
               .item(style='background-color: {subreddit.color}' )
                 span {subreddit.url}
       .subreddits
-        +each('subreddits as subreddit')
-          a(href='{`/r/${subreddit}`}')
-          a(href='{`/r/${subreddit}/search`}')
-          a(href='{`/r/${subreddit}/hot`}')
-          a(href='{`/r/${subreddit}/new`}')
-          a(href='{`/r/${subreddit}/top`}')
+        a(href='/r/subreddit')
+        a(href='/r/subreddit/search')
+        a(href='/r/subreddit/hot')
+        a(href='/r/subreddit/top')
+        a(href='/r/subreddit/new')
 </template>
 
 <style lang="sass">

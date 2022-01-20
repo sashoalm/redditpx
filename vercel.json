@@ -1,0 +1,25 @@
+{
+  "rewrites": [
+    { "source": "/home", "destination": "/home.html" },
+    {
+      "source": "/r/:path",
+      "destination": "/r/subreddit/index.html"
+    },
+    {
+      "source": "/r/:path/top",
+      "destination": "/r/subreddit/top/index.html"
+    },
+    {
+      "source": "/r/:path/hot",
+      "destination": "/r/subreddit/hot/index.html"
+    },
+    {
+      "source": "/r/:path/new",
+      "destination": "/r/subreddit/new/index.html"
+    },
+    {
+      "source": "/r/:path/search",
+      "destination": "/r/subreddit/search/index.html"
+    }
+  ]
+}
