@@ -441,7 +441,9 @@ function decode(str: string): string | undefined {
 }
 
 function title(item: RedditItem): string {
-  return decode(item.data.title) || "(no title)";
+  return (
+    decode(item.data.title) || decode(item.data.link_title) || "(no title)"
+  );
 }
 
 function thumbnail(item: RedditItem) {

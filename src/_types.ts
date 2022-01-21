@@ -131,7 +131,6 @@ export interface RedditItemData {
   mod_reason_title?: any;
   gilded: number;
   clicked: boolean;
-  title: string;
   link_flair_richtext: any[];
   subreddit_name_prefixed: string;
   hidden: boolean;
@@ -228,8 +227,10 @@ export interface RedditItemData {
   permalink: string;
   parent_whitelist_status: string;
   stickied: boolean;
-  url: string; // deprecate this at some point
+  url: string; // TODO: deprecate this at some point
   link_url: string; // this is the replacement for `url`, it seems like
+  title: string; // TODO: deprecate this at some point
+  link_title: string; // This is the replacement for `title`
   subreddit_subscribers: number;
   created_utc: number;
   num_crossposts: number;
