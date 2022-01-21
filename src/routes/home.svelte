@@ -129,6 +129,9 @@
         a(href='/r/subreddit/hot')
         a(href='/r/subreddit/top')
         a(href='/r/subreddit/new')
+        a(href='/domain/domainname')
+        a(href='/u/username')
+        a(href='/user/username')
 </template>
 
 <style lang="sass">

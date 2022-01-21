@@ -3,24 +3,36 @@
   "rewrites": [
     { "source": "/home", "destination": "/home.html" },
     {
-      "source": "/r/:path",
+      "source": "/r/:sr",
       "destination": "/r/subreddit/index.html"
     },
     {
-      "source": "/r/:path/top",
+      "source": "/r/:sr/top",
       "destination": "/r/subreddit/top/index.html"
     },
     {
-      "source": "/r/:path/hot",
+      "source": "/r/:sr/hot",
       "destination": "/r/subreddit/hot/index.html"
     },
     {
-      "source": "/r/:path/new",
+      "source": "/r/:sr/new",
       "destination": "/r/subreddit/new/index.html"
     },
     {
-      "source": "/r/:path/search",
+      "source": "/r/:sr/search",
       "destination": "/r/subreddit/search/index.html"
+    },
+    {
+      "source": "/domain/:d",
+      "destination": "/domain/domainname/index.html"
+    },
+    {
+      "source": "/user/:u",
+      "destination": "/user/username/index.html"
+    },
+    {
+      "source": "/u/:u",
+      "destination": "/u/username/index.html"
     }
   ]
 }
