@@ -376,7 +376,7 @@ async function vidsrc(url: string, item: RedditItem) {
     // Sometimes gfycat urls are of the format "redgifs.com/watch/videoid".
     name = name.replace("watch/", "");
 
-    let res = await fetch(`https://api.redgifs.com/v2/gfycats/${name}`, {
+    let res = await fetch(`https://api.redgifs.com/v2/gifs/${name}`, {
       //mode: "no-cors"
     });
     try {
