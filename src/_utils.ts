@@ -159,7 +159,11 @@ function extract_reddit_gallery(data: RedditItemData, imgs: Img) {
           lores: decode(mi.p[mi.p.length - 1].u),
           mp4: hires
         },
-        img: { default: "", hires: "", album: [] }
+        img: {
+          hires: hires,
+          default: decode(mi.p[mi.p.length - 1].u),
+          album: []
+        }
       }
     };
 
@@ -291,7 +295,11 @@ function extractAlbumInfoNode(html): Album[] {
           lores: lores,
           mp4: hires
         },
-        img: { default: "", hires: "", album: [] }
+        img: {
+          hires: hires,
+          default: lores,
+          album: []
+        }
       }
     };
 
