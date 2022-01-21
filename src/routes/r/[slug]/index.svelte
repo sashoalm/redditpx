@@ -8,8 +8,6 @@
       `https://reddit.com/${slugstr}.json?${queryp(query)}`
     );
 
-    console.log("x", posts);
-
     return { posts, after, res, slugstr };
   }
 </script>

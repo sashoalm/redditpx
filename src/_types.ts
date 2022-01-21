@@ -228,7 +228,8 @@ export interface RedditItemData {
   permalink: string;
   parent_whitelist_status: string;
   stickied: boolean;
-  url: string;
+  url: string; // deprecate this at some point
+  link_url: string; // this is the replacement for `url`, it seems like
   subreddit_subscribers: number;
   created_utc: number;
   num_crossposts: number;

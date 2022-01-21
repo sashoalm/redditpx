@@ -427,8 +427,8 @@ async function vidsrc(url: string, item: RedditItem) {
   }
 }
 
-function url(item: RedditItem) {
-  return item.data.url;
+function url(item: RedditItem): string {
+  return item.data.url || item.data.link_url;
 }
 
 function decode(str: string): string | undefined {
