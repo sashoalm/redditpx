@@ -2,7 +2,7 @@
   export async function preload({ path, params, query }) {
     if (typeof window === "undefined") return;
 
-    let slugstr = path.substring(1).replace(/\/$/, ""); // remove the leading and trailing slash
+    let slugstr = path.substring(1).replace(/\/$/, "").replace(/%20/g, ""); // remove the leading and trailing slash, and %20 (spaces)
 
     let { posts, res, after } = await get_posts(
       `https://reddit.com/${slugstr}.json?${queryp(query)}`
@@ -14,14 +14,16 @@
 
 <script>
   import FullscreenLayout from "../../../components/FullscreenLayout.svelte";
+  import ColumnLayout from "../../../components/ColumnLayout.svelte";
 
   import { get_posts, queryp } from "../../../_utils.ts";
 
   import { stores } from "@sapper/app";
   const { page } = stores();
 
-  import { favorite } from "../../../_prefs";
+  import { favorite, layout } from "../../../_prefs";
   favorite.useLocalStorage({});
+  layout.useLocalStorage(0);
 
   export let posts = [];
   export let res;
@@ -35,5 +37,8 @@
 </script>
 
 <template lang="pug">
-  FullscreenLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
+  +if('$layout == 0')
+    FullscreenLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
+    +else()
+      ColumnLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
 </template>
