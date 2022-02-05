@@ -2,6 +2,8 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/home", "destination": "/home.html" },
+    { "source": "/random", "destination": "/random.html" },
+    { "source": "/randnsfw", "destination": "/randnsfw.html" },
     {
       "source": "/r/:sr",
       "destination": "/r/subreddit/index.html"

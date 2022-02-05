@@ -123,7 +123,7 @@
             a(href='{`/${subreddit.url}`}', rel="prefetch")
               .item(style='background-color: {subreddit.color}' )
                 span {subreddit.url}
-      .subreddits
+      .links
         a(href='/r/subreddit')
         a(href='/r/subreddit/search')
         a(href='/r/subreddit/hot')
@@ -132,6 +132,8 @@
         a(href='/domain/domainname')
         a(href='/u/username')
         a(href='/user/username')
+        a(href='/random')
+        a(href='/randnsfw')
 </template>
 
 <style lang="sass">
@@ -225,7 +227,7 @@ $over18-border-color: #ea4335
           &.favorite
             color: $favorite-color
 
-      .subreddits
+      .links
         display: none
 
       .items
