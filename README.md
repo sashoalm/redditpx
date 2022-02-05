@@ -41,3 +41,4 @@ redditpx has the following new features
 - svelte/sapper for framework
 - twemoji for images
 - favicon.io for favicons
+
