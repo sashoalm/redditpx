@@ -1,4 +1,5 @@
 <script>
+  console.log("[fullscreen]: test");
   import Icon from "fa-svelte/src/Icon.svelte";
   import { faVolumeUp as faSoundOn } from "@fortawesome/free-solid-svg-icons/faVolumeUp";
   import { faVolumeMute as faSoundOff } from "@fortawesome/free-solid-svg-icons/faVolumeMute";
