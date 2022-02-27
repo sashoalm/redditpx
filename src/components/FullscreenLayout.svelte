@@ -859,6 +859,11 @@
       toggleUIVisiblity();
     }
 
+    // v
+    if (event.keyCode == 118) {
+      toggleImageVideo();
+    }
+
     // Left Arrow, a, k, Page-up
     if (
       event.keyCode == 37 ||
