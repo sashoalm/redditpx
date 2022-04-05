@@ -5654,5 +5654,5 @@ export const subreddits = [
   "zoeydeutch",
   "zombies",
   "zooeydeschanel",
-  "Zoomies"
+  "Zoomies",
 ];

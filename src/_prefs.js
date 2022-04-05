@@ -7,7 +7,9 @@ const store = (key, initialValue) => {
     subscribe,
     set,
     useLocalStorage: (defaultValue) => {
-      if (!process.browser) return;
+      if (!process.browser) {
+        return;
+      }
 
       let json;
       try {
@@ -30,7 +32,7 @@ const store = (key, initialValue) => {
           return;
         }
       });
-    }
+    },
   };
 };
 

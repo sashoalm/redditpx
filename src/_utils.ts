@@ -9,13 +9,11 @@ import {
   Query,
   RedditItemData,
   Album,
-  RedgifsResponse
+  RedgifsResponse,
 } from "./_types";
 
 export function queryp(query: Query) {
-  return Object.entries(query)
-    .map(([key, val]) => `${key}=${val}`)
-    .join("&");
+  return Object.entries(query).map(([key, val]) => `${key}=${val}`).join("&");
 }
 
 export async function get_posts(url: string) {
@@ -26,8 +24,8 @@ export async function get_posts(url: string) {
 
     let subreddit: string = data.data.children[0].data.subreddit;
 
-    let filtered: RedditItem[] = data.data.children.filter((item: RedditItem) =>
-      filter(item)
+    let filtered: RedditItem[] = data.data.children.filter(
+      (item: RedditItem) => filter(item),
     );
 
     // Debug line
@@ -36,7 +34,7 @@ export async function get_posts(url: string) {
     console.log("Filtered: ", filtered.length, filtered);
 
     let formatted: FormattedItem[] = await Promise.all(
-      filtered.map((post) => format(post))
+      filtered.map((post) => format(post)),
     );
 
     console.log("Formatted: ", formatted.length, formatted);
@@ -44,7 +42,7 @@ export async function get_posts(url: string) {
       (v, i, a) =>
         a.findIndex((t) => t.url == v.url) === i &&
         // Negate .. something that is_video but have 0 vid preview data
-        !(v.is_video && Object.keys(v.preview.vid).length == 0)
+        !(v.is_video && Object.keys(v.preview.vid).length == 0),
     );
 
     console.log("Deduped+Live: ", posts.length, posts);
@@ -53,7 +51,7 @@ export async function get_posts(url: string) {
       posts,
       subreddit,
       after: data.data.after,
-      res: { ok: true, res: res }
+      res: { ok: true, res: res },
     };
   } catch (error) {
     console.log("[get_posts]: error");
@@ -62,7 +60,7 @@ export async function get_posts(url: string) {
       posts: [],
       after: "",
       subreddit: "",
-      res: { ok: false, res: error }
+      res: { ok: false, res: error },
     };
   }
 }
@@ -74,9 +72,9 @@ function is_album(imgs: Img) {
 function is_image(item: RedditItem) {
   return (
     url(item).endsWith(".jpg") ||
-    url(item).endsWith(".png") ||
-    url(item).includes("imgur.com/a/") ||
-    url(item).includes("reddit.com/gallery/")
+      url(item).endsWith(".png") ||
+      url(item).includes("imgur.com/a/") ||
+      url(item).includes("reddit.com/gallery/")
   );
 }
 
@@ -91,12 +89,14 @@ export function filter(item: RedditItem): boolean {
 }
 
 export function is_video(item: RedditItem) {
-  if (!item.data.hasOwnProperty("preview")) return false;
+  if (!item.data.hasOwnProperty("preview")) {
+    return false;
+  }
   return (
     item.data.is_video ||
-    item.data.preview.hasOwnProperty("reddit_video_preview") ||
-    (url(item).startsWith("https://i.redd.it") && url(item).endsWith(".gif")) ||
-    url(item).startsWith("https://gfycat.com/")
+      item.data.preview.hasOwnProperty("reddit_video_preview") ||
+      (url(item).startsWith("https://i.redd.it") && url(item).endsWith(".gif")) ||
+      url(item).startsWith("https://gfycat.com/")
   );
 }
 
@@ -105,25 +105,28 @@ export function get_dims(item: RedditItem) {
 
   if (is_image(item)) {
     try {
-      dims = {
-        height: item.data.preview.images[0].source.height,
-        width: item.data.preview.images[0].source.width
-      };
+      dims =
+        {
+          height: item.data.preview.images[0].source.height,
+          width: item.data.preview.images[0].source.width,
+        };
     } catch {
       console.info(`No dims for ${url(item)}`, item);
     }
   } else if (is_video(item)) {
     try {
-      dims = {
-        height: item.data.preview.reddit_video_preview.height,
-        width: item.data.preview.reddit_video_preview.width
-      };
+      dims =
+        {
+          height: item.data.preview.reddit_video_preview.height,
+          width: item.data.preview.reddit_video_preview.width,
+        };
     } catch {
       // if you cant get the dims from the video, pick it up from the preview image
-      dims = {
-        height: item.data.preview.images[0].source.height,
-        width: item.data.preview.images[0].source.width
-      };
+      dims =
+        {
+          height: item.data.preview.images[0].source.height,
+          width: item.data.preview.images[0].source.width,
+        };
     }
   }
 
@@ -155,16 +158,13 @@ function extract_reddit_gallery(data: RedditItemData, imgs: Img) {
 
       // Needed for prefetch to work
       preview: {
-        vid: {
-          lores: decode(mi.p[mi.p.length - 1].u),
-          mp4: hires
-        },
+        vid: { lores: decode(mi.p[mi.p.length - 1].u), mp4: hires },
         img: {
           hires: hires,
           default: decode(mi.p[mi.p.length - 1].u),
-          album: []
-        }
-      }
+          album: [],
+        },
+      },
     };
 
     imgs["album"].push(i);
@@ -174,15 +174,15 @@ function extract_reddit_gallery(data: RedditItemData, imgs: Img) {
 async function imgsrc(u: string, item: RedditItem) {
   let imgs;
   try {
-    imgs = {
-      default: decode(item.data.preview.images[0].resolutions.slice(-1)[0].url),
-      hires: decode(item.data.preview.images[0].source.url)
-    };
+    imgs =
+      {
+        default: decode(
+          item.data.preview.images[0].resolutions.slice(-1)[0].url,
+        ),
+        hires: decode(item.data.preview.images[0].source.url),
+      };
   } catch {
-    imgs = {
-      default: url(item),
-      hires: url(item)
-    };
+    imgs = { default: url(item), hires: url(item) };
   }
 
   if (u.includes("reddit.com/gallery/")) {
@@ -250,12 +250,12 @@ function randint(min: number, max: number): number {
 
 function extractAlbumInfoNode(html): Album[] {
   let parser = new DOMParser();
-  let scripts = parser
-    .parseFromString(html, "text/html")
-    .querySelectorAll('script[type="text/javascript"]');
+  let scripts = parser.parseFromString(html, "text/html").querySelectorAll(
+    'script[type="text/javascript"]',
+  );
 
-  let node = Array.from(scripts).filter((node) =>
-    node.outerHTML.includes("album.generalInit()")
+  let node = Array.from(scripts).filter(
+    (node) => node.outerHTML.includes("album.generalInit()"),
   )[0];
 
   // Extract JSON embedded inside js code
@@ -266,21 +266,20 @@ function extractAlbumInfoNode(html): Album[] {
   // 4. Convert to JSON
   //
   let info = JSON.parse(
-    node.outerHTML
-      .replace(/ /g, "")
-      .replace(/\n/g, "")
-      .match(/,album:(.*),images:/)[1]
+    node.outerHTML.replace(/ /g, "").replace(/\n/g, "").match(
+      /,album:(.*),images:/,
+    )[1],
   );
 
   let album: Album[] = [];
   for (const _i of info.album_images.images) {
     let lores = `https://i.imgur.com/${_i.hash}h${_i.ext}`.replace(
       ".gif",
-      ".mp4"
+      ".mp4",
     );
     let hires = `https://i.imgur.com/${_i.hash}${_i.ext}`.replace(
       ".gif",
-      ".mp4"
+      ".mp4",
     );
     let i = {
       // Force mp4 for imgur gifs
@@ -291,16 +290,9 @@ function extractAlbumInfoNode(html): Album[] {
 
       // Needed for prefetch to work
       preview: {
-        vid: {
-          lores: lores,
-          mp4: hires
-        },
-        img: {
-          hires: hires,
-          default: lores,
-          album: []
-        }
-      }
+        vid: { lores: lores, mp4: hires },
+        img: { hires: hires, default: lores, album: [] },
+      },
     };
 
     album.push(i);
@@ -315,7 +307,7 @@ async function vidsrc(url: string, item: RedditItem) {
       gif: `https://i.imgur.com/${name}.gif`,
       //webm: `https://i.imgur.com/${name}.webm`,
       mp4: `https://i.imgur.com/${name}.mp4`,
-      lores: `https://i.imgur.com/${name}.mp4`
+      lores: `https://i.imgur.com/${name}.mp4`,
     };
   } else if (url.includes("gfycat.com/")) {
     let name = url.match(/gfycat.com\/(.*)/)[1];
@@ -326,25 +318,25 @@ async function vidsrc(url: string, item: RedditItem) {
     // Sometimes gfycat urls are of the format "gfycat.com/gifs/detail/videoid".
     name = name.replace("gifs/detail/", "");
 
-    let res = await fetch(`https://api.gfycat.com/v1/gfycats/${name}`, {
-      //mode: "no-cors"
-    });
+    let res = await fetch(
+      `https://api.gfycat.com/v1/gfycats/${name}`,
+      {
+        //mode: "no-cors"
+      },
+    );
 
     if (res.status == 404) {
       let res = await fetch(
         `https://api.redgifs.com/v2/gifs/${name.toLowerCase()}`,
         {
           //mode: "no-cors"
-        }
+        },
       );
       let data: RedgifsResponse = await res.json();
       if (data.errorMessage?.code == "NotFound") {
         return {};
       } else {
-        return {
-          mp4: data.gif.urls.hd,
-          lores: data.gif.urls.sd
-        };
+        return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd };
       }
     }
 
@@ -354,22 +346,23 @@ async function vidsrc(url: string, item: RedditItem) {
         webm: data.gfyItem.webmUrl,
         mp4: data.gfyItem.mp4Url,
         gif: data.gfyItem.gifUrl,
-        lores: data.gfyItem.mp4Url
-          .replace("giant.", "thumbs.")
-          .replace(".mp4", "-mobile.mp4")
+        lores: data.gfyItem.mp4Url.replace("giant.", "thumbs.").replace(
+          ".mp4",
+          "-mobile.mp4",
+        ),
       };
     } catch {
       // If gfycat.com fails, try redgifs.com
       // https://www.reddit.com/r/redditp/comments/gpwo5u/why_do_so_many_gifs_and_video_come_up_blank_black/
       try {
-        let res = await fetch(`https://api.redgifs.com/v2/gifs/${name}`, {
-          //mode: "no-cors"
-        });
+        let res = await fetch(
+          `https://api.redgifs.com/v2/gifs/${name}`,
+          {
+            //mode: "no-cors"
+          },
+        );
         let data: RedgifsResponse = await res.json();
-        return {
-          mp4: data.gif.urls.hd,
-          lores: data.gif.urls.sd
-        };
+        return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd };
       } catch {
         return {};
       }
@@ -384,27 +377,27 @@ async function vidsrc(url: string, item: RedditItem) {
     // Sometimes gfycat urls are of the format "redgifs.com/watch/videoid".
     name = name.replace("watch/", "");
 
-    let res = await fetch(`https://api.redgifs.com/v2/gifs/${name}`, {
-      //mode: "no-cors"
-    });
+    let res = await fetch(
+      `https://api.redgifs.com/v2/gifs/${name}`,
+      {
+        //mode: "no-cors"
+      },
+    );
     try {
       let data: RedgifsResponse = await res.json();
-      return {
-        mp4: data.gif.urls.hd,
-        lores: data.gif.urls.sd
-      };
+      return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd };
     } catch {
       return {};
     }
   } else if (url.includes("v.redd.it")) {
     return {
       mp4: item.data.media.reddit_video.fallback_url,
-      lores: item.data.media.reddit_video.fallback_url
+      lores: item.data.media.reddit_video.fallback_url,
     };
   } else if (url.includes("reddit.com/r/")) {
     return {
       mp4: item.data.preview.reddit_video_preview.fallback_url,
-      lores: item.data.preview.reddit_video_preview.fallback_url
+      lores: item.data.preview.reddit_video_preview.fallback_url,
     };
   } else if (url.includes("i.redd.it/")) {
     let gif, mp4;
@@ -422,7 +415,7 @@ async function vidsrc(url: string, item: RedditItem) {
   } else {
     return {
       mp4: item.data.preview.reddit_video_preview.fallback_url,
-      lores: item.data.preview.reddit_video_preview.fallback_url
+      lores: item.data.preview.reddit_video_preview.fallback_url,
     };
   }
 }
@@ -432,11 +425,12 @@ function url(item: RedditItem): string {
 }
 
 function decode(str: string): string | undefined {
-  if (str === undefined) return undefined;
+  if (str === undefined) {
+    return undefined;
+  }
   let parser = new DOMParser();
   return (
-    parser.parseFromString(`<!doctype html><body>${str}`, "text/html").body
-      .textContent || undefined
+    parser.parseFromString(`<!doctype html><body>${str}`, "text/html").body.textContent || undefined
   );
 }
 
@@ -472,7 +466,7 @@ export async function format(item: RedditItem): Promise<FormattedItem> {
       // These 2 are needed for filtering out dead items
       // It is normally the video that goes dead, hence video related fields
       preview: {},
-      is_video: false
+      is_video: false,
     };
   }
 
@@ -481,9 +475,9 @@ export async function format(item: RedditItem): Promise<FormattedItem> {
   let dims: Dims = get_dims(item);
 
   let orientation: Orientation = Orientation.Normal;
-  if (dims.width / dims.height <= 0.7) {
+  if ((dims.width / dims.height) <= 0.7) {
     orientation = Orientation.Portrait;
-  } else if (dims.width / dims.height >= 1.7) {
+  } else if ((dims.width / dims.height) >= 1.7) {
     orientation = Orientation.Landscape;
   }
   let t = thumbnail(item);
@@ -505,10 +499,7 @@ export async function format(item: RedditItem): Promise<FormattedItem> {
     url: url(item),
     dims: dims,
     orientation: orientation,
-    preview: {
-      vid: vids,
-      img: imgs
-    }
+    preview: { vid: vids, img: imgs },
   };
 
   return formatted;
