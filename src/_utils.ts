@@ -326,17 +326,24 @@ async function vidsrc(url: string, item: RedditItem) {
     );
 
     if (res.status == 404) {
-      let res = await fetch(
-        `https://api.redgifs.com/v2/gifs/${name.toLowerCase()}`,
-        {
-          //mode: "no-cors"
-        },
-      );
-      let data: RedgifsResponse = await res.json();
-      if (data.errorMessage?.code == "NotFound") {
-        return {};
-      } else {
-        return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd };
+      try {
+        let res = await fetch(
+          `https://api.redgifs.com/v2/gifs/${name.toLowerCase()}`,
+          {
+            //mode: "no-cors"
+          },
+        );
+        let data: RedgifsResponse = await res.json();
+        if (data.errorMessage?.code == "NotFound") {
+          return {};
+        } else {
+          return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd };
+        }
+      } catch {
+        return {
+          lores: `https://thumbs2.redgifs.com/${name}-mobile.mp4`,
+          mp4: `https://thumbs2.redgifs.com/${name}.mp4`,
+        };
       }
     }
 
@@ -364,7 +371,10 @@ async function vidsrc(url: string, item: RedditItem) {
         let data: RedgifsResponse = await res.json();
         return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd };
       } catch {
-        return {};
+        return {
+          lores: `https://thumbs2.redgifs.com/${name}-mobile.mp4`,
+          mp4: `https://thumbs2.redgifs.com/${name}.mp4`,
+        };
       }
       return {};
     }
@@ -377,17 +387,20 @@ async function vidsrc(url: string, item: RedditItem) {
     // Sometimes gfycat urls are of the format "redgifs.com/watch/videoid".
     name = name.replace("watch/", "");
 
-    let res = await fetch(
-      `https://api.redgifs.com/v2/gifs/${name}`,
-      {
-        //mode: "no-cors"
-      },
-    );
     try {
+      let res = await fetch(
+        `https://api.redgifs.com/v2/gifs/${name}`,
+        {
+          //mode: "no-cors"
+        },
+      );
       let data: RedgifsResponse = await res.json();
       return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd };
     } catch {
-      return {};
+      return {
+        lores: `https://thumbs2.redgifs.com/${name}-mobile.mp4`,
+        mp4: `https://thumbs2.redgifs.com/${name}.mp4`,
+      };
     }
   } else if (url.includes("v.redd.it")) {
     return {
