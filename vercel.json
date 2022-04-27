@@ -35,6 +35,10 @@
     {
       "source": "/u/:u",
       "destination": "/u/username/index.html"
-    }
+    },
+    {
+    "source": "/api/(.*)*",
+    "destination": "/api"}
+
   ]
 }
