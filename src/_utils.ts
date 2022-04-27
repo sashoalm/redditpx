@@ -328,7 +328,7 @@ async function vidsrc(url: string, item: RedditItem) {
     if (res.status == 404) {
       try {
         let res = await fetch(
-          `https://api.redgifs.com/v2/gifs/${name.toLowerCase()}`,
+          `/api/https://api.redgifs.com/v2/gifs/${name.toLowerCase()}`,
           {
             //mode: "no-cors"
           },
@@ -363,7 +363,7 @@ async function vidsrc(url: string, item: RedditItem) {
       // https://www.reddit.com/r/redditp/comments/gpwo5u/why_do_so_many_gifs_and_video_come_up_blank_black/
       try {
         let res = await fetch(
-          `https://api.redgifs.com/v2/gifs/${name}`,
+          `/api/https://api.redgifs.com/v2/gifs/${name}`,
           {
             //mode: "no-cors"
           },
@@ -389,7 +389,7 @@ async function vidsrc(url: string, item: RedditItem) {
 
     try {
       let res = await fetch(
-        `https://api.redgifs.com/v2/gifs/${name}`,
+        `/api/https://api.redgifs.com/v2/gifs/${name}`,
         {
           //mode: "no-cors"
         },
