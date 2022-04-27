@@ -2,6 +2,9 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const apiProxy = createProxyMiddleware({
   //target: "https://reddit.com",
+  router: async function(req) {
+    return "https://reddit.com"
+  },
   changeOrigin: true,
   pathRewrite: {
     "^/api": "" // strip "/api" from the URL
