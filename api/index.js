@@ -1,17 +1,22 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
+function noProtocol(url) {
+  return url.replace('https://', '').replace('http://', '');
+}
+
 const apiProxy = createProxyMiddleware({
   router: function(req) {
-    let target = req.url.split('/')[2];
-    //console.log('target ', target)
+    console.log(noProtocol(req.url));
+    let target = noProtocol(req.url).split('/')[2];
+    console.log('target ', target)
     return {
       protocol: 'https:', host: target,
     }
   },
   changeOrigin: true,
   pathRewrite: function(path, req) {
-    //console.log('path', '/' + req.url.split('/').slice(3).join('/'));
-    return '/' + req.url.split('/').slice(3).join('/')
+    console.log('path', '/' + noProtocol(req.url).split('/').slice(3).join('/'));
+    return '/' + noProtocol(req.url).split('/').slice(3).join('/')
   },
 
   onProxyRes(proxyRes) {
