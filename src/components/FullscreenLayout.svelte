@@ -1045,7 +1045,7 @@
             span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
               p deep search 🠒
         .numswrapper
-          +each('displayposts as post, i')
+          +each('displayposts as post, i (post.id)')
             span.nums(
               class:currnum="{index === i}",
               class:album="{currpost.is_album}",
@@ -1065,7 +1065,7 @@
                   Icon(icon="{faSync}")
   +if('$prefetch')
     .prefetch
-      +each('nexturls as nexturl')
+      +each('nexturls as nexturl (nexturl.url)')
         +if('$hires')
           +if('nexturl.is_album')
             img(alt="prefetch-hires", src="{nexturl.preview.img.album[0].hires}")

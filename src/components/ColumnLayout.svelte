@@ -696,7 +696,7 @@
     .wall#wall(bind:this='{wallEl}', style="{gridTemplateColsStyle}")
       +each('cols as c')
         .col
-          +each('displayposts as currpost, i')
+          +each('displayposts as currpost, i (currpost.id)')
             +if('i%$numCols === c')
               .brick(id="{'brick-' + i}", i="{i}", on:click="{toggleAutoPlay}", class:paused="{currpost.paused}", class:canplaythrough="{currpost.canplaythrough}", class:playing="{currpost.playing}")
                 +if('currpost.is_image && !currpost.is_album')
