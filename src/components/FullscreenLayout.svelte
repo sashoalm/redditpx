@@ -1,5 +1,4 @@
 <script>
-  console.log("[fullscreen]: test");
   import Icon from "fa-svelte/src/Icon.svelte";
   import { faVolumeUp as faSoundOn } from "@fortawesome/free-solid-svg-icons/faVolumeUp";
   import { faVolumeMute as faSoundOff } from "@fortawesome/free-solid-svg-icons/faVolumeMute";
@@ -10,6 +9,7 @@
   import { faDonate } from "@fortawesome/free-solid-svg-icons/faDonate";
   import { faExpandAlt as faExpand } from "@fortawesome/free-solid-svg-icons/faExpandAlt";
   import { faCloudDownloadAlt as faDownload } from "@fortawesome/free-solid-svg-icons/faCloudDownloadAlt";
+  import { faDice } from "@fortawesome/free-solid-svg-icons/faDice";
   import { faPhotoVideo as faImageVideo } from "@fortawesome/free-solid-svg-icons/faPhotoVideo";
   import { faImage } from "@fortawesome/free-solid-svg-icons/faImage";
   import { faVideo } from "@fortawesome/free-solid-svg-icons/faVideo";
@@ -34,6 +34,8 @@
 
   import { onMount, tick } from "svelte";
   import { goto as ahref } from "@sapper/app";
+
+  import shuffle from "lodash.shuffle";
 
   import { get_posts, queryp } from "../_utils.ts";
 
@@ -656,6 +658,10 @@
     window.open("/download", "_blank");
   }
 
+  async function shuffleFiles() {
+    displayposts = shuffle(displayposts);
+  }
+
   function openMedia() {
     window.open(currpost.url, "_blank");
   }
@@ -971,6 +977,11 @@
             class:dlready="{numFavorite}"
           )
             Icon(icon="{faDownload}")
+          span.btn.dice.tooltip(
+            on:click="{shuffleFiles}",
+            data-tooltip="Shuffle",
+          )
+            Icon(icon="{faDice}")
           span.btn.portraitlandscape.tooltip(
             on:click="{togglePortraitLandscape}",
             data-tooltip="{portraitLandscapeStr}",
@@ -1371,6 +1382,12 @@ $isnotmulti-color: #34a853
 
           & :global(.landscape)
             transform: rotate(270deg)
+
+        &.dice
+          cursor: pointer
+          font-size: 1.4rem
+          bottom: 2px
+          color: white
 
         &.download
           cursor: default
