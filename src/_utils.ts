@@ -18,7 +18,7 @@ export function queryp(query: Query) {
 
 export async function get_posts(url: string) {
   try {
-    let res = await fetchJsonp(url, { jsonpCallback: "jsonp", timeout: 5000 });
+    let res = await fetchJsonp(url, { jsonpCallback: "jsonp", timeout: 10000 });
     let data = await res.json();
     console.log("Fetched: ", data.data.children.length, data.data);
 
