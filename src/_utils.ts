@@ -341,8 +341,8 @@ async function vidsrc(url: string, item: RedditItem) {
         }
       } catch {
         return {
-          lores: `https://thumbs2.redgifs.com/${name}-mobile.mp4`,
-          mp4: `https://thumbs2.redgifs.com/${name}.mp4`,
+          lores: `https://thumbs3.redgifs.com/${name}-mobile.mp4`,
+          mp4: `https://thumbs3.redgifs.com/${name}.mp4`,
         };
       }
     }
@@ -372,8 +372,8 @@ async function vidsrc(url: string, item: RedditItem) {
         return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd };
       } catch {
         return {
-          lores: `https://thumbs2.redgifs.com/${name}-mobile.mp4`,
-          mp4: `https://thumbs2.redgifs.com/${name}.mp4`,
+          lores: `https://thumbs3.redgifs.com/${name}-mobile.mp4`,
+          mp4: `https://thumbs3.redgifs.com/${name}.mp4`,
         };
       }
       return {};
@@ -398,8 +398,8 @@ async function vidsrc(url: string, item: RedditItem) {
       return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd };
     } catch {
       return {
-        lores: `https://thumbs2.redgifs.com/${name}-mobile.mp4`,
-        mp4: `https://thumbs2.redgifs.com/${name}.mp4`,
+        lores: `https://thumbs3.redgifs.com/${name}-mobile.mp4`,
+        mp4: `https://thumbs3.redgifs.com/${name}.mp4`,
       };
     }
   } else if (url.includes("v.redd.it")) {
