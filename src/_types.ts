@@ -1,6 +1,6 @@
 /* Reddit Response */
 
-interface MediaEmbed {}
+interface MediaEmbed { }
 
 interface RedditVideo {
   bitrate_kbps: number,
@@ -15,9 +15,9 @@ interface RedditVideo {
   transcoding_status: string,
 }
 
-interface SecureMedia { reddit_video: RedditVideo }
+interface SecureMedia { reddit_video: RedditVideo, oembed: any }
 
-interface SecureMediaEmbed {}
+interface SecureMediaEmbed { }
 
 interface Gildings { gid_1: number }
 

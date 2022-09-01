@@ -72,9 +72,9 @@ function is_album(imgs: Img) {
 function is_image(item: RedditItem) {
   return (
     url(item).endsWith(".jpg") ||
-      url(item).endsWith(".png") ||
-      url(item).includes("imgur.com/a/") ||
-      url(item).includes("reddit.com/gallery/")
+    url(item).endsWith(".png") ||
+    url(item).includes("imgur.com/a/") ||
+    url(item).includes("reddit.com/gallery/")
   );
 }
 
@@ -94,9 +94,9 @@ export function is_video(item: RedditItem) {
   }
   return (
     item.data.is_video ||
-      item.data.preview.hasOwnProperty("reddit_video_preview") ||
-      (url(item).startsWith("https://i.redd.it") && url(item).endsWith(".gif")) ||
-      url(item).startsWith("https://gfycat.com/")
+    item.data.preview.hasOwnProperty("reddit_video_preview") ||
+    (url(item).startsWith("https://i.redd.it") && url(item).endsWith(".gif")) ||
+    url(item).startsWith("https://gfycat.com/")
   );
 }
 
@@ -106,27 +106,27 @@ export function get_dims(item: RedditItem) {
   if (is_image(item)) {
     try {
       dims =
-        {
-          height: item.data.preview.images[0].source.height,
-          width: item.data.preview.images[0].source.width,
-        };
+      {
+        height: item.data.preview.images[0].source.height,
+        width: item.data.preview.images[0].source.width,
+      };
     } catch {
       console.info(`No dims for ${url(item)}`, item);
     }
   } else if (is_video(item)) {
     try {
       dims =
-        {
-          height: item.data.preview.reddit_video_preview.height,
-          width: item.data.preview.reddit_video_preview.width,
-        };
+      {
+        height: item.data.preview.reddit_video_preview.height,
+        width: item.data.preview.reddit_video_preview.width,
+      };
     } catch {
       // if you cant get the dims from the video, pick it up from the preview image
       dims =
-        {
-          height: item.data.preview.images[0].source.height,
-          width: item.data.preview.images[0].source.width,
-        };
+      {
+        height: item.data.preview.images[0].source.height,
+        width: item.data.preview.images[0].source.width,
+      };
     }
   }
 
@@ -175,12 +175,12 @@ async function imgsrc(u: string, item: RedditItem) {
   let imgs;
   try {
     imgs =
-      {
-        default: decode(
-          item.data.preview.images[0].resolutions.slice(-1)[0].url,
-        ),
-        hires: decode(item.data.preview.images[0].source.url),
-      };
+    {
+      default: decode(
+        item.data.preview.images[0].resolutions.slice(-1)[0].url,
+      ),
+      hires: decode(item.data.preview.images[0].source.url),
+    };
   } catch {
     imgs = { default: url(item), hires: url(item) };
   }
@@ -204,7 +204,7 @@ async function imgsrc(u: string, item: RedditItem) {
       let images = [];
 
       imgs["album"] = extractAlbumInfoNode(html);
-    } catch (error) {}
+    } catch (error) { }
   }
 
   //  if (u.includes("imgur.com/a/")) {
@@ -302,6 +302,7 @@ function extractAlbumInfoNode(html): Album[] {
 
 async function vidsrc(url: string, item: RedditItem) {
   if (url.includes("imgur.com/")) {
+    console.log('1', url)
     let name = url.match(/imgur.com\/(.*)\..*/)[1];
     return {
       gif: `https://i.imgur.com/${name}.gif`,
@@ -310,6 +311,7 @@ async function vidsrc(url: string, item: RedditItem) {
       lores: `https://i.imgur.com/${name}.mp4`,
     };
   } else if (url.includes("gfycat.com/")) {
+    console.log('2', url)
     let name = url.match(/gfycat.com\/(.*)/)[1];
 
     // Sometimes gfycat urls are of the format "gfycat.com/videoid-extra-stuff". Remove anything after the first "-"
@@ -379,7 +381,13 @@ async function vidsrc(url: string, item: RedditItem) {
       return {};
     }
   } else if (url.includes("redgifs.com/")) {
+    console.log('3', url)
     let name = url.match(/redgifs.com\/(.*)/)[1];
+
+    let _pieces = item.data.media.oembed.thumbnail_url.split('?')[0].split('/')
+
+    name = _pieces[_pieces.length - 1].split('.')[0]
+    console.log(name)
 
     // Sometimes gfycat urls are of the format "gfycat.com/videoid-extra-stuff". Remove anything after the first "-"
     name = name.split("-")[0].replace(".gif", "");
