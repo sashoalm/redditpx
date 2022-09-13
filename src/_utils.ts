@@ -330,7 +330,7 @@ async function vidsrc(url: string, item: RedditItem) {
 
         return {
           mp4: 'redgifs.com', lores: 'redgifs.com', embed:
-            `https://www.redgifs.com/ifr/${name}`
+        `https://www.redgifs.com/ifr/${name.replace('watch/', '').replace('ifr/', '')}`
         };
         let res = await fetch(
           `/api/api.redgifs.com/v2/gifs/${name.toLowerCase()}`,
@@ -392,7 +392,7 @@ async function vidsrc(url: string, item: RedditItem) {
     // Short circuit & return just the name
     return {
       mp4: 'redgifs.com', lores: 'redgifs.com', embed:
-        `https://www.redgifs.com/ifr/${name.replace('watch/', '')}`
+        `https://www.redgifs.com/ifr/${name.replace('watch/', '').replace('ifr/', '')}`
     };
 
     let _pieces = item.data.media.oembed.thumbnail_url.split('?')[0].split('/')
