@@ -689,7 +689,7 @@
   }
 
   function openComments() {
-    window.open(`https://reddit.com${currpost.permalink}`, "_blank");
+    window.open(`https://www.reddit.com${currpost.permalink}`, "_blank");
   }
 
   function openCommentsOld() {
