@@ -689,11 +689,11 @@
   }
 
   function openComments() {
-    window.open(`https://reddit.com/${currpost.permalink}`, "_blank");
+    window.open(`https://reddit.com${currpost.permalink}`, "_blank");
   }
 
   function openCommentsOld() {
-    window.open(`https://old.reddit.com/${currpost.permalink}`, "_blank");
+    window.open(`https://old.reddit.com${currpost.permalink}`, "_blank");
   }
 
   function openDuplicates() {
