@@ -703,6 +703,25 @@
     );
   }
 
+  function copySrcToClipboard() {
+    let text;
+    if (currpost.is_image && !currpost.is_album) {
+      text = currpost.url;
+    } else if (currpost.is_video) {
+      text = currpost.url;
+    } else if (currpost.is_album) {
+      if (currpost.preview.img.album[albumindex].is_video) {
+        text = currpost.preview.img.album[albumindex].hires;
+      } else {
+        text = currpost.preview.img.album[albumindex].hires;
+      }
+    }
+
+    navigator.clipboard
+      .writeText(text)
+      .then(() => console.log(`Copied: ${text}`));
+  }
+
   function toggleOver18() {
     $over18 = $over18 + 1;
 
@@ -868,6 +887,11 @@
     // v
     if (event.keyCode == 118) {
       toggleImageVideo();
+    }
+
+    // c
+    if (event.keyCode == 67) {
+      copySrcToClipboard();
     }
 
     // Left Arrow, a, k, Page-up
