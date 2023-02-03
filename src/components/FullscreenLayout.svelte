@@ -705,7 +705,7 @@
 
   function copySrcToClipboard() {
     let text;
-    if (currpost.url.startsWith("https://v.redd.it/")) {
+    if (currpost.url.startsWith("https://v.redd.it/") || currpost.url.includes("redgifs.com")) {
       text = currpost.preview.vid.mp4;
     } else if (currpost.is_image && !currpost.is_album) {
       text = currpost.url;
