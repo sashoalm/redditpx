@@ -47,7 +47,8 @@ redditpx has the following new features
 | <kbd>m</kbd>                                                       | Add/Remove from multi-reddit            |
 | <kbd>s</kbd>                                                       | Sound on/off                            |
 | <kbd>q</kbd>, <kbd>p</kbd>                                         | Autoplay on/off                         |
-| <kbd>f</kbd>, <kbd>/</kbd>                                         | Jump to subreddit                       |
+| <kbd>f</kbd>                                                       | Jump to subreddit                       |
+| <kbd>/</kbd>                                                       | Filter posts                            |
 | <kbd>x</kbd>                                                       | Toggle favorites                        |
 | <kbd>r</kbd>                                                       | Open post on reddit.com                 |
 | <kbd>o</kbd>                                                       | Open post on old.reddit.com             |
