@@ -629,6 +629,11 @@
     if (event.keyCode == 83) {
       toggleMuted();
     }
+
+    // g
+    if (event.keyCode == 71) {
+      toggleLayout();
+    }
   }
 
   $: {

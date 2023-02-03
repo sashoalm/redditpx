@@ -886,6 +886,11 @@
       toggleUIVisiblity();
     }
 
+    // g
+    if (event.keyCode == 71) {
+      toggleLayout();
+    }
+
     // v
     if (event.keyCode == 118) {
       toggleImageVideo();
