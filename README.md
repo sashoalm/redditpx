@@ -36,6 +36,28 @@ redditpx has the following new features
 - [x] /new, /top, /hot support
 - [x] /domain, /user, /u support
 
+## Keybindings
+
+| Action                                                             | Binding                                 |
+| ------------------------------------------------------------------ | --------------------------------------- |
+| <kbd>Left</kbd>, <kbd>a</kbd>, <kbd>k</kbd>, <kbd>Page up</kbd>    | Previous                                |
+| <kbd>Right</kbd>, <kbd>d</kbd>, <kbd>j</kbd>, <kbd>Page down</kbd> | Next                                    |
+| <kbd>Up</kbd>                                                      | Album next                              |
+| <kbd>Down</kbd>                                                    | Album previous                          |
+| <kbd>m</kbd>                                                       | Add/Remove from multi-reddit            |
+| <kbd>s</kbd>                                                       | Sound on/off                            |
+| <kbd>q</kbd>, <kbd>p</kbd>                                         | Autoplay on/off                         |
+| <kbd>f</kbd>, <kbd>/</kbd>                                         | Jump to subreddit                       |
+| <kbd>x</kbd>                                                       | Toggle favorites                        |
+| <kbd>r</kbd>                                                       | Open post on reddit.com                 |
+| <kbd>o</kbd>                                                       | Open post on old.reddit.com             |
+| <kbd>i</kbd>                                                       | Open direct link to media (image,video) |
+| <kbd>l</kbd>                                                       | Open duplicates                         |
+| <kbd>h</kbd>                                                       | Toggle UI visibility                    |
+| <kbd>g</kbd>                                                       | Toggle layout (grid/fullscreen)         |
+| <kbd>v</kbd>                                                       | Toggle image/video                      |
+| <kbd>c</kbd>                                                       | Copy direct media link to clipboard     |
+
 ## Acknowledgements
 
 - svelte/sapper for framework
