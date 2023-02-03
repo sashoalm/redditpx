@@ -705,7 +705,9 @@
 
   function copySrcToClipboard() {
     let text;
-    if (currpost.is_image && !currpost.is_album) {
+    if (currpost.url.startsWith("https://v.redd.it/")) {
+      text = currpost.preview.vid.mp4;
+    } else if (currpost.is_image && !currpost.is_album) {
       text = currpost.url;
     } else if (currpost.is_video) {
       text = currpost.url;
