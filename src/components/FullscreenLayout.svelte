@@ -962,7 +962,7 @@
         +else()
           .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo')
-        +if('currpost && currpost.preview && currpost.preview.vid.mp4.includes("redgifs.com")')
+        +if('currpost && currpost.preview && currpost.preview.vid.mp4.includes("redxgifs.com")')
           iframe(src='{currpost.preview.vid.embed}' frameborder=0 scrolling="no" width="100%" height="100%" allowfullscreen playsinline)
           +else()
             video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}")

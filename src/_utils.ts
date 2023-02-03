@@ -326,30 +326,12 @@ async function vidsrc(url: string, item: RedditItem) {
     );
 
     if (res.status == 404) {
-      try {
 
         return {
-          mp4: 'redgifs.com', lores: 'redgifs.com', embed:
-        `https://www.redgifs.com/ifr/${name.replace('watch/', '').replace('ifr/', '')}`
+          mp4: item.data.preview.reddit_video_preview.fallback_url,
+          lores: item.data.preview.reddit_video_preview.fallback_url,
         };
-        let res = await fetch(
-          `/api/api.redgifs.com/v2/gifs/${name.toLowerCase()}`,
-          {
-            //mode: "no-cors"
-          },
-        );
-        let data: RedgifsResponse = await res.json();
-        if (data.errorMessage?.code == "NotFound") {
-          return {};
-        } else {
-          return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd };
-        }
-      } catch {
-        return {
-          lores: `https://thumbs3.redgifs.com/${name}-mobile.mp4`,
-          mp4: `https://thumbs3.redgifs.com/${name}.mp4`,
-        };
-      }
+
     }
 
     try {
@@ -367,82 +349,20 @@ async function vidsrc(url: string, item: RedditItem) {
       // If gfycat.com fails, try redgifs.com
       // https://www.reddit.com/r/redditp/comments/gpwo5u/why_do_so_many_gifs_and_video_come_up_blank_black/
 
-      return { mp4: 'redgifs.com', lores: 'redgifs.com', name: name };
+      return {
+        mp4: item.data.preview.reddit_video_preview.fallback_url,
+        lores: item.data.preview.reddit_video_preview.fallback_url,
+      };
 
-      try {
-        let res = await fetch(
-          `/api/api.redgifs.com/v2/gifs/${name}`,
-          {
-            //mode: "no-cors"
-          },
-        );
-        let data: RedgifsResponse = await res.json();
-        return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd };
-      } catch {
-        return {
-          lores: `https://thumbs3.redgifs.com/${name}-mobile.mp4`,
-          mp4: `https://thumbs3.redgifs.com/${name}.mp4`,
-        };
-      }
-      return {};
     }
   } else if (url.includes("redgifs.com/")) {
-    let name = url.match(/redgifs.com\/(.*)/)[1];
 
-    // Short circuit & return just the name
     return {
-      mp4: 'redgifs.com', lores: 'redgifs.com', embed:
-        `https://www.redgifs.com/ifr/${name.replace('watch/', '').replace('ifr/', '')}`
+      mp4: item.data.preview.reddit_video_preview.fallback_url,
+      lores: item.data.preview.reddit_video_preview.fallback_url,
     };
 
-    let _pieces = item.data.media.oembed.thumbnail_url.split('?')[0].split('/')
-
-    name = _pieces[_pieces.length - 1].split('.')[0]
-
-    // Sometimes gfycat urls are of the format "gfycat.com/videoid-extra-stuff". Remove anything after the first "-"
-    name = name.split("-")[0].replace(".gif", "");
-
-    // Sometimes gfycat urls are of the format "redgifs.com/watch/videoid".
-    name = name.replace("watch/", "");
-
-
-    try {
-      let res = await fetch(
-        //`/api/api.redgifs.com/v2/gifs/${name}`,
-        `https://api.redgifs.com/v2/gifs/${name}`,
-        {
-          //mode: "no-cors"
-        },
-      );
-      let data: RedgifsResponse = await res.json();
-      return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd, name: name };
-    } catch {
-
-
-      // Lets try with all lowercase `name`
-      try {
-        let res = await fetch(
-          //`/api/api.redgifs.com/v2/gifs/${name}`,
-          `https://api.redgifs.com/v2/gifs/${name.toLowerCase()}?views=yes&users=yes`,
-          {
-            //mode: "no-cors"
-          },
-        );
-        let data: RedgifsResponse = await res.json();
-        return { mp4: data.gif.urls.hd, lores: data.gif.urls.sd, name: name.toLowerCase() };
-      }
-      catch {
-        return {
-          lores: `https://thumbs3.redgifs.com/${name.toLowerCase()}-mobile.mp4`,
-          mp4: `https://thumbs3.redgifs.com/${name.toLowerCase()}.mp4`,
-        };
-
-      }
-
-
-
-
-    }
+    
   } else if (url.includes("v.redd.it")) {
     return {
       mp4: item.data.media.reddit_video.fallback_url,
