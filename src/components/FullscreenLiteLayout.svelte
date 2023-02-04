@@ -72,7 +72,9 @@
   lores.useLocalStorage(true);
   oldreddit.useLocalStorage(false);
   muted.useLocalStorage(true);
-  layout.useLocalStorage(0);
+
+  // Force layout
+  $layout = 0;
 
   export let params, slugstr;
   export let posts;
@@ -124,7 +126,6 @@
 
   let imageVideoStr = "";
   let portraitLandscapeStr = "";
-  let downloadstr = "";
   let autoplaystr = "";
   let over18str = "";
   let deepsearchstr = "";
@@ -296,13 +297,6 @@
   $: {
     numFavorite = displayposts.filter((item) => item.favorite == true).length;
 
-    if (!numFavorite) {
-      downloadstr = `Nothing to download`;
-    } else if (numFavorite == 1) {
-      downloadstr = `Download ${numFavorite} file`;
-    } else {
-      downloadstr = `Download ${numFavorite} files`;
-    }
     autoplaystr = `Autoplay is ${$autoplay ? "on" : "off"}`;
     deepsearchstr = `Search for ${filterValue}`;
 
@@ -897,12 +891,6 @@
             on:click="{toggleAutoPlay}"
           )
             Icon(icon="{$autoplay ? faPause : faPlay}")
-          span.btn.download.tooltip(
-            on:click="{downloadFiles}",
-            data-tooltip="{downloadstr}",
-            class:dlready="{numFavorite}"
-          )
-            Icon(icon="{faDownload}")
           span.btn.dice.tooltip(
             on:click="{shuffleFiles}",
             data-tooltip="Shuffle",
@@ -919,16 +907,6 @@
                 Icon(icon="{faPortrait}")
               +elseif('$portraitLandscape == 2')
                 Icon(class="landscape", icon="{faPortrait}")
-          span.btn.layout.active.tooltip(
-            data-tooltip="Solo mode",
-            on:click="{toggleLayout}"
-          )
-            Icon(icon="{faFullscreen}")
-          span.btn.layout.disable.tooltip(
-            data-tooltip="Grid mode",
-            on:click="{toggleLayout}"
-          )
-            Icon(icon="{faColumns}")
           span.btn.imagevideo.tooltip(
             data-tooltip="{imageVideoStr}",
             on:click="{toggleImageVideo}"
@@ -1031,7 +1009,7 @@ $isnotmulti-color: #34a853
   width: 0
 
   display: flex
-  flex: 1 1 0
+  flex: 1 1 50vw
   justify-items: center
   align-items: center
 
@@ -1171,16 +1149,6 @@ $isnotmulti-color: #34a853
         .reload
           bottom: -1px
 
-      .numswrapper
-
-        .displayinfo
-          grid-column: span 1
-          font-size: 0.8rem
-          margin-top: 2px
-
-          p
-            margin: 0
-            text-align: center
 
       .btn
         text-align: center
@@ -1196,23 +1164,6 @@ $isnotmulti-color: #34a853
           @include hover()
             color: white
 
-        &.deepsearch
-          grid-column: span 4
-          bottom: 2px
-          cursor: pointer
-          justify-self: center
-
-          &:hover p
-            color: $accent-color
-            border: 1px solid $accent-color
-
-          p
-            margin: 0
-            font-size: 0.9rem
-            color: darken($accent-color, 30%)
-            border: 1px solid darken($accent-color, 30%)
-            border-radius: 3px
-            padding: 0 1rem
 
         &.over18wrapper
 
@@ -1387,7 +1338,7 @@ $isnotmulti-color: #34a853
 
     .video
       height: 100vh
-      width: 100vw
+      width: 50vw
 
   .prefetch
     display: none
