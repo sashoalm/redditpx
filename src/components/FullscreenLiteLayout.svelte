@@ -158,10 +158,8 @@
       after,
       ...res
     } = await get_posts(
-      `https://reddit.com/r/pics.json?after=${after}&${queryp(params)}`
+      `https://reddit.com/${slugstr}.json?after=${after}&${queryp(params)}`
     ));
-
-    console.log(posts);
 
     // load `favorite` from localstorage
     for (let p of newposts) {
@@ -968,9 +966,6 @@
               input(bind:value='{filterValue}', on:click|stopPropagation, on:keydown|stopPropagation, type="text")
               +else
                 Icon(icon="{faSearch}")
-          +if('filterValue')
-            span.btn.deepsearch.tooltip(data-tooltip="{deepsearchstr}", on:click='{gotoDeepSearch}')
-              p deep search 🠒
         .numswrapper
           +each('displayposts as post, i (post.id + post.url)')
             span.nums(
@@ -1033,9 +1028,10 @@ $isnotmulti-color: #34a853
 
 .wrapper
   height: 100vh
-  width: 100%
+  width: 0
 
   display: flex
+  flex: 1 1 0
   justify-items: center
   align-items: center
 
