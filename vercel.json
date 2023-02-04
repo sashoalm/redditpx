@@ -5,6 +5,10 @@
     { "source": "/random", "destination": "/random.html" },
     { "source": "/randnsfw", "destination": "/randnsfw.html" },
     {
+      "source": "/m/:sr",
+      "destination": "/m/subreddit/index.html"
+    },
+    {
       "source": "/r/:sr",
       "destination": "/r/subreddit/index.html"
     },
@@ -37,8 +41,8 @@
       "destination": "/u/username/index.html"
     },
     {
-    "source": "/api/(.*)*",
-    "destination": "/api"}
-
+      "source": "/api/(.*)*",
+      "destination": "/api"
+    }
   ]
 }
