@@ -124,6 +124,7 @@
               .item(style='background-color: {subreddit.color}' )
                 span {subreddit.url}
       .links
+        a(href='/m/subreddit')
         a(href='/r/subreddit')
         a(href='/r/subreddit/search')
         a(href='/r/subreddit/hot')
