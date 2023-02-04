@@ -1,0 +1,50 @@
+<script context="module">
+  export async function preload({ path, params, query }) {
+    if (typeof window === "undefined") return;
+
+    let slugstr = path.substring(1).replace(/\/$/, "").replace(/%20/g, ""); // remove the leading and trailing slash, and %20 (spaces)
+    fetch("https://redditpx.jeffjose.cloud/" + slugstr).catch((e) => e);
+
+    let { posts, res, after } = await get_posts(
+      `https://reddit.com/r/pics.json?${queryp(query)}`
+    );
+
+    return { posts, after, res, slugstr };
+  }
+</script>
+
+<script>
+  import FullscreenLiteLayout from "../../../components/FullscreenLiteLayout.svelte";
+
+  import { get_posts, queryp } from "../../../_utils.ts";
+
+  import { stores } from "@sapper/app";
+  const { page } = stores();
+
+  import { favorite, layout } from "../../../_prefs";
+  favorite.useLocalStorage({});
+  layout.useLocalStorage(0);
+
+  export let posts = [];
+  export let res;
+  export let after;
+  export let slugstr;
+
+  // Load `favorite` from localstorage
+  for (let p of posts) {
+    p["favorite"] = !!$favorite[p.url];
+  }
+</script>
+
+<template lang="pug">
+  +if('$layout == 0')
+    .wrapper
+      FullscreenLiteLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
+      FullscreenLiteLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
+</template>
+
+<style>
+  .wrapper {
+    display: flex;
+  }
+</style>
