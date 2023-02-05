@@ -135,6 +135,7 @@
         a(href='/user/username')
         a(href='/random')
         a(href='/randnsfw')
+        a(href='/download')
 </template>
 
 <style lang="sass">
