@@ -78,6 +78,7 @@
   export let posts;
   export let after;
   export let res;
+  export let mode = "reddit";
 
   let data;
   let displayposts = [];
@@ -181,13 +182,27 @@
 
     let newposts;
 
-    ({
-      posts: newposts,
-      after,
-      ...res
-    } = await get_posts(
-      `https://reddit.com/${slugstr}.json?after=${after}&${queryp(params)}`
-    ));
+    let [userid, collectionid ] = slugstr.split('/')
+
+    if (mode === "reddit") {
+      ({
+        posts: newposts,
+        after,
+        ...res
+      } = await get_posts(
+        `https://reddit.com/${slugstr}.json?after=${after}&${queryp(params)}`
+      ));
+    } else {
+      ({
+        posts: newposts,
+        after,
+        ...res
+      } = await get_posts(
+        `http://localhost:3000/api/gfycat.com/user?user=${userid}&collection=${collectionid}&after=${after}&${queryp(
+          params
+        )}`
+      ));
+    }
 
     console.log(posts);
 
@@ -705,7 +720,10 @@
 
   function copySrcToClipboard() {
     let text;
-    if (currpost.url.startsWith("https://v.redd.it/") || currpost.url.includes("redgifs.com")) {
+    if (
+      currpost.url.startsWith("https://v.redd.it/") ||
+      currpost.url.includes("redgifs.com")
+    ) {
       text = currpost.preview.vid.mp4;
     } else if (currpost.is_image && !currpost.is_album) {
       text = currpost.url;

@@ -12,6 +12,8 @@ import {
   RedgifsResponse,
 } from "./_types";
 
+const CACHE = {}
+
 export function queryp(query: Query) {
   return Object.entries(query).map(([key, val]) => `${key}=${val}`).join("&");
 }
@@ -327,15 +329,19 @@ async function vidsrc(url: string, item: RedditItem) {
 
     if (res.status == 404) {
 
-        return {
-          mp4: item.data.preview.reddit_video_preview.fallback_url,
-          lores: item.data.preview.reddit_video_preview.fallback_url,
-        };
+      return {
+        mp4: item.data.preview.reddit_video_preview.fallback_url,
+        lores: item.data.preview.reddit_video_preview.fallback_url,
+      };
 
     }
 
     try {
       let data = await res.json();
+
+      // store in cache
+      CACHE[url] = data.gfyItem
+
       return {
         webm: data.gfyItem.webmUrl,
         mp4: data.gfyItem.mp4Url,
@@ -362,7 +368,7 @@ async function vidsrc(url: string, item: RedditItem) {
       lores: item.data.preview.reddit_video_preview.fallback_url,
     };
 
-    
+
   } else if (url.includes("v.redd.it")) {
     return {
       mp4: item.data.media.reddit_video.fallback_url,
@@ -409,6 +415,11 @@ function decode(str: string): string | undefined {
 }
 
 function title(item: RedditItem): string {
+
+  if (item.data.title == 'CHANGEME_GFYCAT_PLACEHOLDER') {
+    return decode(CACHE[item.data.url].title)
+  }
+
   return (
     decode(item.data.title) || decode(item.data.link_title) || "(no title)"
   );
@@ -445,7 +456,10 @@ export async function format(item: RedditItem): Promise<FormattedItem> {
   }
 
   let imgs: Img = await imgsrc(url(item), item);
+
+  // vidsrc does caching of api response, so make it one of the first items in this fuction
   let vids: Vid = is_video(item) ? await vidsrc(url(item), item) : {};
+
   let dims: Dims = get_dims(item);
 
   let orientation: Orientation = Orientation.Normal;

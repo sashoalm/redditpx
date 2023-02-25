@@ -9,10 +9,15 @@
     let _slugstrL, slugstrL;
     let _slugstrR, slugstrR;
 
-    [_slugstrL, _slugstrR] = slugstr.replace(/m\//, "").split("+");
+    [_slugstrL, _slugstrR] = slugstr
+      .replace(/m\//, "")
+      .replaceAll(encodeURIComponent("/search?"), "/search.json?")
+      .split("+");
 
-    slugstrL = `r/${_slugstrL}`;
-    slugstrR = `r/${_slugstrR}`;
+    slugstrL = `r/${decodeURIComponent(_slugstrL)}`;
+    slugstrR = `r/${decodeURIComponent(_slugstrR)}`;
+    console.log(slugstrL);
+    console.log(slugstrR);
 
     let {
       posts: postsL,
@@ -24,9 +29,7 @@
       posts: postsR,
       res: resR,
       after: afterR
-    } = await get_posts(
-      `https://reddit.com/${slugstrR}.json?${queryp(query)}`
-    );
+    } = await get_posts(`https://reddit.com/${slugstrR}.json?${queryp(query)}`);
 
     return { postsL, afterL, resL, slugstrL, postsR, afterR, resR, slugstrR };
   }
@@ -58,8 +61,8 @@
 <template lang="pug">
   +if('$layout == 0')
     .uberwrapper
-      FullscreenLiteLayout(slugstr='{slugstrL}', posts='{postsL}', res='{resL}', after='{afterL}', params ='{$page.query}')
-      FullscreenLiteLayout(slugstr='{slugstrR}', posts='{postsR}', res='{resR}', after='{afterR}', params ='{$page.query}')
+      FullscreenLiteLayout(slugstr='{slugstrL}', posts='{postsL}', res='{resL}', after='{afterL}', params ='{$page.query}', itemindex=0)
+      FullscreenLiteLayout(slugstr='{slugstrR}', posts='{postsR}', res='{resR}', after='{afterR}', params ='{$page.query}', itemindex=1)
 </template>
 
 <style>
