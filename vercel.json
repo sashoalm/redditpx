@@ -41,6 +41,10 @@
       "destination": "/u/username/index.html"
     },
     {
+      "source": "/gfycat.com/:gfy",
+      "destination": "/gfycat.com/user/index.html"
+    },
+    {
       "source": "/api/(.*)*",
       "destination": "/api"
     }
