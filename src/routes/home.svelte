@@ -137,6 +137,7 @@
         a(href='/randnsfw')
         a(href='/download')
         a(href='/gfycat.com/user')
+        a(href='/gfycat.com/user/collection')
 </template>
 
 <style lang="sass">

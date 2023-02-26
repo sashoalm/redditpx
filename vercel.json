@@ -45,6 +45,10 @@
       "destination": "/gfycat.com/user/index.html"
     },
     {
+      "source": "/gfycat.com/:gfy/:collection",
+      "destination": "/gfycat.com/user/collection/index.html"
+    },
+    {
       "source": "/api/(.*)*",
       "destination": "/api"
     }
