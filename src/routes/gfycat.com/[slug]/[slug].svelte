@@ -11,7 +11,7 @@
 
     let [userid, collectionid] = slugstr.split("/");
     let { posts, res, after } = await get_posts(
-      `http://localhost:3000/api/gfycat.com/user?user=${userid}&collection=${collectionid}`
+      `/api/gfycat.com/user?user=${userid}&collection=${collectionid}`
     );
 
     return { posts, after, res, slugstr };

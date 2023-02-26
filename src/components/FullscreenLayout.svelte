@@ -182,7 +182,7 @@
 
     let newposts;
 
-    let [userid, collectionid ] = slugstr.split('/')
+    let [userid, collectionid] = slugstr.split("/");
 
     if (mode === "reddit") {
       ({
@@ -198,7 +198,7 @@
         after,
         ...res
       } = await get_posts(
-        `http://localhost:3000/api/gfycat.com/user?user=${userid}&collection=${collectionid}&after=${after}&${queryp(
+        `/api/gfycat.com/user?user=${userid}&collection=${collectionid}&after=${after}&${queryp(
           params
         )}`
       ));

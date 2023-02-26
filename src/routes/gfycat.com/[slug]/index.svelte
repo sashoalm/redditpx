@@ -10,7 +10,7 @@
     fetch("https://redditpx.jeffjose.cloud/" + slugstr).catch((e) => e);
 
     let { posts, res, after } = await get_posts(
-      `http://localhost:3000/api/gfycat.com/user?user=${slugstr}`
+      `/api/gfycat.com/user?user=${slugstr}`
     );
 
     return { posts, after, res, slugstr };
