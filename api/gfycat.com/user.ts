@@ -28,8 +28,9 @@ async function fetch_and_respond(request: VercelRequest, response: VercelRespons
   const r = await fetch(gfycatapiurl)
   const json: any = await r.json()
 
-  const items = json.gfycats.map((x) => x.gfyId)
-  const urls = items.map((x) => `https://gfycat.com/${x}`)
+  const ids = json.gfycats.map((x) => x.gfyId)
+  const urls = ids.map((x) => `https://gfycat.com/${x}`)
+  const items = json.gfycats
 
   const cursor = json.cursor
 
