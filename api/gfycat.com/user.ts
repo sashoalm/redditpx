@@ -133,21 +133,9 @@ function mkdataitem(url, userid) {
           {
             "source": {
               "url": "https://thumbs.gfycat.com/MatureRawIsabellineshrike-mobile.jpg",
-              "width": 288,
-              "height": 380
+              "width": 0,
+              "height": 0
             },
-            "resolutions": [
-              {
-                "url": "https://thumbs.gfycat.com/MatureRawIsabellineshrike-mobile.jpg",
-                "width": 108,
-                "height": 142
-              },
-              {
-                "url": "https://thumbs.gfycat.com/MatureRawIsabellineshrike-mobile.jpg",
-                "width": 216,
-                "height": 285
-              }
-            ],
             "id": "548lbOuX-C9g1j7YAbF4UdfCYsUick-Sa_79SswedVE"
           }
         ],
