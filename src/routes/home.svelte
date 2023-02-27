@@ -139,7 +139,7 @@
         a(href='/gfycat.com/user')
         a(href='/gfycat.com/user/collection')
         a(href='/imgur.com/a/albumname')
-        a(href='/gfycat.com/gallery/galleryname')
+        a(href='/imgur.com/gallery/galleryname')
 </template>
 
 <style lang="sass">
