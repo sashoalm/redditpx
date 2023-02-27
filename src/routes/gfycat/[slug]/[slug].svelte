@@ -9,10 +9,13 @@
       .replace(/gfycat.com\//, ""); // remove the leading and trailing slash, and %20 (spaces)
     fetch("https://redditpx.jeffjose.cloud/" + slugstr).catch((e) => e);
 
+    let [userid, collectionid] = slugstr.split("/");
     let { posts, res, after } = await get_posts(
-      `/api/gfycat.com/user?user=${slugstr}`
+      `/api/gfycat.com/user?user=${userid}&collection=${collectionid}`
     );
 
+    console.log("xxxxxxxxxxxxx--");
+    console.log(posts);
     return { posts, after, res, slugstr };
   }
 </script>
