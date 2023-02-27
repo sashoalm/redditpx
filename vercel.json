@@ -42,7 +42,7 @@
     },
     {
       "source": "/gfycat.com/:gfy",
-      "destination": "/gfycat.co/user/index.html"
+      "destination": "/gfycat.com/user/index.html"
     },
     {
       "source": "/gfycat.com/:gfy/:collection",
