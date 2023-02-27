@@ -48,5 +48,5 @@
   +if('$layout == 0')
     FullscreenLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}', mode='gfycat')
     +else()
-      ColumnLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
+      ColumnLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}', mode='gfycat')
 </template>

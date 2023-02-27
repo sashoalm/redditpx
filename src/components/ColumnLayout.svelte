@@ -82,6 +82,7 @@
   export let posts;
   export let after;
   export let res;
+  export let mode = "reddit";
 
   let data;
   let displayposts = [];
@@ -170,13 +171,25 @@
 
     let newposts;
 
-    ({
-      posts: newposts,
-      after,
-      ...res
-    } = await get_posts(
-      `https://reddit.com/${slugstr}.json?after=${after}&${queryp(params)}`
-    ));
+    if (mode === "reddit") {
+      ({
+        posts: newposts,
+        after,
+        ...res
+      } = await get_posts(
+        `https://reddit.com/${slugstr}.json?after=${after}&${queryp(params)}`
+      ));
+    } else {
+      ({
+        posts: newposts,
+        after,
+        ...res
+      } = await get_posts(
+        `/api/gfycat.com/user?user=${userid}&collection=${collectionid}&after=${after}&${queryp(
+          params
+        )}`
+      ));
+    }
 
     // load `favorite` from localstorage
     for (let p of newposts) {
