@@ -10,7 +10,6 @@ export default async function handler(
   response: VercelResponse
 ) {
 
-  console.log(request.query)
   if (request.query.gallery !== undefined) {
     await fetch_and_respond_gallery(request, response)
   }
@@ -26,10 +25,6 @@ async function fetch_and_respond_gallery(request: VercelRequest, response: Verce
   const cursor = 'cursor'
   const userid = 'imguruser'
 
-  console.log('GALLERY', request.query)
-
-  //https://api.imgur.com/post/v1/albums/uOOju?client_id=546c25a59c58ad7&include=media
-
   const options = {
     runScripts: 'dangerously'
   }
@@ -42,6 +37,8 @@ async function fetch_and_respond_gallery(request: VercelRequest, response: Verce
   data.media.forEach((x, i) => {
     // Update the item's title with the gallery title
     x.title = data.media.length > 1 ? `${data.title} (${i + 1})` : data.title
+
+    x.thumbnail = `https://i.imgur.com/${x.id}m.jpg`
   })
 
   if (request.query.jsonp) {
@@ -60,21 +57,15 @@ async function fetch_and_respond_album(request: VercelRequest, response: VercelR
   const cursor = 'cursor'
   const userid = 'imguruser'
 
-  console.log('ALBUM', request.query)
-
-  //https://api.imgur.com/post/v1/albums/uOOju?client_id=546c25a59c58ad7&include=media
-
   const r = await fetch(`https://api.imgur.com/post/v1/albums/${albumid}?client_id=${CLIENT_ID}&include=media`)
   const json: any = await r.json()
-
-  console.log(json)
-  console.log(json.media[0].metadata)
-  console.log(json.title)
 
   const urls = json.media.map((x) => x.url)
   json.media.forEach((x, i) => {
     // Update the item's title with the gallery title
     x.title = json.media.length > 1 ? `${json.title} (${i + 1})` : json.title
+
+    x.thumbnail = `https://i.imgur.com/${x.id}m.jpg`
   })
 
   if (request.query.jsonp) {
@@ -120,6 +111,7 @@ function mkdataitem(url, item, userid) {
       "pwls": 0,
       "link_flair_css_class": null,
       "downs": 0,
+      "thumbnail": item.thumbnail,
       "thumbnail_height": 140,
       "top_awarded_type": null,
       "hide_score": false,
@@ -144,7 +136,6 @@ function mkdataitem(url, item, userid) {
       "approved_by": null,
       "is_created_from_ads_ui": false,
       "author_premium": true,
-      "thumbnail": url,
       "edited": false,
       "gildings": {},
       "content_categories": null,

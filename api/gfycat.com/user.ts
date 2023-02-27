@@ -20,8 +20,6 @@ export default async function handler(
 
   }
 
-  console.log(gfycatapiurl)
-
   await fetch_and_respond(request, response, gfycatapiurl, userid)
 }
 
@@ -37,28 +35,28 @@ async function fetch_and_respond(request: VercelRequest, response: VercelRespons
 
   if (request.query.jsonp) {
     response.status(200).send(
-      request.query.jsonp + '(' + JSON.stringify(mkresponse(urls, userid, cursor)) + ')'
+      request.query.jsonp + '(' + JSON.stringify(mkresponse(urls, items, userid, cursor)) + ')'
     )
     return
   }
-  response.status(200).json(mkresponse(urls, userid, cursor))
+  response.status(200).json(mkresponse(urls, items, userid, cursor))
 
 }
 
 
-function mkresponse(urls: string[], userid: string, cursor: string) {
+function mkresponse(urls: string[], items: any[], userid: string, cursor: string) {
 
   return {
     kind: "Listing",
     data: {
       after: cursor,
-      children: urls.map((x) => mkdataitem(x, userid))
+      children: urls.map((x, i) => mkdataitem(x, items[i], userid))
     }
   }
 
 }
 
-function mkdataitem(url, userid) {
+function mkdataitem(url, item, userid) {
 
   return {
     kind: "t3",
@@ -71,7 +69,7 @@ function mkdataitem(url, userid) {
       "mod_reason_title": null,
       "gilded": 0,
       "clicked": false,
-      "title": "CHANGEME_GFYCAT_PLACEHOLDER",
+      "title": item.title,
       "link_flair_richtext": [],
       "subreddit_name_prefixed": `u/${userid}`,
       "hidden": false,
@@ -102,7 +100,7 @@ function mkdataitem(url, userid) {
       "approved_by": null,
       "is_created_from_ads_ui": false,
       "author_premium": true,
-      "thumbnail": "https://thumbs.gfycat.com/MatureRawIsabellineshrike-mobile.jpg",
+      "thumbnail": item.posterUrl,
       "edited": false,
       "gildings": {},
       "post_hint": "rich:video",
@@ -132,9 +130,9 @@ function mkdataitem(url, userid) {
         "images": [
           {
             "source": {
-              "url": "https://thumbs.gfycat.com/MatureRawIsabellineshrike-mobile.jpg",
-              "width": 0,
-              "height": 0
+              "url": item.posterUrl,
+              "width": item.width,
+              "height": item.height,
             },
             "id": "548lbOuX-C9g1j7YAbF4UdfCYsUick-Sa_79SswedVE"
           }
