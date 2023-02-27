@@ -5,16 +5,16 @@
     let slugstr = path
       .substring(1)
       .replace(/\/$/, "")
-      .replace(/%20/g, "")
-      .replace(/gfycat.com\//, ""); // remove the leading and trailing slash, and %20 (spaces)
+      .replace(/%20/g, "") // remove the leading and trailing slash, and %20 (spaces)
+      .replace(/imgur.com\//, "")
+      .replace(/gallery\//, "");
     fetch("https://redditpx.jeffjose.cloud/" + slugstr).catch((e) => e);
 
+    console.log("xxxxxx", slugstr);
     let { posts, res, after } = await get_posts(
-      `/api/gfycat.com/user?user=${slugstr}`
+      `/api/imgur.com/media?gallery=${slugstr}`
     );
 
-    console.log("xxxxxxxxxxxxx--");
-    console.log(posts);
     return { posts, after, res, slugstr };
   }
 </script>

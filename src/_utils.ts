@@ -74,6 +74,7 @@ function is_album(imgs: Img) {
 function is_image(item: RedditItem) {
   return (
     url(item).endsWith(".jpg") ||
+    url(item).endsWith(".jpeg") ||
     url(item).endsWith(".png") ||
     url(item).includes("imgur.com/a/") ||
     url(item).includes("reddit.com/gallery/")

@@ -49,6 +49,14 @@
       "destination": "/gfycat.com/user/collection/index.html"
     },
     {
+      "source": "/imgur.com/a/:album",
+      "destination": "/imgur.com/a/albumname/index.html"
+    },
+    {
+      "source": "/imgur.com/gallery/:gallery",
+      "destination": "/imgur.com/gallery/galleryname/index.html"
+    },
+    {
       "source": "/api/(.*)*",
       "destination": "/api"
     }
