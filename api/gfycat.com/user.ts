@@ -8,16 +8,15 @@ export default async function handler(
 ) {
 
   const userid = (request.query.user as string).replace(/@/, '')
-  const collectionid = (request.query.collection as string)
+  const collectionid = request.query.collection
 
   let gfycatapiurl
 
-  if (collectionid !== undefined) {
-    gfycatapiurl = `https://api.gfycat.com/v1/users/${userid}/collections/${collectionid}/gfycats?count=30&cursor=${decodeURIComponent(request.query.after as string?? '')}`
+  if (collectionid !== 'undefined' && collectionid !== undefined) {
+    gfycatapiurl = `https://api.gfycat.com/v1/users/${userid}/collections/${collectionid}/gfycats?count=30&cursor=${decodeURIComponent(request.query.after as string ?? '')}`
   }
   else {
     gfycatapiurl = `https://api.gfycat.com/v1/users/${userid}/gfycats?count=30&cursor=${decodeURIComponent(request.query.after as string ?? '')}`
-
   }
 
   await fetch_and_respond(request, response, gfycatapiurl, userid)
