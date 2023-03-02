@@ -12,8 +12,6 @@ import {
   RedgifsResponse,
 } from "./_types";
 
-const CACHE = {}
-
 export function queryp(query: Query) {
   return Object.entries(query).map(([key, val]) => `${key}=${val}`).join("&");
 }
@@ -340,9 +338,6 @@ async function vidsrc(url: string, item: RedditItem) {
     try {
       let data = await res.json();
 
-      // store in cache
-      CACHE[url] = data.gfyItem
-
       return {
         webm: data.gfyItem.webmUrl,
         mp4: data.gfyItem.mp4Url,
@@ -416,10 +411,6 @@ function decode(str: string): string | undefined {
 }
 
 function title(item: RedditItem): string {
-
-  if (item.data.title == 'CHANGEME_GFYCAT_PLACEHOLDER') {
-    return decode(CACHE[item.data.url].title)
-  }
 
   return (
     decode(item.data.title) || decode(item.data.link_title) || "(no title)"
