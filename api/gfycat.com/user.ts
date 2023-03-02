@@ -13,10 +13,10 @@ export default async function handler(
   let gfycatapiurl
 
   if (collectionid !== undefined) {
-    gfycatapiurl = `https://api.gfycat.com/v1/users/${userid}/collections/${collectionid}/gfycats?count=30&cursor=${request.query.after ?? ''}`
+    gfycatapiurl = `https://api.gfycat.com/v1/users/${userid}/collections/${collectionid}/gfycats?count=30&cursor=${decodeURIComponent(request.query.after) ?? ''}`
   }
   else {
-    gfycatapiurl = `https://api.gfycat.com/v1/users/${userid}/gfycats?count=30&cursor=${request.query.after ?? ''}`
+    gfycatapiurl = `https://api.gfycat.com/v1/users/${userid}/gfycats?count=30&cursor=${decodeURIComponent(request.query.after) ?? ''}`
 
   }
 
@@ -32,7 +32,7 @@ async function fetch_and_respond(request: VercelRequest, response: VercelRespons
   const urls = ids.map((x) => `https://gfycat.com/${x}`)
   const items = json.gfycats
 
-  const cursor = json.cursor
+  const cursor = encodeURIComponent(json.cursor)
 
   if (request.query.jsonp) {
     response.status(200).send(
