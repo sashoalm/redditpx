@@ -2,14 +2,18 @@
   export async function preload({ path, params, query }) {
     if (typeof window === "undefined") return;
 
+    console.log(path);
+
     let slugstr = path
       .substring(1)
       .replace(/\/$/, "")
       .replace(/%20/g, "")
-      .replace(/gfycat.com\//, ""); // remove the leading and trailing slash, and %20 (spaces)
+      .replace(/gfycat.com\//, "")
+      .replace(/collections\//, ""); // remove the leading and trailing slash, and %20 (spaces)
     fetch("https://redditpx.jeffjose.cloud/" + slugstr).catch((e) => e);
 
     let [userid, collectionid] = slugstr.split("/");
+    console.log(userid, collectionid, path);
     let { posts, res, after } = await get_posts(
       `/api/gfycat.com/user?user=${userid}&collection=${collectionid}`
     );
@@ -21,15 +25,15 @@
 </script>
 
 <script>
-  import FullscreenLayout from "../../../components/FullscreenLayout.svelte";
-  import ColumnLayout from "../../../components/ColumnLayout.svelte";
+  import FullscreenLayout from "../../../../../components/FullscreenLayout.svelte";
+  import ColumnLayout from "../../../../../components/ColumnLayout.svelte";
 
-  import { get_posts, queryp } from "../../../_utils.ts";
+  import { get_posts, queryp } from "../../../../../_utils.ts";
 
   import { stores } from "@sapper/app";
   const { page } = stores();
 
-  import { favorite, layout } from "../../../_prefs";
+  import { favorite, layout } from "../../../../../_prefs";
   favorite.useLocalStorage({});
   layout.useLocalStorage(0);
 
