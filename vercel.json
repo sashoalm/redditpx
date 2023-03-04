@@ -46,7 +46,7 @@
     },
     {
       "source": "/gfycat.com/:user/collections/:collection/:collectionname",
-      "destination": "/gfycat.com/user/collections/collection/index.html"
+      "destination": "/gfycat.com/user/collections/collection/collectionname/index.html"
     },
     {
       "source": "/imgur.com/a/:album",
