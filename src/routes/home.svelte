@@ -137,7 +137,7 @@
         a(href='/randnsfw')
         a(href='/download')
         a(href='/gfycat.com/user')
-        a(href='/gfycat.com/user/collection')
+        a(href='/gfycat.com/user/collections/collection/collectionname')
         a(href='/imgur.com/a/albumname')
         a(href='/imgur.com/gallery/galleryname')
 </template>

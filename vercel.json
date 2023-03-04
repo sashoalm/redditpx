@@ -41,12 +41,12 @@
       "destination": "/u/username/index.html"
     },
     {
-      "source": "/gfycat.com/:gfy",
+      "source": "/gfycat.com/:user",
       "destination": "/gfycat.com/user/index.html"
     },
     {
-      "source": "/gfycat.com/:gfy/:collection",
-      "destination": "/gfycat.com/user/collection/index.html"
+      "source": "/gfycat.com/:user/collections/:collection/:collectionname",
+      "destination": "/gfycat.com/user/collections/collection/index.html"
     },
     {
       "source": "/imgur.com/a/:album",
