@@ -319,6 +319,18 @@ async function vidsrc(url: string, item: RedditItem) {
     // Sometimes gfycat urls are of the format "gfycat.com/gifs/detail/videoid".
     name = name.replace("gifs/detail/", "");
 
+    if (/[A-Z]/.test(name)) {
+      // We get inside this if we already know the correct gfyName (small+caps) from api
+      // and dont need to do another api call here in the frontend
+
+      return {
+        webm: `https://giant.gfycat.com/${name}.webm`,
+        mp4: `https://giant.gfycat.com/${name}.mp4`,
+        gif: `https://giant.gfycat.com/${name}-size_restricted.gif`,
+        lores: `https://thumbs.gfycat.com/${name}-mobile.mp4`,
+      };
+    }
+
     let res = await fetch(
       `https://api.gfycat.com/v1/gfycats/${name}`,
       {

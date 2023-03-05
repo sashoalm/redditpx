@@ -27,7 +27,9 @@ async function fetch_and_respond(request: VercelRequest, response: VercelRespons
   const r = await fetch(gfycatapiurl)
   const json: any = await r.json()
 
-  const ids = json.gfycats.map((x) => x.gfyId)
+  console.log(json.gfycats[0])
+
+  const ids = json.gfycats.map((x) => x.gfyName) // Using gfyName instead of gfyId so that we can avoid an api call from the frontend
   const urls = ids.map((x) => `https://gfycat.com/${x}`)
   const items = json.gfycats
 
@@ -134,6 +136,14 @@ function mkdataitem(url, item, userid) {
               "width": item.width,
               "height": item.height,
             },
+            "resolutions":
+              [
+                {
+                  "url": item.posterUrl,
+                  "width": item.width,
+                  "height": item.height
+                }
+              ],
             "id": "548lbOuX-C9g1j7YAbF4UdfCYsUick-Sa_79SswedVE"
           }
         ],
