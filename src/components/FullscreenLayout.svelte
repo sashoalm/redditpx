@@ -1115,7 +1115,7 @@
                   Icon(icon="{faSync}")
   +if('$prefetch')
     .prefetch
-      +each('nexturls as nexturl')
+      +each('nexturls as nexturl (nexturl.preview.img.default)')
         +if('$hires')
           +if('nexturl.is_album')
             img(alt="prefetch-hires", src="{nexturl.preview.img.album[0].hires}")
@@ -1129,7 +1129,7 @@
               +else()
                 img(alt="prefetch", src="{nexturl.default}")
         +if('nexturl.is_video')
-          video
+          video(playsinline, autoplay, loop)
             +if('$lores')
               source(src="{nexturl.preview.vid.lores}")
               +else()
