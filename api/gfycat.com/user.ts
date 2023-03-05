@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 import fetch from 'node-fetch';
 
-let COUNT = 100
+let COUNT = 500
 
 export default async function handler(
   request: VercelRequest,
