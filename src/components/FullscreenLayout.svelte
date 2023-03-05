@@ -412,6 +412,8 @@
           }
         })
         .flat();
+
+      console.log(nexturls);
     } else if (filterValue) {
       // We're here because user filtered the list
 
@@ -1129,7 +1131,7 @@
               +else()
                 img(alt="prefetch", src="{nexturl.default}")
         +if('nexturl.is_video')
-          video(playsinline, autoplay, loop)
+          video(playsinline, autoplay, loop, muted)
             +if('$lores')
               source(src="{nexturl.preview.vid.lores}")
               +else()
