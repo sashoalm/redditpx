@@ -27,8 +27,6 @@ async function fetch_and_respond(request: VercelRequest, response: VercelRespons
   const r = await fetch(gfycatapiurl)
   const json: any = await r.json()
 
-  console.log(json.gfycats[0])
-
   const ids = json.gfycats.map((x) => x.gfyName) // Using gfyName instead of gfyId so that we can avoid an api call from the frontend
   const urls = ids.map((x) => `https://gfycat.com/${x}`)
   const items = json.gfycats
