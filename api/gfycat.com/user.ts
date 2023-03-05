@@ -2,6 +2,8 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 import fetch from 'node-fetch';
 
+let COUNT = 100
+
 export default async function handler(
   request: VercelRequest,
   response: VercelResponse
@@ -13,10 +15,10 @@ export default async function handler(
   let gfycatapiurl
 
   if (collectionid !== 'undefined' && collectionid !== undefined) {
-    gfycatapiurl = `https://api.gfycat.com/v1/users/${userid}/collections/${collectionid}/gfycats?count=30&cursor=${decodeURIComponent(request.query.after as string ?? '')}`
+    gfycatapiurl = `https://api.gfycat.com/v1/users/${userid}/collections/${collectionid}/gfycats?count=${COUNT}&cursor=${decodeURIComponent(request.query.after as string ?? '')}`
   }
   else {
-    gfycatapiurl = `https://api.gfycat.com/v1/users/${userid}/gfycats?count=30&cursor=${decodeURIComponent(request.query.after as string ?? '')}`
+    gfycatapiurl = `https://api.gfycat.com/v1/users/${userid}/gfycats?count=${COUNT}&cursor=${decodeURIComponent(request.query.after as string ?? '')}`
   }
 
   await fetch_and_respond(request, response, gfycatapiurl, userid)
