@@ -140,6 +140,7 @@
         a(href='/gfycat.com/user/collections/collection/collectionname')
         a(href='/imgur.com/a/albumname')
         a(href='/imgur.com/gallery/galleryname')
+        a(href='/gettyimages.com/search/query')
 </template>
 
 <style lang="sass">

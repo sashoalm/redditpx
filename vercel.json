@@ -57,6 +57,10 @@
       "destination": "/imgur.com/gallery/galleryname/index.html"
     },
     {
+      "source": "/gettyimages.com/search/:query",
+      "destination": "/gettyimages.com/search/query/index.html"
+    },
+    {
       "source": "/api/(.*)*",
       "destination": "/api"
     }
