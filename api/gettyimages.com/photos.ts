@@ -27,7 +27,7 @@ async function fetch_and_respond_gallery(request: VercelRequest, response: Verce
     return x.getAttribute('data-asset-id')
   }).filter(n => n)
 
-  const urls = assetids.map((x) => `https://media.gettyimages.com/photos/-id${x}?s=2048x2048`)
+  const urls = assetids.map((x) => `https://media.gettyimages.com/photos/-id${x}?s=1024x2048`)
   const thumbnails = assetids.map((x) => `https://media.gettyimages.com/photos/-id${x}?s=612x612`)
 
   const cursor = parseInt(request.query.after as string ?? '1') + 1
@@ -129,8 +129,8 @@ function mkdataitem(url, thumbnail, userid) {
           {
             "source": {
               "url": url,
-              "width": 2048,
-              "height": 2048,
+              "width": 1024,
+              "height": 1024,
             },
             "id": "548lbOuX-C9g1j7YAbF4UdfCYsUick-Sa_79SswedVE"
           }
