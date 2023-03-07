@@ -75,7 +75,8 @@ function is_image(item: RedditItem) {
     url(item).endsWith(".jpeg") ||
     url(item).endsWith(".png") ||
     url(item).includes("imgur.com/a/") ||
-    url(item).includes("reddit.com/gallery/")
+    url(item).includes("reddit.com/gallery/") ||
+    url(item).includes('media.gettyimages.com/photos/-id')
   );
 }
 
