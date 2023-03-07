@@ -27,7 +27,7 @@ async function fetch_and_respond_gallery(request: VercelRequest, response: Verce
     return x.getAttribute('data-asset-id')
   }).filter(n => n)
 
-  const urls = assetids.map((x) => `https://media.gettyimages.com/photos/-id${x}?s=1024x2048`)
+  const urls = assetids.map((x) => `https://media.gettyimages.com/photos/-id${x}?s=1024x1024`)
   const thumbnails = assetids.map((x) => `https://media.gettyimages.com/photos/-id${x}?s=612x612`)
 
   const cursor = parseInt(request.query.after as string ?? '1') + 1
