@@ -179,7 +179,7 @@
       } = await get_posts(
         `https://reddit.com/${slugstr}.json?after=${after}&${queryp(params)}`
       ));
-    } else {
+    } else if (mode == "gfycat") {
       ({
         posts: newposts,
         after,
@@ -188,6 +188,14 @@
         `/api/gfycat.com/user?user=${userid}&collection=${collectionid}&after=${after}&${queryp(
           params
         )}`
+      ));
+    } else if (mode == "gettyimages") {
+      ({
+        posts: newposts,
+        after,
+        ...res
+      } = await get_posts(
+        `/api/gettyimages.com/photos?${queryp(params)}&after=${after}`
       ));
     }
 

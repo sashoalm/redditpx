@@ -17,7 +17,7 @@
 
     let q = "harry kane";
     let { posts, res, after } = await get_posts(
-      `http://localhost:3000/api/gettyimages.com/photos?query=${q}`
+      `/api/gettyimages.com/photos?${queryp(query)}`
     );
 
     console.log("xxxxxxxxxxxxx--");
@@ -52,7 +52,7 @@
 
 <template lang="pug">
   +if('$layout == 0')
-    FullscreenLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}', mode='gfycat')
+    FullscreenLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}', mode='gettyimages')
     +else()
-      ColumnLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}', mode='gfycat')
+      ColumnLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}', mode='gettyimages')
 </template>

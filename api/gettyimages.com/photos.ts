@@ -11,14 +11,16 @@ export default async function handler(
   await fetch_and_respond_gallery(request, response)
 }
 
-async function fetch_and_respond_gallery(request: VercelRequest, response: VercelResponse) {
+function queryp(query) {
+  return Object.entries(query).map(([key, val]) => `${key}=${val}`).join("&");
+}
 
-  const query = 'harry kane'
+async function fetch_and_respond_gallery(request: VercelRequest, response: VercelResponse) {
 
   const options = {
     runScripts: 'dangerously'
   }
-  const r = await fetch(`https://www.gettyimages.com/photos/search?assettype=image&family=editorial&phrase=${encodeURIComponent(query)}&sort=newest`)
+  const r = await fetch(`https://www.gettyimages.com/photos/search?${queryp(request.query)}&page=${request.query.after ?? 1}`)
   const text = await r.text()
   const dom = new jsdom.JSDOM(text, options)
   const assetids = [...dom.window.document.querySelectorAll('div[class^=MosaicAsset-]')].map((x) => {
@@ -26,31 +28,34 @@ async function fetch_and_respond_gallery(request: VercelRequest, response: Verce
   }).filter(n => n)
 
   const urls = assetids.map((x) => `https://media.gettyimages.com/photos/-id${x}?s=2048x2048`)
+  const thumbnails = assetids.map((x) => `https://media.gettyimages.com/photos/-id${x}?s=612x612`)
+
+  const cursor = parseInt(request.query.after as string ?? '1') + 1
 
   if (request.query.jsonp) {
     response.status(200).send(
-      request.query.jsonp + '(' + JSON.stringify(mkresponse(urls, urls, 'gettyimages', 'cursor')) + ')'
+      request.query.jsonp + '(' + JSON.stringify(mkresponse(urls, thumbnails, 'gettyimages', cursor)) + ')'
     )
     return
   }
 
-  response.status(200).json(mkresponse(urls, urls, 'gettyimages', 'cursor'))
+  response.status(200).json(mkresponse(urls, thumbnails, 'gettyimages', cursor))
 }
 
 
-function mkresponse(urls: string[], items: any[], userid: string, cursor: string) {
+function mkresponse(urls: string[], thumbnails: any[], userid: string, cursor: number) {
 
   return {
     kind: "Listing",
     data: {
       after: cursor,
-      children: urls.map((x, i) => mkdataitem(x, items[i], userid))
+      children: urls.map((x, i) => mkdataitem(x, thumbnails[i], userid))
     }
   }
 
 }
 
-function mkdataitem(url, item, userid) {
+function mkdataitem(url, thumbnail, userid) {
 
   return {
     kind: "t3",
@@ -70,8 +75,8 @@ function mkdataitem(url, item, userid) {
       "pwls": 0,
       "link_flair_css_class": null,
       "downs": 0,
-      "thumbnail": url,
-      "thumbnail_height": 140,
+      "thumbnail": thumbnail,
+      "thumbnail_height": 612,
       "top_awarded_type": null,
       "hide_score": false,
       "name": "imgurname",
@@ -82,7 +87,7 @@ function mkdataitem(url, item, userid) {
       "subreddit_type": "public",
       "ups": 1131,
       "total_awards_received": 0,
-      "thumbnail_width": 140,
+      "thumbnail_width": 612,
       "author_flair_template_id": "02666ee0-e0ea-11e4-9cf7-22000b280e28",
       "is_original_content": false,
       "user_reports": [],
