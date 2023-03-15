@@ -20,12 +20,15 @@ async function fetch_and_respond_gallery(request: VercelRequest, response: Verce
   const options = {
     runScripts: 'dangerously'
   }
+  console.log(`https://www.gettyimages.com/photos/search?${queryp(request.query)}&page=${request.query.after ?? 1}`)
   const r = await fetch(`https://www.gettyimages.com/photos/search?${queryp(request.query)}&page=${request.query.after ?? 1}`)
   const text = await r.text()
   const dom = new jsdom.JSDOM(text, options)
-  const assetids = [...dom.window.document.querySelectorAll('div[class^=MosaicAsset-]')].map((x) => {
+  const assetids = [...dom.window.document.querySelectorAll('div[data-asset-id]')].map((x) => {
     return x.getAttribute('data-asset-id')
   }).filter(n => n)
+
+  console.log(assetids)
 
   const urls = assetids.map((x) => `https://media.gettyimages.com/photos/-id${x}?s=1024x1024`)
   const thumbnails = assetids.map((x) => `https://media.gettyimages.com/photos/-id${x}?s=612x612`)
