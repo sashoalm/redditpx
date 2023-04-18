@@ -861,8 +861,7 @@
 
     // f
     if (event.keyCode == 70) {
-      showSubredditSearch();
-      event.preventDefault();
+      toggleFullscreen();
     }
 
     // slash, f
