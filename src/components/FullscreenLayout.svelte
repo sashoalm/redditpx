@@ -974,7 +974,7 @@
           .subredditwrapper.tooltip.bottom(data-tooltip='{multiredditstr}', on:click|stopPropagation='{toggleMultireddit}', class:ismulti='{ismultireddit}')
             Icon(icon="{ismultireddit ? faMinusCircle : faPlusCircle}")
     .settings
-      a.donate(href="https://ko-fi.com/redditpx" target="_blank")
+      a.donate(href="https://ko-fi.com/redditpx" target="_blank" class:hide='{currpost.favorite == false}')
         span.btn.tooltip.bottom.donate(data-tooltip="Donate")
           Icon(icon="{faDonate}")
       span.btn.tooltip.bottom.expand(on:click="{toggleFullscreen}" data-tooltip="Fullscreen")
