@@ -314,14 +314,6 @@
     $muted = !$muted;
   }
 
-  function toggleLayout() {
-    $layout = $layout + 1;
-
-    if ($layout == 2) {
-      $layout = 0;
-    }
-  }
-
   function togglePortraitLandscape() {
     $portraitLandscape = $portraitLandscape + 1;
 
@@ -913,11 +905,6 @@
       toggleUIVisiblity();
     }
 
-    // g
-    if (event.keyCode == 71) {
-      toggleLayout();
-    }
-
     // v
     if (event.keyCode == 118) {
       toggleImageVideo();
@@ -1052,16 +1039,6 @@
                 Icon(icon="{faPortrait}")
               +elseif('$portraitLandscape == 2')
                 Icon(class="landscape", icon="{faPortrait}")
-          span.btn.layout.active.tooltip(
-            data-tooltip="Solo mode",
-            on:click="{toggleLayout}"
-          )
-            Icon(icon="{faFullscreen}")
-          span.btn.layout.disable.tooltip(
-            data-tooltip="Grid mode",
-            on:click="{toggleLayout}"
-          )
-            Icon(icon="{faColumns}")
           span.btn.imagevideo.tooltip(
             data-tooltip="{imageVideoStr}",
             on:click="{toggleImageVideo}"
