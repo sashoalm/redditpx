@@ -37,6 +37,11 @@ export async function get_posts(url: string) {
       filtered.map((post) => format(post)),
     );
 
+    if (subreddit.toLowerCase() == "home") {
+      formatted = Object.values(JSON.parse(localStorage.getItem("favorite")));
+      formatted.reverse();
+    }
+
     console.log("Formatted: ", formatted.length, formatted);
     let posts: FormattedItem[] = formatted.filter(
       (v, i, a) =>
