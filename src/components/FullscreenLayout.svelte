@@ -576,6 +576,9 @@
       } else if (document.webkitExitFullscreen) {
         document.webkitExitFullscreen();
       }
+      if (!uiVisible) {
+        toggleUIVisiblity();
+      }
     } else {
       if (elem.requestFullscreen) {
         elem.requestFullscreen();
@@ -585,6 +588,9 @@
         elem.mozRequestFullScreen();
       } else if (elem.webkitRequestFullscreen) {
         elem.webkitRequestFullscreen();
+      }
+      if (uiVisible) {
+        toggleUIVisiblity();
       }
     }
   }
