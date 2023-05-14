@@ -18,6 +18,18 @@ export function queryp(query: Query) {
 
 export async function get_posts(url: string) {
   try {
+    if (url.includes('/r/home.')) {
+      let favorites: FormattedItem[] = Object.values(JSON.parse(localStorage.getItem("favorite")));
+      favorites.reverse();
+
+      return {
+        posts: favorites,
+        subreddit: 'Home',
+        after: '',
+        res: { ok: true, res: { ok: true } },
+      };
+    }
+
     let res = await fetchJsonp(url, { jsonpCallback: "jsonp", timeout: 10000 });
     let data = await res.json();
     console.log("Fetched: ", data.data.children.length, data.data);
@@ -36,11 +48,6 @@ export async function get_posts(url: string) {
     let formatted: FormattedItem[] = await Promise.all(
       filtered.map((post) => format(post)),
     );
-
-    if (subreddit.toLowerCase() == "home") {
-      formatted = Object.values(JSON.parse(localStorage.getItem("favorite")));
-      formatted.reverse();
-    }
 
     console.log("Formatted: ", formatted.length, formatted);
     let posts: FormattedItem[] = formatted.filter(
