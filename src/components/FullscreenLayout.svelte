@@ -786,18 +786,8 @@
     displayposts[index].favorite = !displayposts[index].favorite;
 
     let url = displayposts[index].url;
-    if (displayposts[index].favorite) {
-      // Set into localStorage
-      $favorite[url] = displayposts[index];
-      favorite.set($favorite);
-    } else {
-      // setting a value in js which after JSON.parse(JSON.stringify(d)) removes it
-
-      $favorite[url] = undefined;
-      $favorite = JSON.parse(JSON.stringify($favorite));
-
-      favorite.set($favorite);
-    }
+    $favorite[url] = displayposts[index];
+    favorite.set($favorite);
   }
 
   function albumPrev() {

@@ -18,8 +18,13 @@ export function queryp(query: Query) {
 
 export async function get_posts(url: string) {
   try {
-    if (url.includes('/r/home.')) {
+    if (url.includes('/r/home.') || url.includes('/r/home2.')) {
       let favorites: FormattedItem[] = Object.values(JSON.parse(localStorage.getItem("favorite")));
+      if (!url.includes('/r/home2.')) {
+        favorites = favorites.filter((item: any) => !!item.favorite);
+      } else {
+        favorites = favorites.filter((item: any) => !item.favorite);
+      }
       favorites.reverse();
 
       return {
