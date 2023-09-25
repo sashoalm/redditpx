@@ -862,6 +862,11 @@
       toggleFullscreen();
     }
 
+    // u
+    if (event.keyCode == 85) {
+      openUser();
+    }
+
     // slash, f
     if (event.keyCode == 191) {
       expandFilter();
