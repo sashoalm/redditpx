@@ -956,7 +956,6 @@
 <template lang="pug">
 .wrapper
   .hero
-    .control.prev(on:click="{itemPrev}")
     .title(class:hide="{uiVisible == false}", class:favorite="{currpost.favorite}")
       +if('displayposts.length')
         span.fav(on:click|stopPropagation|preventDefault="{toggleFavorite}")
@@ -1010,9 +1009,6 @@
               .image(style="background-image: url('{currpost.preview.img.album[albumindex].hires}')")
               +else()
                 .image(style="background-image: url('{currpost.preview.img.album[albumindex].default}')")
-    .control.next(on:click="{itemNext}")
-    .control.up(on:click="{next}")
-    .control.down(on:click="{prev}")
     .subredditsearchwrapper(class:hide='{subredditSearchVisible == false}', on:click="{hideSubredditSearch}")
       .subredditsearch(bind:this='{subredditSearchRef}' on:click|stopPropagation, on:keydown|stopPropagation)
         span.header Jump to subreddit
@@ -1591,36 +1587,6 @@ $isnotmulti-color: #34a853
 
       :global(.autocomplete-list .autocomplete-list-item b)
         color: $yellow
-
-    .control
-      position: absolute
-      height: 100%
-      z-index: 5
-
-      &.prev
-        left: 0
-        width: 15%
-        //background-color: rgba(255, 138, 138, 0.38)
-
-        @include hover()
-          background: linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(255,255,255,0) 100%)
-
-      &.next
-        right: 0
-        width: 85%
-        //background-color: rgba(138, 255, 233, 0.38)
-
-      &.up
-        top: 0
-        height: 30%
-        width: 100%
-        //background-color: rgba(255, 0, 0, 0.38)
-
-      &.down
-        bottom: 0
-        height: 30%
-        width: 100%
-        //background-color: rgba(0, 255, 0, 0.38)
 
     .image
       height: 100%
