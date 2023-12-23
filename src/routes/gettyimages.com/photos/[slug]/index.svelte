@@ -46,7 +46,7 @@
 
   // Load `favorite` from localstorage
   for (let p of posts) {
-    p["favorite"] = !!$favorite[p.url];
+    p["favorite"] = !!($favorite[p.url]?.favorite);
   }
 </script>
 

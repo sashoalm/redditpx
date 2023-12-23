@@ -193,7 +193,7 @@
 
     // load `favorite` from localstorage
     for (let p of newposts) {
-      p["favorite"] = !!($favorite || {})[p.url];
+      p["favorite"] = !!(($favorite || {})[p.url]?.favorite);
     }
 
     // Combine `posts` and `newposts` and remove duplicates from multiple network requests
