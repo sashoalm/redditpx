@@ -3,6 +3,7 @@ import {
   Dims,
   Img,
   FormattedItem,
+  FormattedItemA,
   Orientation,
   RedditItem,
   Vid,
@@ -19,11 +20,11 @@ export function queryp(query: Query) {
 export async function get_posts(url: string) {
   try {
     if (url.includes('/r/home.') || url.includes('/r/home2.')) {
-      let favorites: FormattedItem[] = Object.values(JSON.parse(localStorage.getItem("favorite")));
+      let favorites: FormattedItemA[] = Object.values(JSON.parse(localStorage.getItem("favorite")));
       if (!url.includes('/r/home2.')) {
-        favorites = favorites.filter((item: any) => !!item.favorite);
+        favorites = favorites.filter((item) => true === item.favorite);
       } else {
-        favorites = favorites.filter((item: any) => !item.favorite);
+        favorites = favorites.filter((item) => false === item.favorite);
       }
       favorites.reverse();
 

@@ -293,32 +293,36 @@ export interface Album {
 
 export interface FormattedItemPreview { vid?: Vid, img?: Img }
 
-export type FormattedItem =
-  | {
-    id: string,
-    author: string,
-    authorp: string,
-    title: string,
-    thumbnail: string,
-    subreddit: string,
-    subredditp: string,
-    permalink: string,
-    over18: boolean,
-    is_video: boolean,
-    is_image: boolean,
-    is_album: boolean,
-    favorite: boolean,
-    url: string,
-    dims: Dims,
-    orientation: Orientation,
-    preview: FormattedItemPreview,
-  }
-  | {
-    url: undefined,
-    title: string,
-    preview: FormattedItemPreview,
-    is_video: boolean,
-  };
+export type FormattedItemA =
+{
+  id: string,
+  author: string,
+  authorp: string,
+  title: string,
+  thumbnail: string,
+  subreddit: string,
+  subredditp: string,
+  permalink: string,
+  over18: boolean,
+  is_video: boolean,
+  is_image: boolean,
+  is_album: boolean,
+  favorite: boolean,
+  url: string,
+  dims: Dims,
+  orientation: Orientation,
+  preview: FormattedItemPreview,
+};
+
+export type FormattedItemB =
+{
+  url: undefined,
+  title: string,
+  preview: FormattedItemPreview,
+  is_video: boolean,
+};
+
+export type FormattedItem = FormattedItemA | FormattedItemB;
 
 export enum Orientation {
   Normal = "normal",
