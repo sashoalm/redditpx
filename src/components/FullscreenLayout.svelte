@@ -850,7 +850,7 @@
     }
 
     // f
-    if (event.keyCode == 70) {
+    if (event.keyCode == 70 && !event.ctrlKey) {
       toggleFullscreen();
     }
 
