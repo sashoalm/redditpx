@@ -786,6 +786,8 @@
     displayposts[index].favorite = !displayposts[index].favorite;
 
     let url = displayposts[index].url;
+    $favorite[url] = undefined;
+    $favorite = JSON.parse(JSON.stringify($favorite));
     $favorite[url] = displayposts[index];
     favorite.set($favorite);
   }
