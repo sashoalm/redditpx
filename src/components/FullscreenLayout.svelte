@@ -83,6 +83,7 @@
   let data;
   let displayposts = [];
   let uiVisible = true;
+  let titleVisible = false;
   let numFavorite;
   let tinygoto;
   let title;
@@ -595,6 +596,10 @@
     }
   }
 
+  function toggleTitleVisibility() {
+    titleVisible = !titleVisible;
+  }
+
   function toggleUIVisiblity() {
     uiVisible = !uiVisible;
 
@@ -908,6 +913,11 @@
       toggleUIVisiblity();
     }
 
+    // t
+    if (event.keyCode == 84) {
+      toggleTitleVisibility();
+    }
+
     // v
     if (event.keyCode == 118) {
       toggleImageVideo();
@@ -948,7 +958,7 @@
 <template lang="pug">
 .wrapper
   .hero
-    .title(class:hide="{uiVisible == false}", class:favorite="{currpost.favorite}")
+    .title(class:hide="{!uiVisible || !titleVisible}", class:favorite="{currpost.favorite}")
       +if('displayposts.length')
         span.fav(on:click|stopPropagation|preventDefault="{toggleFavorite}")
           Icon(icon="{currpost.favorite ? faFav : faUnFav}")
