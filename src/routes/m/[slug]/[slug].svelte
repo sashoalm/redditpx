@@ -49,6 +49,4 @@
 <template lang="pug">
   +if('$layout == 0')
     FullscreenLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
-    +else()
-      ColumnLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
 </template>

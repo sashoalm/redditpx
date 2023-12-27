@@ -17,7 +17,6 @@
 
 <script>
   import FullscreenLayout from "../components/FullscreenLayout.svelte";
-  import ColumnLayout from "../components/ColumnLayout.svelte";
 
   import { get_posts, queryp } from "../_utils.ts";
 
@@ -42,6 +41,4 @@
 <template lang="pug">
   +if('$layout == 0')
     FullscreenLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
-    +else()
-      ColumnLayout({slugstr}, {posts}, {res}, {after}, params ='{$page.query}')
 </template>
