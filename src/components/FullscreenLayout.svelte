@@ -83,6 +83,8 @@
   let data;
   let displayposts = [];
   let uiVisible = true;
+  let hideCursor = true;
+  let hideCursorTimerId = 0;
   let titleVisible = false;
   let numFavorite;
   let tinygoto;
@@ -596,6 +598,17 @@
     }
   }
 
+  function toggleHideCursor() {
+    hideCursor = false;
+    if (hideCursorTimerId) {
+      clearTimeout(hideCursorTimerId);
+    }
+    hideCursorTimerId = setTimeout(() => {
+      hideCursorTimerId = 0;
+      hideCursor = true;
+    }, 3000);
+  }
+
   function toggleTitleVisibility() {
     titleVisible = !titleVisible;
   }
@@ -993,7 +1006,7 @@
         +else()
           .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo') 
-        video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}", on:dblclick="{toggleFullscreen}")
+        video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}", on:dblclick="{toggleFullscreen}", class:hide-cursor='{hideCursor}', on:mousemove="{toggleHideCursor}")
           +if('$lores')
             source(src="{currpost.preview.vid.lores}")
             +else()
@@ -1004,7 +1017,7 @@
                 
       +elseif('currpost.is_album')
         +if('currpost.preview.img.album[albumindex].is_video')
-          video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}", on:dblclick="{toggleFullscreen}")
+          video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}", on:dblclick="{toggleFullscreen}", class:hide-cursor='{hideCursor}', on:mousemove="{toggleHideCursor}")
             source(src="{currpost.preview.img.album[albumindex].hires}")
           +else()
             +if('$hires')
@@ -1153,6 +1166,9 @@ $over18-color: #ea4335
 $over18-border-color: #ea4335
 $ismulti-color: #ea4335
 $isnotmulti-color: #34a853
+
+.hide-cursor
+  cursor: none
 
 .hide
   display: none !important
