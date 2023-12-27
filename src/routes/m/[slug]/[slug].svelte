@@ -24,7 +24,6 @@
 
 <script>
   import FullscreenLayout from "../../../components/FullscreenLayout.svelte";
-  import FullscreenLiteLayout from "../../../components/FullscreenLayout.svelte";
 
   import { get_posts, queryp } from "../../../_utils.ts";
 

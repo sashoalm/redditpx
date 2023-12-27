@@ -36,8 +36,6 @@
 </script>
 
 <script>
-  import FullscreenLiteLayout from "../../../components/FullscreenLiteLayout.svelte";
-
   import { get_posts, queryp } from "../../../_utils.ts";
 
   import { stores } from "@sapper/app";
@@ -46,27 +44,10 @@
   import { favorite, layout } from "../../../_prefs";
   favorite.useLocalStorage({});
   layout.useLocalStorage(0);
-
-  export let postsL = [];
-  export let resL;
-  export let afterL;
-  export let slugstrL;
-
-  export let postsR = [];
-  export let resR;
-  export let afterR;
-  export let slugstrR;
 </script>
 
 <template lang="pug">
-  +if('$layout == 0')
-    .uberwrapper
-      FullscreenLiteLayout(slugstr='{slugstrL}', posts='{postsL}', res='{resL}', after='{afterL}', params ='{$page.query}', itemindex=0)
-      FullscreenLiteLayout(slugstr='{slugstrR}', posts='{postsR}', res='{resR}', after='{afterR}', params ='{$page.query}', itemindex=1)
 </template>
 
 <style>
-  .uberwrapper {
-    display: flex;
-  }
 </style>
