@@ -726,7 +726,7 @@
   }
 
   function openUser() {
-    ahref(`/u/${currpost.author}`);
+    window.open(`/u/${currpost.author}`, "_blank");
   }
 
   function openComments() {
