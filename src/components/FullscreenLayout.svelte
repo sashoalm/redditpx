@@ -941,6 +941,12 @@
       copySrcToClipboard();
     }
 
+    if (event.keyCode >= 48 && event.keyCode <= 57) {
+      const n = event.keyCode - 48;
+      const video = document.getElementById('videoplayerid');
+      video.currentTime = n * video.duration / 10;
+    }
+
     // Left Arrow, a, k, Page-up
     if (
       event.keyCode == 37 ||
@@ -948,7 +954,12 @@
       event.keyCode == 75 ||
       event.keyCode == 33
     ) {
-      itemPrev();
+      if (event.shiftKey) {
+        const video = document.getElementById('videoplayerid');
+        video.currentTime -= 5;
+      } else {
+        itemPrev();
+      }
     }
     // Right Arrow, d, j, Space, Page-down
     else if (
@@ -958,7 +969,12 @@
       event.keyCode == 32 ||
       event.keyCode == 34
     ) {
-      itemNext();
+      if (event.shiftKey) {
+        const video = document.getElementById('videoplayerid');
+        video.currentTime += 5;
+      } else {
+        itemNext();
+      }
     }
   }
 </script>
@@ -1006,7 +1022,7 @@
         +else()
           .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo') 
-        video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}", on:dblclick="{toggleFullscreen}", class:hide-cursor='{hideCursor}', on:mousemove="{toggleHideCursor}")
+        video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}", on:dblclick="{toggleFullscreen}", class:hide-cursor='{hideCursor}', on:mousemove="{toggleHideCursor}", id="videoplayerid")
           +if('$lores')
             source(src="{currpost.preview.vid.lores}")
             +else()
