@@ -481,7 +481,10 @@ export async function format(item: RedditItem): Promise<FormattedItem> {
   let imgs: Img = await imgsrc(url(item), item);
 
   // vidsrc does caching of api response, so make it one of the first items in this fuction
-  let vids: Vid = is_video(item) ? await vidsrc(url(item), item) : {};
+  let vids: Vid = {};
+  if (is_video(item)) {
+    try { vids = await vidsrc(url(item), item); } catch {}    
+  }
 
   let dims: Dims = get_dims(item);
 
