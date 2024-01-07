@@ -941,10 +941,10 @@
       copySrcToClipboard();
     }
 
-    if (event.keyCode >= 48 && event.keyCode <= 57) {
-      const n = event.keyCode - 48;
+    const n = event.keyCode - 48;
+    if (n >= 0 && n <= 3) {
       const video = document.getElementById('videoplayerid');
-      video.currentTime = n * video.duration / 10;
+      video.currentTime = n * video.duration / 4;
     }
 
     // Left Arrow, a, k, Page-up
