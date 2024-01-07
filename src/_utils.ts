@@ -209,7 +209,7 @@ async function imgsrc(u: string, item: RedditItem) {
     // This is an original post (and not a cross post)
     if (item.data.media_metadata) {
       extract_reddit_gallery(item.data, imgs);
-    } else if (item.data.crosspost_parent_list.length > 0) {
+    } else if (item.data.crosspost_parent_list?.length > 0) {
       // FIXME: Assume the first one is the only cross-post available.
       let origpost = item.data.crosspost_parent_list[0];
 
