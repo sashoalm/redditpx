@@ -18,6 +18,10 @@ export function queryp(query: Query) {
 }
 
 export async function get_posts(url: string) {
+  if (url.includes(' ')) {
+    url = encodeURI(url);
+  }
+  console.log('get_posts url: ', url);
   try {
     if (url.includes('/r/home.') || url.includes('/r/home2.')) {
       let favorites: FormattedItemA[] = Object.values(JSON.parse(localStorage.getItem("favorite")));
