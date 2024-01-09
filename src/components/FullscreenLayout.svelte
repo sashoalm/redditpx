@@ -313,6 +313,14 @@
     }
   }
 
+  function uniqBy(a, key) {
+    var seen = {};
+    return a.filter(function(item) {
+        var k = key(item);
+        return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+    })
+  }
+
   function toggleMuted() {
     $muted = !$muted;
   }
@@ -417,6 +425,7 @@
         .flat();
 
       console.log(nexturls);
+      nexturls = uniqBy(nexturls, () => (item) => item.preview.img.default);
     } else if (filterValue) {
       // We're here because user filtered the list
 
