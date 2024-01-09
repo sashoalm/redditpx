@@ -1133,7 +1133,7 @@
               class:currnum="{index === i}",
               class:album="{currpost.is_album}",
               class:favorite="{displayposts[i].favorite}",
-           e  class:over18="{displayposts[i].over18}",
+              class:over18="{displayposts[i].over18}",
               on:click="{function(){goto(i)}}"
             )
               img.small(alt="{displayposts[i].title}", src="{displayposts[i].thumbnail}")
