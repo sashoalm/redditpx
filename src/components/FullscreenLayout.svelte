@@ -607,6 +607,18 @@
     }
   }
 
+  function onVideoPlayerClicked(ev) {
+    const r = document.getElementById('videoplayerid').getBoundingClientRect();
+    const x = ev.offsetX / r.width;
+    const activePart = 1/5;
+
+    if (x < activePart) {
+      itemPrev();
+    } else if (x > (1-activePart)) {
+      itemNext();
+    }
+  }
+
   function toggleHideCursor() {
     hideCursor = false;
     if (hideCursorTimerId) {
@@ -1031,7 +1043,7 @@
         +else()
           .image(style="background-image: url('{currpost.preview.img.default}')")
       +elseif('currpost.is_video && renderVideo') 
-        video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}", on:dblclick="{toggleFullscreen}", class:hide-cursor='{hideCursor}', on:mousemove="{toggleHideCursor}", id="videoplayerid")
+        video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}", on:dblclick="{toggleFullscreen}", class:hide-cursor='{hideCursor}', on:mousemove="{toggleHideCursor}", id="videoplayerid", on:click="{onVideoPlayerClicked}")
           +if('$lores')
             source(src="{currpost.preview.vid.lores}")
             +else()
@@ -1042,7 +1054,7 @@
                 
       +elseif('currpost.is_album')
         +if('currpost.preview.img.album[albumindex].is_video')
-          video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}", on:dblclick="{toggleFullscreen}", class:hide-cursor='{hideCursor}', on:mousemove="{toggleHideCursor}")
+          video.video(autoplay, loop='{!$autoplay}', playsinline, muted='{$muted}', on:ended="{videoended}", on:dblclick="{toggleFullscreen}", class:hide-cursor='{hideCursor}', on:mousemove="{toggleHideCursor}", on:click="{onVideoPlayerClicked}")
             source(src="{currpost.preview.img.album[albumindex].hires}")
           +else()
             +if('$hires')
